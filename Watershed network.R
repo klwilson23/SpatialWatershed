@@ -50,28 +50,26 @@ Nboot <- 10 # how many iterations to run
 edges1 <- sapply(1:NmetaPatch,function(y){sapply(LETTERS[1:NlocalPops],function(x){c(y,x)})})
 edges2 <- sapply(LETTERS[1:NlocalPops],function(y){sapply(paste(y,1:Nbranches,sep=""),function(x){c(y,x)})})
 edges3 <- sapply(as.vector(unique(edges2[-c(1,3),])),function(y){sapply(paste(y,letters[1:Nforks],sep=""),function(x)c(y,x))})
-g1 <- graph(edges=as.character(c(edges1,edges2,edges3)),directed=F)
+riverLandscape <- graph(edges=as.character(c(edges1,edges2,edges3)),directed=F)
 
 dist1 <- rep(diameter,NlocalPops)
 dist2 <- rep(diameter/2,(NlocalPops*Nbranches))
 dist3 <- rep(diameter/3,(NlocalPops*Nbranches*Nforks))
-E(g1)$weight <- c(dist1,dist2,dist3)
+E(riverLandscape)$weight <- c(dist1,dist2,dist3)
 
-node.size<-setNames(c(2,rep(0.8,NlocalPops),rep(0.8,NlocalPops*Nbranches),rep(0.8,NlocalPops*Nbranches*Nforks)),V(g1)$names)
+node.size<-setNames(c(2,rep(0.8,NlocalPops),rep(0.8,NlocalPops*Nbranches),rep(0.8,NlocalPops*Nbranches*Nforks)),V(riverLandscape)$names)
 
 colfunc(1)
 
-V(g1)$color[c(1,as.vector(t(sapply(LETTERS[1:NlocalPops],function(x){grep(x,V(g1)$name)}))))] <- c("grey50",as.vector(t(sapply(LETTERS[1:NlocalPops],function(x){rep(colfunc(NlocalPops)[which(x==LETTERS[1:NlocalPops])],length(grep(x,V(g1)$name)))}))))
+V(riverLandscape)$color[c(1,as.vector(t(sapply(LETTERS[1:NlocalPops],function(x){grep(x,V(riverLandscape)$name)}))))] <- c("grey50",as.vector(t(sapply(LETTERS[1:NlocalPops],function(x){rep(colfunc(NlocalPops)[which(x==LETTERS[1:NlocalPops])],length(grep(x,V(riverLandscape)$name)))}))))
 
 layout(1)
 par(mar=c(5,4,1,1))
 tiff("watershed.tiff",compression="lzw",units="in",height=8,width=8,res=800)
-plot(g1,col="dodgerblue",layout=layout.reingold.tilford(g1,circular=T),vertex.size=node.size*15)
+plot(riverLandscape,col="dodgerblue",layout=layout.reingold.tilford(riverLandscape,circular=T),vertex.size=node.size*15)
 dev.off()
 
-distance_table(g1)
-
-mean_distance(g1)
-
-distances(g1,v=V(g1),to=V(g1))
+distance_table(riverLandscape)
+mean_distance(riverLandscape)
+distances(riverLandscape,v=V(riverLandscape),to=V(riverLandscape))
 
