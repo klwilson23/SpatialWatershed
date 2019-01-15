@@ -30,8 +30,8 @@ riverLandscape <- graph(edges=as.character(c(edges1,edges2,edges3)),directed=F)
 # set distance between patches for: (1) main branches, (2) secondary branhes, (3) tertiary branches
 # add more levels if desired.
 dist1 <- rep(diameter,NlocalPops)
-dist2 <- rep(diameter/2,(NlocalPops*Nbranches))
-dist3 <- rep(diameter/3,(NlocalPops*Nbranches*Nforks))
+dist2 <- rep(diameter*1,(NlocalPops*Nbranches))
+dist3 <- rep(diameter*5,(NlocalPops*Nbranches*Nforks))
 E(riverLandscape)$weight <- 1/c(dist1,dist2,dist3)
 
 node.size<-setNames(c(2,rep(0.8,NlocalPops),rep(0.8,NlocalPops*Nbranches),rep(0.8,NlocalPops*Nbranches*Nforks)),V(riverLandscape)$names)
