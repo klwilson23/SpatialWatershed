@@ -54,7 +54,7 @@ V(complexLandscape)$color[c(which(patches=="1"),as.vector(t(sapply(patches[-whic
 #layout(1)
 #par(mar=c(5,4,1,1))
 #tiff("watershed.tiff",compression="lzw",units="in",height=8,width=8,res=800)
-#plot(complexLandscape,col="dodgerblue",layout=layout.auto(complexLandscape),vertex.size=node.size*15)
+plot(complexLandscape,col="dodgerblue",layout=layout.auto(complexLandscape),vertex.size=node.size*15)
 #dev.off()
 
 distance_table(complexLandscape)
