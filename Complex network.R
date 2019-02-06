@@ -59,5 +59,5 @@ plot(complexLandscape,col="dodgerblue",layout=layout.auto(complexLandscape),vert
 
 distance_table(complexLandscape)
 mean_distance(complexLandscape)
-distances(complexLandscape,v=V(complexLandscape),to=V(complexLandscape))
+dist_matrix <- distances(complexLandscape,v=V(complexLandscape),to=V(complexLandscape))
 

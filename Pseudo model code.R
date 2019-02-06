@@ -6,7 +6,7 @@ distance_matrix <- distances(complexLandscape,v=V(complexLandscape),to=V(complex
 
 alpha <- 20
 beta <- 5e-3
-cv <- 0.8
+cv <- 0.1
 stock <- 0:1000
 rec_mean <- alpha*stock*exp(-beta*stock)
 rec.obs <- pmax(0,rnorm(length(stock),mean=rec_mean,sd=rec_mean*cv))
@@ -26,16 +26,20 @@ Nrec <- rep(NA,Nyears)
 # initialize at year 1
 Nadults[1] <- Nstart
 Nrec[1] <- ricker(Nadults[1])
-pseudoSink <- sink <- source <- pseudoSource <- potentialRec <- rep(NA,Nyears)
+pseudoSink <- sink <- source <- potentialRec <- rep(NA,Nyears)
 for(II in 2:(Nyears+1))
 {
   Nrec[II] <- ricker(Nadults[II-1])
   Nadults[II] <- Nrec[II] - Em[II] + Im[II]
   potentialRec[II] <- Nadults[II-1]-Im[II-1] # debate occurred.
-  sink[II] <- (Nrec[II] < Nadults[II-1])
-  source[II] <- (Nrec[II] > Nadults[II-1])
-  pseudoSink[II] <- ((Nrec[II] < Nadults[II-1]) & (Nrec[II] > potentialRec[II]))
-  pseudoSource[II] <- ((Nrec[II] > Nadults[II-1]) & (Nrec[II] < potentialRec[II]))
+  
+  sourceRec[II] <- Nadults[II-1]-Im[II-1] # debate occurred.
+  
+  
+  sink[II] <- (Nrec[II] < Nadults[II-1]) & (Em[II] < Im[II])
+  source[II] <- (Nrec[II] > Nadults[II-1]) & (Em[II] > Im[II])
+  pseudoSink[II] <- ((Nrec[II] < Nadults[II-1]) & (Nrec[II] > potentialRec[II])) & (Em[II] < Im[II])
+
 }
 
 plot(Nadults[1:Nyears],Nrec[2:(Nyears+1)])
