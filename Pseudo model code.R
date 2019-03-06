@@ -3,7 +3,8 @@ source("Complex network.R")
 
 distance_matrix <- distances(complexLandscape,v=V(complexLandscape),to=V(complexLandscape))
 
-
+omega = 0.075
+m = 0.15
 alpha <- 20
 beta <- 5e-3
 cv <- 0.1
@@ -15,6 +16,10 @@ ricker <-function(Nadults){alpha*Nadults*exp(-beta*Nadults)}
 
 plot(stock,rec_mean,type="l",ylim=c(0,max(rec.obs)))
 points(stock,rec.obs,pch=21,bg="grey50")
+
+# example dispersal outcome
+dispersers_t <- dispersal(maxDispersal=omega,distDecay=m,dist_matrix,recruitment)
+dispersers_t$immigrants
 
 # example model
 Nyears <- 100
