@@ -16,11 +16,11 @@ alpha <- 20
 metaK <- 25000
 beta <- -log(alpha)/metaK
 cv <- 0.5
-alpha_heterogeneity <- TRUE
+alpha_heterogeneity <- FALSE
 beta_heterogeneity <- TRUE
 
 alpha_p <- rep(alpha,Npatches)
-k_p <- (metaK/Npatches)
+k_p <- rep((metaK/Npatches),Npatches)
 beta_p <- rep(-log(alpha)/k_p,Npatches)
 
 if(alpha_heterogeneity)
@@ -32,8 +32,9 @@ if(alpha_heterogeneity)
 
 if(beta_heterogeneity)
 {
+  k_M <- sum(k_p)
   sample_prop <- runif(Npatches,0,1)
-  k_p <- metaK*(exp(sample_prop)/sum(exp(sample_prop)))
+  k_p <- (k_M*(exp(sample_prop)/sum(exp(sample_prop))))
   beta_p <- -log(alpha_p)/k_p
 }
 
