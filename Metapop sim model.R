@@ -13,20 +13,22 @@ ricker <-function(alpha,beta,Nadults){alpha*Nadults*exp(beta*Nadults)}
 
 Npatches <- ncol(distance_matrix)
 # leading parameters
-omega <- 1e-1 # proportion of animals in patch that move
-m <- 1 # distance decay function: could set at some proportion of max distance
+omega <- 1e-5 # proportion of animals in patch that move
+m <- 10 # distance decay function: could set at some proportion of max distance
 # adult stock-juvenile recruitment traits
-alpha <- 2
+alpha <- 20
 metaK <- 25000
 beta <- -log(alpha)/metaK
-cv <- 0.5
+cv <- 1.5
 # temporal correlation
-rho.time <- 0.5
+rho.time <- 0.7
 # distance penalty to spatial correlation: higher means more independent
-rho.dist <- 0.1
+rho.dist <- 1
 
-alpha_heterogeneity <- TRUE
-cap_heterogeneity <- FALSE
+magnitude_of_decline <- 0.9
+
+alpha_heterogeneity <- FALSE
+cap_heterogeneity <- TRUE
 
 # number of years & ecological scenarios
 Nburnin <- 50
@@ -66,7 +68,7 @@ for(Iyear in 2:Nyears)
   # part iii - add disturbance
   if(Iyear==(Nburnin+1))
   {
-    deaths_p <- Disturbance(metaPop=MetaPop[Iyear-1,"Spawners"],magnitude=0.9,DisType="random", N_p=popDyn[Iyear-1,,"Spawners"],prod=alpha_p)$deaths_p
+    deaths_p <- Disturbance(metaPop=MetaPop[Iyear-1,"Spawners"],magnitude=magnitude_of_decline,DisType="random_patch", N_p=popDyn[Iyear-1,,"Spawners"],prod=k_p)$deaths_p
   }else{
     deaths_p <- rep(0,Npatches)
   }
@@ -121,6 +123,11 @@ acf(popDyn[,Npatches,"Spawners"])
 cor(popDyn[,c(1,2),"Spawners"])
 
 plot(popDyn[1:(Nyears-1),20,"Spawners"],popDyn[2:Nyears,20,"Recruits"])
+
+plot(MetaPop[1:(Nyears-1),"Spawners"],MetaPop[2:Nyears,"Recruits"],type="p")
+
+matplot(dispersing[,,"Emigrants"],type="l")
+
 
 modularity(popDyn[,,"Spawners"])
 ?modularity

@@ -1,4 +1,4 @@
-Disturbance <- function(metaPop,magnitude=0.5,DisType="uniform",N_p,prod=alpha_p)
+Disturbance <- function(metaPop,magnitude=0.5,DisType="uniform",N_p,prod)
 {
   metaPop = round(metaPop)
   totalLoss = round(metaPop*magnitude)
@@ -46,7 +46,7 @@ Disturbance <- function(metaPop,magnitude=0.5,DisType="uniform",N_p,prod=alpha_p
   
   if(DisType=="random_patch")
   {
-    # randomized: half of the patches go extinct
+    # randomized: the target number of patches go extinct
     d_patches <- sample(1:Npatches,targetPatches)
     deaths_p <- rep(0,Npatches)
     deaths_p[d_patches] <- N_p[d_patches]
