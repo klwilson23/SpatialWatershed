@@ -42,4 +42,25 @@ function()
   }))
   
   matplot(stock,rec_mean)
+  
+  SR_df <- data.frame("stock"=metaStock,"recruits"=metaRec)
+  fit_nls <- nls(recruits~alpha*stock*exp(-(log(alpha)/K)*stock),data=SR_df,start=list("alpha"=alpha,"K"=metaK),algorithm="port")
+  
+  ricker_SR <- function(l_alpha,l_K,l_sd){
+    sd <- exp(l_sd)
+    K <- exp(l_K)
+    alpha <- exp(l_alpha)
+    rec_mean <- alpha*SR_df$stock*exp(-(log(alpha)/K)*SR_df$stock)
+    nll <- -(sum(dnorm(SR_df$recruits,mean=rec_mean,sd=sd,log=T),na.rm=T))
+    return("nll"=nll)
+  }
+  theta <- list("l_alpha"=log(20),"l_K"=log(25000),"l_sd"=log(1000))
+  mle_fit <- mle(ricker_SR,start=theta,method="SANN",nobs=nrow(SR_df))
+  exp(mle_fit@coef)
+  meta_alpha <- exp(coef(metaRicker)[1])
+  meta_beta <- coef(metaRicker)[2]
+  
+  print(c(meta_alpha,meta_beta,-log(meta_alpha)/meta_beta))
+  summary(fit_nls)
+  
 }

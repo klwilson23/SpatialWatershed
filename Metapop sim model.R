@@ -17,6 +17,7 @@ alpha <- 1.8
 metaK <- 25000
 beta <- -log(alpha)/metaK
 cv <- 0.5
+
 alpha_heterogeneity <- TRUE
 cap_heterogeneity <- FALSE
 
@@ -29,16 +30,12 @@ alpha_p <- rep(alpha,Npatches)
 k_p <- rep((metaK/Npatches),Npatches)
 beta_p <- -log(alpha_p)/k_p
 
+
 patches <- patch_variance(alpha_heterogeneity,cap_heterogeneity,Npatches,alpha_p,k_p)
 
 alpha_p <- patches$alpha_p
 beta_p <- patches$beta_p
 k_p <- patches$k_p
-
-stock <- k_p
-rec_mean <- round(sapply(1:Npatches,function(x){alpha_p[x]*stock[x]*exp(beta_p[x]*stock[x])})) # starting values for the patches
-
-metaPopSize <- sum(rec_mean)
 
 popDyn <- array(NA,dim=c(Nyears,Npatches,2),dimnames=list("Year"=1:Nyears,"Patch No."=1:Npatches,"Stage"=c("Recruits","Spawners")))
 
