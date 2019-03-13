@@ -1,4 +1,7 @@
 
+library(mvtnorm)
+library(marima)
+
 source("Linear network.R")
 source("Dispersal function.R")
 source("patch_variance.R")
@@ -10,13 +13,17 @@ ricker <-function(alpha,beta,Nadults){alpha*Nadults*exp(beta*Nadults)}
 
 Npatches <- ncol(distance_matrix)
 # leading parameters
-omega <- 0.001 # proportion of animals in patch that move
-m <- 100 # distance decay function: could set at some proportion of max distance
+omega <- 1e-1 # proportion of animals in patch that move
+m <- 1 # distance decay function: could set at some proportion of max distance
 # adult stock-juvenile recruitment traits
-alpha <- 1.8
+alpha <- 2
 metaK <- 25000
 beta <- -log(alpha)/metaK
 cv <- 0.5
+# temporal correlation
+rho.time <- 0.5
+# distance penalty to spatial correlation: higher means more independent
+rho.dist <- 0.1
 
 alpha_heterogeneity <- TRUE
 cap_heterogeneity <- FALSE
@@ -39,15 +46,19 @@ k_p <- patches$k_p
 
 popDyn <- array(NA,dim=c(Nyears,Npatches,2),dimnames=list("Year"=1:Nyears,"Patch No."=1:Npatches,"Stage"=c("Recruits","Spawners")))
 
-sink <- source <- psuedoSink <- array(NA,dim=c(Nyears,Npatches),dimnames=list("Year"=1:Nyears,"Patch No."=1:Npatches))
+sink <- source <- psuedoSink <- var.rec <- array(NA,dim=c(Nyears,Npatches),dimnames=list("Year"=1:Nyears,"Patch No."=1:Npatches))
 
 dispersing <- array(NA,dim=c(Nyears,Npatches,3),dimnames=list("Year"=1:Nyears,"Patch No."=1:Npatches,"Disersing"=c("Residents","Immigrants","Emigrants")))
 MetaPop <- matrix(NA,nrow=Nyears,ncol=2,dimnames=list("Year"=1:Nyears,"Stage"=c("Recruits","Spawners")))
 
+rec.dev <- rnorm(Npatches,mean=0,sd=k_p*cv)
+
 popDyn[1,,"Spawners"] <- k_p
-popDyn[1,,"Recruits"] <- k_p
+popDyn[1,,"Recruits"] <- k_p + rec.dev
 
 MetaPop[1,"Spawners"] <- sum(popDyn[1,,"Spawners"])
+
+var.rec[1,] <- rec.dev
 
 for(Iyear in 2:Nyears)
 {
@@ -64,8 +75,16 @@ for(Iyear in 2:Nyears)
   
   # part iia - population dynamics
   patch_rec <- ricker(alpha=alpha_p,beta=beta_p,popDyn[Iyear-1,,"Spawners"])
+  #patch_rec_t_1 <- ricker(alpha=alpha_p,beta=beta_p,popDyn[Iyear-2,,"Spawners"])
+  
   # part iib - stochastic recruitment
-  rec.obs <- pmax(0,rnorm(Npatches,mean=patch_rec,sd=patch_rec*cv))
+  
+  var.rec.temp <- (patch_rec*cv)
+  var.time <- rho.time*var.rec[Iyear-1,]# + rnorm(Npatches,mean=0,sd=1)
+  rec.dev <- rmvnorm(1,var.time,sigma=(cv*sum(patch_rec))*(1-rho.time)*(exp(-rho.dist*distance_matrix)))
+  var.rec[Iyear,] <- rec.dev
+  
+  rec.obs <- pmax(0,patch_rec+rec.dev)
   popDyn[Iyear,,"Recruits"] <- round(rec.obs)
   
   # part ii - dispersal between patches
@@ -98,6 +117,10 @@ plot(MetaPop[,"Spawners"]/metaK,type="l")
 matplot(popDyn[,,"Spawners"]/k_p,type="l")
 lines(MetaPop[,"Spawners"]/metaK,lwd=3,col="black")
 #return(list("patchDyn"=popDyn,"metaDyn"=MetaPop,"disDyn"=dispersing))
+acf(popDyn[,Npatches,"Spawners"])
+cor(popDyn[,c(1,2),"Spawners"])
+
+plot(popDyn[1:(Nyears-1),20,"Spawners"],popDyn[2:Nyears,20,"Recruits"])
 
 modularity(popDyn[,,"Spawners"])
 ?modularity

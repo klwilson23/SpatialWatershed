@@ -9,7 +9,7 @@ patch_variance <- function(alpha_heterogeneity=F,cap_heterogeneity=F,Npatches=25
     beta_p <- -log(alpha_p)/k_p
   }
   
-  if(beta_heterogeneity)
+  if(cap_heterogeneity)
   {
     sample_prop <- runif(Npatches,0,1)
     k_p <- metaK*(exp(sample_prop)/sum(exp(sample_prop)))

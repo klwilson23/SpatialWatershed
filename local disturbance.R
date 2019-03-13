@@ -3,8 +3,11 @@ Disturbance <- function(metaPop,magnitude=0.5,DisType="uniform",N_p,prod=alpha_p
   metaPop = round(metaPop)
   totalLoss = round(metaPop*magnitude)
   N_p = round(N_p)
-  targetPatches <- min(which(cumsum(N_p)>=totalLoss))
+  targetPatchMax <- min(which(cumsum(sort(N_p,decreasing=FALSE))>=totalLoss)) # calculate the minimum number of patches necessary to get target total losses
+  targetPatchMin <- min(which(cumsum(sort(N_p,decreasing=TRUE))>=totalLoss)) # calculate the maximum number of patches necessary to get target total losses
+  targetPatch <- round(mean(c(targetPatchMin,targetPatchMax)))
   animals_all <- data.frame("Animal"=1:sum(N_p),"Patch"=rep(1:Npatches,times=N_p))
+  
   if(DisType=="uniform")
   {
     # number of animals removed, random by patches
@@ -20,6 +23,7 @@ Disturbance <- function(metaPop,magnitude=0.5,DisType="uniform",N_p,prod=alpha_p
     deaths_p <- rep(0,Npatches)
     deaths_p[surv_p$Patch] <- (N_p[surv_p$Patch]-surv_p$Animal)
   }
+  
   if(DisType=="random")
   {
     # same number of animals removed, patches are randomly chosen
