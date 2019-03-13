@@ -1,7 +1,5 @@
 
-source("Complex network.R")
-
-recruitment <- rpois(25,5000)
+#recruitment <- rpois(25,5000)
 dispersal <- function(maxDispersal,distDecay,dist_matrix,recruitment) # recruitment is named vector
 {
   maxDispersal <- maxDispersal # dispersal rate
