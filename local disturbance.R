@@ -19,10 +19,10 @@ Disturbance <- function(metaPop,magnitude=0.5,DisType="uniform",N_p,prod)
       target <- nrow(animals_all)
     }
     harvest <- sample(1:nrow(animals_all),totalLoss)
-    survivors <- animals_all[-harvest,]
-    surv_p <- aggregate(Animal~Patch,data=survivors,FUN=length)
+    total_p <- animals_all[harvest,]
+    mort_p <- aggregate(Animal~Patch,data=total_p,FUN=length)
     deaths_p <- rep(0,Npatches)
-    deaths_p[surv_p$Patch] <- (N_p[surv_p$Patch]-surv_p$Animal)
+    deaths_p[mort_p$Patch] <- mort_p$Animal
   }
   
   if(DisType=="random")
@@ -39,10 +39,10 @@ Disturbance <- function(metaPop,magnitude=0.5,DisType="uniform",N_p,prod)
       target <- nrow(animals)
     }
     harvest <- sample(1:nrow(animals),totalLoss)
-    survivors <- animals[-harvest,]
-    surv_p <- aggregate(Animal~Patch,data=survivors,FUN=length)
+    total_p <- animals[harvest,]
+    mort_p <- aggregate(Animal~Patch,data=total_p,FUN=length)
     deaths_p <- rep(0,Npatches)
-    deaths_p[surv_p$Patch] <- (N_p[surv_p$Patch]-surv_p$Animal)
+    deaths_p[mort_p$Patch] <- mort_p$Animal
   }
   
   if(DisType=="random_patch")
@@ -67,10 +67,10 @@ Disturbance <- function(metaPop,magnitude=0.5,DisType="uniform",N_p,prod)
       target <- nrow(animals)
     }
     harvest <- sample(1:nrow(animals),totalLoss)
-    survivors <- animals[-harvest,]
-    surv_p <- aggregate(Animal~Patch,data=survivors,FUN=length)
+    total_p <- animals[harvest,]
+    mort_p <- aggregate(Animal~Patch,data=total_p,FUN=length)
     deaths_p <- rep(0,Npatches)
-    deaths_p[surv_p$Patch] <- (N_p[surv_p$Patch]-surv_p$Animal)
+    deaths_p[mort_p$Patch] <- mort_p$Animal
   }
   # return the deaths by patch vector
   return(list("deaths_p"=deaths_p))

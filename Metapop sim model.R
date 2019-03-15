@@ -18,24 +18,24 @@ ricker <-function(alpha,beta,Nadults){alpha*Nadults*exp(beta*Nadults)}
 Nburnin <- 50
 Nyears <- Nburnin+100
 Npatches <- ncol(distance_matrix)
-omega <- 0.5 # proportion of animals in patch that move
+omega <- 0.01 # proportion of animals in patch that move
 m <- 1 # distance decay function: could set at some proportion of max distance
 # adult stock-juvenile recruitment traits
-alpha <- 2
-metaK <- 100
+alpha <- 8
+metaK <- 1000
 beta <- -log(alpha)/metaK
-cv <- 0.5
+cv <- 0.8
 # temporal correlation
-rho.time <- 0.01
+rho.time <- 0.7
 # distance penalty to spatial correlation: higher means more independent
-rho.dist <- 100
+rho.dist <- 0.5
 # how big is the disturbance after Nburnin years?
 magnitude_of_decline <- 0.9
 # what is the lag time between recruits and spawners
 lagTime <- 1
 
-alpha_heterogeneity <- FALSE
-cap_heterogeneity <- FALSE
+alpha_heterogeneity <- TRUE
+cap_heterogeneity <- TRUE
 DistScenario <- "uniform"
 
 # get the metapopulation & patch level Ricker parameters
@@ -65,14 +65,14 @@ mean(example.rec)
 
 rec.dev <- rnorm(Npatches,mean=0,sd=sqrt(log(cv^2+1)))
 
-popDyn[1,,"Spawners"] <- k_p
-popDyn[1,,"Recruits"] <- k_p*exp(rec.dev-(log(cv^2+1))/2)
+popDyn[1:lagTime,,"Spawners"] <- k_p
+popDyn[1:lagTime,,"Recruits"] <- k_p*exp(rec.dev-(log(cv^2+1))/2)
 
-MetaPop[1,"Spawners"] <- sum(popDyn[1,,"Spawners"])
+MetaPop[1:lagTime,"Spawners"] <- sum(popDyn[1,,"Spawners"])
 
-var.rec[1,] <- rec.dev
+var.rec[1:lagTime,] <- rec.dev
 
-for(Iyear in 2:Nyears)
+for(Iyear in (lagTime+1):Nyears)
 {
   
   # part iii - add disturbance
@@ -86,11 +86,11 @@ for(Iyear in 2:Nyears)
   }
   
   # part iia - population dynamics
-  patch_rec <- ricker(alpha=alpha_p,beta=beta_p,popDyn[Iyear-1,,"Spawners"])
+  patch_rec <- ricker(alpha=alpha_p,beta=beta_p,popDyn[Iyear-lagTime,,"Spawners"])
 
   # part iib - stochastic recruitment
   
-  rec.dev <- dvSpaceTime(mnSig=sqrt(log(cv^2+1)),lastDV=var.rec[Iyear-1,],rhoTime=rho.time,rhoSpa=rho.dist,distMatrix = distance_matrix)
+  rec.dev <- dvSpaceTime(mnSig=sqrt(log(cv^2+1)),lastDV=var.rec[Iyear-lagTime,],rhoTime=rho.time,rhoSpa=rho.dist,distMatrix = distance_matrix)
   var.rec[Iyear,] <- rec.dev
   
   rec.obs <- pmax(0,patch_rec*exp(rec.dev-(log(cv^2+1))/2))
@@ -109,11 +109,13 @@ for(Iyear in 2:Nyears)
   
   popDyn[Iyear,,"Spawners"] <- popDyn[Iyear,,"Recruits"] + dispersing[Iyear,,"Immigrants"] - dispersing[Iyear,,"Emigrants"]
   
-  sink[Iyear,] <- (popDyn[Iyear,,"Recruits"] < popDyn[Iyear-1,,"Spawners"]) & (dispersing[Iyear,,"Emigrants"] < dispersing[Iyear,,"Immigrants"])
+  # not sure these calculations should have recruitment lag times or not
   
-  source[Iyear,] <- (popDyn[Iyear,,"Recruits"] > popDyn[Iyear-1,,"Spawners"]) & (dispersing[Iyear,,"Emigrants"] > dispersing[Iyear,,"Immigrants"])
+  sink[Iyear,] <- (popDyn[Iyear,,"Recruits"] < popDyn[Iyear-lagTime,,"Spawners"]) & (dispersing[Iyear,,"Emigrants"] < dispersing[Iyear,,"Immigrants"])
   
-  psuedoSink[Iyear,] <- ((popDyn[Iyear,,"Recruits"] > popDyn[Iyear-1,,"Spawners"]) & (popDyn[Iyear,,"Recruits"] > (popDyn[Iyear-1,,"Spawners"]-dispersing[Iyear-1,,"Immigrants"]))) & (dispersing[Iyear,,"Emigrants"] < dispersing[Iyear,,"Immigrants"])
+  source[Iyear,] <- (popDyn[Iyear,,"Recruits"] > popDyn[Iyear-lagTime,,"Spawners"]) & (dispersing[Iyear,,"Emigrants"] > dispersing[Iyear,,"Immigrants"])
+  
+  psuedoSink[Iyear,] <- ((popDyn[Iyear,,"Recruits"] > popDyn[Iyear-lagTime,,"Spawners"]) & (popDyn[Iyear,,"Recruits"] > (popDyn[Iyear-lagTime,,"Spawners"]-dispersing[Iyear-lagTime,,"Immigrants"]))) & (dispersing[Iyear,,"Emigrants"] < dispersing[Iyear,,"Immigrants"])
   
 
   # part iv: calculate metapopulation dynamics
@@ -134,5 +136,5 @@ lines(MetaPop[,"Spawners"]/metaK,lwd=3,col="black")
 #matplot(var.rec[,1:5],type="l")
 #plot(var.rec[,1],type="l")
 #acf(var.rec[,4])
-#MetaPop[50,"Spawners"]/MetaPop[49,"Spawners"]
+MetaPop[50,"Spawners"]/MetaPop[49,"Spawners"]
 
