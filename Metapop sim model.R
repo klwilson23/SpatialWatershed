@@ -30,13 +30,13 @@ rho.time <- 0.7
 # distance penalty to spatial correlation: higher means more independent
 rho.dist <- 0.5
 # how big is the disturbance after Nburnin years?
-magnitude_of_decline <- 0.9
+magnitude_of_decline <- 0.5
 # what is the lag time between recruits and spawners
 lagTime <- 1
 
 alpha_heterogeneity <- TRUE
 cap_heterogeneity <- TRUE
-DistScenario <- "uniform"
+DistScenario <- "random_patches"
 
 # get the metapopulation & patch level Ricker parameters
 alpha_p <- rep(alpha,Npatches)
@@ -137,4 +137,4 @@ lines(MetaPop[,"Spawners"]/metaK,lwd=3,col="black")
 #plot(var.rec[,1],type="l")
 #acf(var.rec[,4])
 MetaPop[50,"Spawners"]/MetaPop[49,"Spawners"]
-
+round(MetaPop[49,"Spawners"]*(1-magnitude_of_decline))
