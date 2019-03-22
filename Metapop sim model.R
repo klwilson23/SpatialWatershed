@@ -18,25 +18,25 @@ ricker <-function(alpha,beta,Nadults){alpha*Nadults*exp(beta*Nadults)}
 Nburnin <- 50
 Nyears <- Nburnin+100
 Npatches <- ncol(distance_matrix)
-omega <- 0.01 # proportion of animals in patch that move
+omega <- 1e-6 # proportion of animals in patch that move
 m <- 1 # distance decay function: could set at some proportion of max distance
 # adult stock-juvenile recruitment traits
-alpha <- 8
+alpha <- 3
 metaK <- 1000
 beta <- -log(alpha)/metaK
-cv <- 0.8
+cv <- 0.1
 # temporal correlation
-rho.time <- 0.7
+rho.time <- 0.1
 # distance penalty to spatial correlation: higher means more independent
-rho.dist <- 0.5
+rho.dist <- 100
 # how big is the disturbance after Nburnin years?
-magnitude_of_decline <- 0.5
+magnitude_of_decline <- 0.9
 # what is the lag time between recruits and spawners
 lagTime <- 1
 
 alpha_heterogeneity <- TRUE
 cap_heterogeneity <- TRUE
-DistScenario <- "random_patches"
+DistScenario <- "random"
 
 # get the metapopulation & patch level Ricker parameters
 alpha_p <- rep(alpha,Npatches)
@@ -50,25 +50,26 @@ beta_p <- patches$beta_p
 k_p <- patches$k_p
 
 # set some empty arrays
-
+# patch-specific dynamics to track
 popDyn <- array(NA,dim=c(Nyears,Npatches,2),dimnames=list("Year"=1:Nyears,"Patch No."=1:Npatches,"Stage"=c("Recruits","Spawners")))
 
+# ecological metrics to track over time:
 sink <- source <- psuedoSink <- var.rec <- array(NA,dim=c(Nyears,Npatches),dimnames=list("Year"=1:Nyears,"Patch No."=1:Npatches))
 
+# dispersal information to track
 dispersing <- array(NA,dim=c(Nyears,Npatches,3),dimnames=list("Year"=1:Nyears,"Patch No."=1:Npatches,"Disersing"=c("Residents","Immigrants","Emigrants")))
+
+# metapopulation dynamics to track
 MetaPop <- matrix(NA,nrow=Nyears,ncol=2,dimnames=list("Year"=1:Nyears,"Stage"=c("Recruits","Spawners")))
 
 # initialize populations
-example.rec <- 1000*exp(rnorm(1e6,mean=0,sd=sqrt(log(cv^2+1)))-(log(cv^2+1))/2)
-median(example.rec)
-mean(example.rec)
-
 rec.dev <- rnorm(Npatches,mean=0,sd=sqrt(log(cv^2+1)))
 
 popDyn[1:lagTime,,"Spawners"] <- k_p
 popDyn[1:lagTime,,"Recruits"] <- k_p*exp(rec.dev-(log(cv^2+1))/2)
 
-MetaPop[1:lagTime,"Spawners"] <- sum(popDyn[1,,"Spawners"])
+MetaPop[1:lagTime,"Recruits"] <- sum(popDyn[1:lagTime,,"Recruits"])
+MetaPop[1:lagTime,"Spawners"] <- sum(popDyn[1:lagTime,,"Spawners"])
 
 var.rec[1:lagTime,] <- rec.dev
 
@@ -110,6 +111,7 @@ for(Iyear in (lagTime+1):Nyears)
   popDyn[Iyear,,"Spawners"] <- popDyn[Iyear,,"Recruits"] + dispersing[Iyear,,"Immigrants"] - dispersing[Iyear,,"Emigrants"]
   
   # not sure these calculations should have recruitment lag times or not
+  # ecological metrics time
   
   sink[Iyear,] <- (popDyn[Iyear,,"Recruits"] < popDyn[Iyear-lagTime,,"Spawners"]) & (dispersing[Iyear,,"Emigrants"] < dispersing[Iyear,,"Immigrants"])
   
@@ -124,11 +126,14 @@ for(Iyear in (lagTime+1):Nyears)
   
 }
 
+layout(matrix(1:2,ncol=1,nrow=2,byrow=T))
+par(mar=c(5,4,1,1))
 matplot(popDyn[,,"Spawners"]/k_p,type="l",xlab="Time",ylab="Relative abundance (N/K)")
 lines(MetaPop[,"Spawners"]/metaK,lwd=3,col="black")
 #return(list("patchDyn"=popDyn,"metaDyn"=MetaPop,"disDyn"=dispersing))
 #plot(popDyn[1:(Nyears-1),20,"Spawners"],popDyn[2:Nyears,20,"Recruits"])
-#plot(MetaPop[1:(Nyears-1),"Spawners"],MetaPop[2:Nyears,"Recruits"],type="p",xlab="Metapopulation spawners",ylab="Metapopulation recruits")
+plot(MetaPop[1:(Nyears-1),"Spawners"],MetaPop[2:Nyears,"Recruits"],type="p",xlab="Metapopulation spawners",ylab="Metapopulation recruits",pch=21,bg=ifelse(1:(Nyears-1)>Nburnin,"orange","dodgerblue"))
+legend("topright",c("pre-disturbance","post-disturbance"),pch=21,pt.bg=c("dodgerblue","orange"),bty="n")
 
 #plot(log(MetaPop[2:Nyears,"Recruits"]/MetaPop[1:(Nyears-1),"Spawners"]))
 
@@ -138,3 +143,8 @@ lines(MetaPop[,"Spawners"]/metaK,lwd=3,col="black")
 #acf(var.rec[,4])
 MetaPop[50,"Spawners"]/MetaPop[49,"Spawners"]
 round(MetaPop[49,"Spawners"]*(1-magnitude_of_decline))
+
+# policy metrics
+# years to recovery (averaged over 10 years)
+# estimated compensation to true compensation 
+# patch occupancy
