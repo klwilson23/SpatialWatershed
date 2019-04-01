@@ -146,7 +146,7 @@ for(Iyear in (lagTime+1):Nyears)
     }
     actualComp <- MetaPop[Iyear,"Recruits"] # realized production
     actualK <- sum(k_p)
-    compensationBias[Iyear] <- 100*(as.numeric(compHat-actualComp)/actualComp)
+    compensationBias[Iyear] <- 100*(as.numeric(alphaHat-alpha)/alpha)
     lostCapacity[Iyear] <- 100*(as.numeric(metaK_hat-actualK)/actualK)
   }
 }

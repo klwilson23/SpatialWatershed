@@ -86,7 +86,7 @@ metaPop <- function(Npatches=16,distance_matrix,Nburnin=50,NyrsPost=100,omega=0.
   recovered[(Nburnin+1):(Nyears-4)] <- running.mean(MetaPop[(Nburnin+1):Nyears,"Spawners"],5)>=mean(MetaPop[1:Nburnin,"Spawners"])
   recovery <- ifelse(sum(recovered)==0,NA,which.min(recovered))
   
-  extinction <- 
+  extinction <- ifelse(any(MetaPop[,"Spawners"]==0),which.min(MetaPop[,"Spawners"]==0),NA)
   
-  return(list("MetaPop"=MetaPop,"popDyn"=popDyn,"sink"=sink,"source"=source,"pseudoSink"=pseudoSink,"dispersing"=dispersing,"compensation"=compensationBias,"lostCapacity"=lostCapacity,"recovery"=recovery))
+  return(list("MetaPop"=MetaPop,"popDyn"=popDyn,"sink"=sink,"source"=source,"pseudoSink"=pseudoSink,"dispersing"=dispersing,"compensation"=compensationBias,"lostCapacity"=lostCapacity,"recovery"=recovery,"extinction"=extinction))
 }
