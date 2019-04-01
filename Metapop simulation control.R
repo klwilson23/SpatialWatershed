@@ -1,6 +1,7 @@
 
 library(mvtnorm)
-library(marima)
+#library(marima)
+require(mvtnorm)
 
 source("Linear network.R")
 source("Dispersal function.R")
@@ -8,6 +9,7 @@ source("patch_variance.R")
 source("local disturbance.R")
 source("some functions.R")
 source("Metapop function.R")
+source("popDynFn.R")
 
 Nboots <- 100
 Nlevels <- 10
@@ -33,7 +35,7 @@ alpha_levels <- c("same","variable")
 beta_levels <- c("same","variable")
 spatial_levels <- exp(seq(log(1e-3),log(10),length.out=Nlevels))
 temporal_levels <- seq(0,1,length.out=Nlevels)
-stochastic_levels <- c(0.01,0.3,0.5,1.0)
+stochastic_levels <- c(0.01,0.3,0.5,1.0) # coefficient of variation on lognormal recruitment deviates
 
 recovery <- array(NA,dim=c(length(network_levels),
                            length(disturbance_levels),
@@ -52,7 +54,9 @@ recovery <- array(NA,dim=c(length(network_levels),
                              "temporal"=temporal_levels,
                              "stochastic"=stochastic_levels))
 
-length(recovery)
+nScenarios <- length(recovery) # how many scenarios are we simulating
+
+counter <- 0
 
 for(iNet in 1:length(network_levels))
   {
