@@ -38,3 +38,15 @@ dvSpaceTime <- function(mnSig,lastDV,rhoTime,rhoSpace,distMatrix)
   dvST <- ar1 + rmvnorm(1,mean=rep(0,ncol(distMatrix)),sigma=(mnSig*(1-rhoTime^2)*(exp(-rhoSpace*distMatrix))))
   return(dvST)
 }
+
+SRfn <- function(theta){
+  a.hat <- theta[1]
+  b.hat <- exp(theta[2])
+  sd.hat <- exp(theta[3])
+  rec.mean <- (a.hat*spawnRec$spawners)/(1+((a.hat-1)/b.hat)*spawnRec$spawners)
+  nll <- -1*sum(dlnorm(spawnRec$recruits,meanlog=log(rec.mean),sdlog=sd.hat,log=TRUE)*spawnRec$weights)
+  penalty1 <- -dnorm(a.hat,alpha,3*alpha,log=TRUE)
+  penalty2 <- -dnorm(b.hat,metaK,3*metaK,log=TRUE)
+  jnll <- nll +penalty1+penalty2
+  return(nll)
+}

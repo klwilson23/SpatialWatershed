@@ -1,12 +1,12 @@
 
-metaPop <- function(Npatches=16,distance_matrix,Nburnin=50,NyrsPost=100,omega=0.02,m=1,alpha=3,metaK=1000,cv=0.01,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=0,rho.dist=1e3,compensationLag=25)
+metaPop <- function(Npatches=16,distance_matrix,Nburnin=50,NyrsPost=100,omega=0.02,m=1,alpha=3,metaK=1000,alpha_p=rep(3,Npatches),beta_p=rep(1000,Npatches),k_p=rep(1000,Npatches),cv=0.01,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=0,rho.dist=1e3,compensationLag=25)
 {
   Nyears <- Nburnin+NyrsPost
   # part i - set some empty arrays
   # patch-specific dynamics to track
   popDyn <- array(NA,dim=c(Nyears,Npatches,2),dimnames=list("Year"=1:Nyears,"Patch No."=1:Npatches,"Stage"=c("Recruits","Spawners")))
   # ecological metrics to track over time:
-  sink <- source <- psuedoSink <- var.rec <- array(NA,dim=c(Nyears,Npatches),dimnames=list("Year"=1:Nyears,"Patch No."=1:Npatches))
+  sink <- source <- pseudoSink <- var.rec <- array(NA,dim=c(Nyears,Npatches),dimnames=list("Year"=1:Nyears,"Patch No."=1:Npatches))
   # dispersal information to track
   dispersing <- array(NA,dim=c(Nyears,Npatches,3),dimnames=list("Year"=1:Nyears,"Patch No."=1:Npatches,"Disersing"=c("Residents","Immigrants","Emigrants")))
   # metapopulation dynamics to track
@@ -32,7 +32,7 @@ metaPop <- function(Npatches=16,distance_matrix,Nburnin=50,NyrsPost=100,omega=0.
     }
     
     # part iva - population dynamics
-    patch_rec <- popDynFn("alpha"=alpha_p,"beta"=beta_p,"Nadults"=popDyn[Iyear-lagTime,,"Spawners"],"model"=prodType)
+    patch_rec <- popDynamics(alpha=alpha_p,beta=beta_p,Nadults=popDyn[Iyear-lagTime,,"Spawners"],model=model)$recruits
     
     # part ivb - stochastic recruitment
     # function dvSpaceTime adds spatial & temporal correlation
@@ -55,7 +55,7 @@ metaPop <- function(Npatches=16,distance_matrix,Nburnin=50,NyrsPost=100,omega=0.
     # part vi - calculate metapopulation dynamics & ecological metrics
     sink[Iyear,] <- (popDyn[Iyear,,"Recruits"] < popDyn[Iyear-lagTime,,"Spawners"]) & (dispersing[Iyear,,"Emigrants"] < dispersing[Iyear,,"Immigrants"])
     source[Iyear,] <- (popDyn[Iyear,,"Recruits"] > popDyn[Iyear-lagTime,,"Spawners"]) & (dispersing[Iyear,,"Emigrants"] > dispersing[Iyear,,"Immigrants"])
-    psuedoSink[Iyear,] <- ((popDyn[Iyear,,"Recruits"] > popDyn[Iyear-lagTime,,"Spawners"]) & (popDyn[Iyear,,"Recruits"] > (popDyn[Iyear-lagTime,,"Spawners"]-dispersing[Iyear-lagTime,,"Immigrants"]))) & (dispersing[Iyear,,"Emigrants"] < dispersing[Iyear,,"Immigrants"])
+    pseudoSink[Iyear,] <- ((popDyn[Iyear,,"Recruits"] > popDyn[Iyear-lagTime,,"Spawners"]) & (popDyn[Iyear,,"Recruits"] > (popDyn[Iyear-lagTime,,"Spawners"]-dispersing[Iyear-lagTime,,"Immigrants"]))) & (dispersing[Iyear,,"Emigrants"] < dispersing[Iyear,,"Immigrants"])
     
     MetaPop[Iyear,"Recruits"] <- sum(popDyn[Iyear,,"Recruits"])
     MetaPop[Iyear,"Spawners"] <- sum(popDyn[Iyear,,"Spawners"])
@@ -63,30 +63,35 @@ metaPop <- function(Npatches=16,distance_matrix,Nburnin=50,NyrsPost=100,omega=0.
     # part vii - estimate compensation
     if(Iyear>(compensationLag+1) & (MetaPop[Iyear,"Recruits"] > 0))
     {
-      spawnRec <- data.frame("recruits"=MetaPop[((Iyear-compensationLag)+1):Iyear,"Recruits"],"spawners"=MetaPop[(Iyear-compensationLag):(Iyear-1),"Spawners"],weights=sqrt(((Iyear-compensationLag)+1):Iyear)/max(sqrt(((Iyear-compensationLag)+1):Iyear)))
-      
+      spawnRec <- data.frame("recruits"=MetaPop[((Iyear-compensationLag)+1):Iyear,"Recruits"],"spawners"=MetaPop[(Iyear-compensationLag):(Iyear-1),"Spawners"],weights=sqrt(1:compensationLag)/max(sqrt(1:compensationLag)))
       if(model=="Beverton-Holt"){
-        SRfit <- nls(recruits~(a.hat*spawners)/(1+((a.hat-1)/b.hat)*spawners),data=spawnRec,weights=spawnRec$weights,start=list("a.hat"=3,"b.hat"=1000),lower=c(0,0),upper=c(30,Inf),algorithm="port")
-        alphaHat <- coef(SRfit)["a.hat"]
-        metaK_hat <- coef(SRfit)["b.hat"]
+        SRfitTry <- lm(log(recruits/spawners)~spawners,data=spawnRec,weights=spawnRec$weights)
+        alphaHat <- exp(coef(SRfitTry)["(Intercept)"])
+        metaK_hat <- -log(alphaHat)/coef(SRfitTry)[2]
+        theta <- as.vector(c(alphaHat,log(metaK_hat),log(summary(SRfitTry)$sigma)))
+        SRfit <- optim(theta,SRfn,method="L-BFGS-B",lower=c(1.01,0,0),upper=c(50,10*metaK,Inf))
+        alphaHat <- SRfit$par[1]
+        metaK_hat <- exp(SRfit$par[2])
         compHat <- (alphaHat*MetaPop[Iyear-1,"Spawners"])/(1+((alphaHat-1)/metaK_hat)*MetaPop[Iyear-1,"Spawners"])
       }else{
         SRfit <- lm(log(recruits/spawners)~spawners,data=spawnRec,weights=spawnRec$weights)
         alphaHat <- exp(coef(SRfit)["(Intercept)"])
-        metaK_hat <- -log(compHat)/coef(SRfit)[2]
+        metaK_hat <- -log(alphaHat)/coef(SRfit)[2]
         compHat <- alphaHat*MetaPop[Iyear-1,"Spawners"]*exp(-log(alphaHat)/metaK_hat*MetaPop[Iyear-1,"Spawners"])
       }
       actualComp <- MetaPop[Iyear,"Recruits"] # realized production
       actualK <- sum(k_p)
       compensationBias[Iyear] <- 100*(as.numeric(compHat-actualComp)/actualComp)
-      lostCapacity[Iyear] <- 100*(as.numeric(metaK_hat-actualK)/actualK)
+      lostCapacity[Iyear] <- metaK_hat/actualK
     }
   }
   recovered <- rep(FALSE,Nyears)
   recovered[(Nburnin+1):(Nyears-4)] <- running.mean(MetaPop[(Nburnin+1):Nyears,"Spawners"],5)>=mean(MetaPop[1:Nburnin,"Spawners"])
-  recovery <- ifelse(sum(recovered)==0,NA,which.min(recovered))
+  recovery <- ifelse(any(recovered),min(which(recovered))-Nburnin,NyrsPost)
+  extinction <- ifelse(any(MetaPop[,"Spawners"]==0),min(which(MetaPop[,"Spawners"]==0))-Nburnin,NyrsPost)
+  patchOccupancy <- sum(popDyn[Nyears,,"Recruits"]>(0.05*k_p))/Npatches
+  postDistBias <- sum(compensationBias[!is.na(compensationBias)])
+  lostCompensation <- alphaHat/alpha
   
-  extinction <- ifelse(any(MetaPop[,"Spawners"]==0),which.min(MetaPop[,"Spawners"]==0),NA)
-  
-  return(list("MetaPop"=MetaPop,"popDyn"=popDyn,"sink"=sink,"source"=source,"pseudoSink"=pseudoSink,"dispersing"=dispersing,"compensation"=compensationBias,"lostCapacity"=lostCapacity,"recovery"=recovery,"extinction"=extinction))
+  return(list("MetaPop"=MetaPop,"popDyn"=popDyn,"sink"=sink,"source"=source,"pseudoSink"=pseudoSink,"dispersing"=dispersing,"bias"=postDistBias,"lostCompensation"=lostCompensation,"lostCapacity"=lostCapacity[Nyears],"recovery"=recovery,"extinction"=extinction,"patchOccupancy"=patchOccupancy))
 }

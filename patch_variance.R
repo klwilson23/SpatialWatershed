@@ -1,20 +1,47 @@
-patch_variance <- function(alpha_heterogeneity=F,cap_heterogeneity=F,Npatches=25,alpha_p,k_p)
+patch_variance <- function(model="Beverton-Holt",alpha_heterogeneity=F,cap_heterogeneity=F,Npatches=16,alpha,alpha_p,metaK,k_p)
 {
-  # replace internal function with Colin's RMD file dynamics
-  if(alpha_heterogeneity)
+  if(alpha_heterogeneity & model=="Ricker")
   {
-    alpha_M <- sum(alpha_p)
-    sample_prop <- runif(Npatches,0,1)
-    alpha_p <- alpha_M*(exp(sample_prop)/sum(exp(sample_prop)))
+    alpha_M <- alpha
+    alpha_p <- rnorm(Npatches,0,1)
+    alpha_p <- (alpha_p-mean(alpha_p))/sd(alpha_p)
+    alpha_p <- alpha_M + alpha_p 
+    while(any(alpha_p<1.0)){
+      alpha_p <- rnorm(Npatches,0,1)
+      alpha_p <- (alpha_p-mean(alpha_p))/sd(alpha_p)
+      alpha_p <- alpha_M + alpha_p 
+    }
     beta_p <- -log(alpha_p)/k_p
   }
   
-  if(cap_heterogeneity)
+  if(cap_heterogeneity & model=="Ricker")
   {
     sample_prop <- runif(Npatches,0,1)
-    k_p <- metaK*(exp(sample_prop)/sum(exp(sample_prop)))
+    k_p <- as.vector(rmultinom(1,metaK,prob=(exp(sample_prop)/sum(exp(sample_prop)))))
     beta_p <- -log(alpha_p)/k_p
   }
+  
+  if(alpha_heterogeneity & model=="Beverton-Holt")
+  {
+    alpha_M <- alpha
+    alpha_p <- rnorm(Npatches,0,1)
+    alpha_p <- (alpha_p-mean(alpha_p))/sd(alpha_p)
+    alpha_p <- alpha_M + alpha_p 
+    while(any(alpha_p<1.0)){
+      alpha_p <- rnorm(Npatches,0,1)
+      alpha_p <- (alpha_p-mean(alpha_p))/sd(alpha_p)
+      alpha_p <- alpha_M + alpha_p 
+    }
+    beta_p <- k_p
+  }
+  
+  if(cap_heterogeneity & model=="Beverton-Holt")
+  {
+    sample_prop <- runif(Npatches,0,1)
+    k_p <- as.vector(rmultinom(1,metaK,prob=(exp(sample_prop)/sum(exp(sample_prop)))))
+    beta_p <- k_p
+  }
+  
   return(list("alpha_p"=alpha_p,"beta_p"=beta_p,"k_p"=k_p))
 }
 
@@ -22,24 +49,26 @@ patch_variance <- function(alpha_heterogeneity=F,cap_heterogeneity=F,Npatches=25
 
 function()
 {
+  stock <- 1:(2*max(k_p))
+  rec_mean <- sapply(1:Npatches,function(x){(alpha_p[x]*stock)/(1+((alpha_p[x]-1)/beta_p[x])*stock)})
+
   metaRec <- rowSums(rec_mean)
   metaStock <- stock*Npatches
   
+  SR_df <- data.frame("spawners"=metaStock,"recruits"=metaRec)
+  plot(metaStock,metaRec,type="l",lwd=2,col="dodgerblue")
+  invisible(sapply(1:Npatches,function(x){
+    lines(stock,rec_mean[,x],type="l",col="orange")
+  }))
+  
   # test to see if we recover the starting parameters
   metaRicker <- lm(log(metaRec/metaStock)~metaStock)
-  
-  SR_df <- data.frame("stock"=metaStock,"recruits"=metaRec)
   
   fit_nls <- nls(recruits~alpha*stock*exp(-(log(alpha)/K)*stock),data=SR_df,start=list("alpha"=alpha,"K"=metaK))
   
   meta_alpha <- exp(coef(metaRicker)[1])
   meta_beta <- coef(metaRicker)[2]
   -log(meta_alpha)/meta_beta
-  
-  plot(metaStock,metaRec,type="l",lwd=2,col="dodgerblue")
-  invisible(sapply(1:Npatches,function(x){
-    lines(stock,rec_mean[,x],type="l",col="orange")
-  }))
   
   matplot(stock,rec_mean)
   
@@ -62,5 +91,14 @@ function()
   
   print(c(meta_alpha,meta_beta,-log(meta_alpha)/meta_beta))
   summary(fit_nls)
+  
+  #SR_df <- data.frame("stock"=SR_df$stock/max(SR_df$stock),"recruits"=SR_df$recruits/max(SR_df$recruits))
+  SRfit <- nls(recruits~(a.hat*spawners)/(1+((a.hat-1)/b.hat)*spawners),data=SR_df,start=list("a.hat"=3,"b.hat"=1000),lower=c(0,0),upper=c(Inf,Inf),algorithm="port",control=list(tol=1e-12))
+  alphaHat <- coef(SRfit)["a.hat"]
+  metaK_hat <- coef(SRfit)["b.hat"]
+  
+  plot(recruits~spawners,data=SR_df,type="l",lwd=2,col="dodgerblue")
+  curve((alphaHat*x)/(1+((alphaHat-1)/metaK_hat)*x),add=T,lwd=2,col="orange")
+  curve((alpha*x)/(1+((alpha-1)/metaK)*x),add=T,lwd=2,col="red")
   
 }
