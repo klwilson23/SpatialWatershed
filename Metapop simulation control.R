@@ -11,8 +11,8 @@ source("some functions.R")
 source("Metapop function.R")
 source("popDynFn.R")
 
-Nboots <- 100
-Nlevels <- 10
+Nboots <- 50
+Nlevels <- 5
 model <- "Beverton-Holt"
 # simulation parameters
 Npatches <- 16
@@ -32,12 +32,12 @@ lagTime <- 1
 
 network_levels <- c("linear","star","dendritic","complex")
 disturbance_levels <- c("uniform","random","random_patch","targeted")
-dispersal_levels <- c(0,exp(seq(log(1e-3),log(0.25),length.out=Nlevels-1)))
+dispersal_levels <- c(0,seq(1e-3,0.25,length.out=Nlevels-1))
 alpha_levels <- c("same","variable")
 beta_levels <- c("same","variable")
-spatial_levels <- seq(10,1e-3,length.out=Nlevels) # from low spatial dependency to high
-temporal_levels <- seq(0,1,length.out=Nlevels)
-stochastic_levels <- c(0.01,0.3,0.5,1.0) # coefficient of variation on lognormal recruitment deviates
+spatial_levels <- c(10,1) # from low spatial dependency to high
+temporal_levels <- c(0.1,0.7) # from low temporal autocorrelation to high
+stochastic_levels <- c(0.01,0.5,1.0) # coefficient of variation on lognormal recruitment deviates
 
 recovery <- array(NA,dim=c(length(network_levels),
                            length(disturbance_levels),
@@ -101,25 +101,47 @@ for(iNet in 1:length(network_levels))
                 alpha_p <- patches$alpha_p
                 beta_p <- patches$beta_p
                 k_p <- patches$k_p
-                boatyMcboot <- replicate(Nboots,metaPop(Npatches=Npatches,
-                                                        distance_matrix=network$distanceMatrix,
-                                                        Nburnin=Nburnin,
-                                                        NyrsPost=NyrsPost,
-                                                        omega=dispersal_levels[iDisperse],
-                                                        m=m,
-                                                        alpha=alpha,
-                                                        metaK=metaK,
-                                                        alpha_p=alpha_p,
-                                                        beta_p=beta_p,
-                                                        k_p=k_p,
-                                                        cv=stochastic_levels[iStochastic],
-                                                        DistScenario=disturbance_levels[iDisturb],
-                                                        magnitude_of_decline=magnitude_of_decline,
-                                                        lagTime=lagTime,
-                                                        prodType=model,
-                                                        rho.time=temporal_levels[iTemporal],
-                                                        rho.dist=spatial_levels[iSpatial],
-                                                        compensationLag=compLag))
+                if(iStochastic==1){ # if stochasticity is low, don't bootstrap
+                  boatyMcboot <- replicate(1,metaPop(Npatches=Npatches,
+                                                      distance_matrix=network$distanceMatrix,
+                                                      Nburnin=Nburnin,
+                                                      NyrsPost=NyrsPost,
+                                                      omega=dispersal_levels[iDisperse],
+                                                      m=m,
+                                                      alpha=alpha,
+                                                      metaK=metaK,
+                                                      alpha_p=alpha_p,
+                                                      beta_p=beta_p,
+                                                      k_p=k_p,
+                                                      cv=stochastic_levels[iStochastic],
+                                                      DistScenario=disturbance_levels[iDisturb],
+                                                      magnitude_of_decline=magnitude_of_decline,
+                                                      lagTime=lagTime,
+                                                      prodType=model,
+                                                      rho.time=temporal_levels[iTemporal],
+                                                      rho.dist=spatial_levels[iSpatial],
+                                                      compensationLag=compLag))
+                }else{
+                  boatyMcboot <- replicate(Nboots,metaPop(Npatches=Npatches,
+                                                          distance_matrix=network$distanceMatrix,
+                                                          Nburnin=Nburnin,
+                                                          NyrsPost=NyrsPost,
+                                                          omega=dispersal_levels[iDisperse],
+                                                          m=m,
+                                                          alpha=alpha,
+                                                          metaK=metaK,
+                                                          alpha_p=alpha_p,
+                                                          beta_p=beta_p,
+                                                          k_p=k_p,
+                                                          cv=stochastic_levels[iStochastic],
+                                                          DistScenario=disturbance_levels[iDisturb],
+                                                          magnitude_of_decline=magnitude_of_decline,
+                                                          lagTime=lagTime,
+                                                          prodType=model,
+                                                          rho.time=temporal_levels[iTemporal],
+                                                          rho.dist=spatial_levels[iSpatial],
+                                                          compensationLag=compLag))
+                }
                 
                 recovery[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="recovery"),]))
                 

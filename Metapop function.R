@@ -65,11 +65,8 @@ metaPop <- function(Npatches=16,distance_matrix,Nburnin=50,NyrsPost=100,omega=0.
     {
       spawnRec <- data.frame("recruits"=MetaPop[((Iyear-compensationLag)+1):Iyear,"Recruits"],"spawners"=MetaPop[(Iyear-compensationLag):(Iyear-1),"Spawners"],weights=sqrt(1:compensationLag)/max(sqrt(1:compensationLag)))
       if(model=="Beverton-Holt"){
-        SRfitTry <- lm(log(recruits/spawners)~spawners,data=spawnRec,weights=spawnRec$weights)
-        alphaHat <- exp(coef(SRfitTry)["(Intercept)"])
-        metaK_hat <- -log(alphaHat)/coef(SRfitTry)[2]
-        theta <- as.vector(c(alphaHat,log(metaK_hat),log(summary(SRfitTry)$sigma)))
-        SRfit <- optim(theta,SRfn,method="L-BFGS-B",lower=c(1.01,0,0),upper=c(50,10*metaK,Inf))
+        theta <- as.vector(c(alpha,log(metaK),log(1)))
+        SRfit <- optim(theta,SRfn,method="L-BFGS-B",lower=c(1.01,0,-Inf),upper=c(50,10*metaK,Inf))
         alphaHat <- SRfit$par[1]
         metaK_hat <- exp(SRfit$par[2])
         compHat <- (alphaHat*MetaPop[Iyear-1,"Spawners"])/(1+((alphaHat-1)/metaK_hat)*MetaPop[Iyear-1,"Spawners"])
