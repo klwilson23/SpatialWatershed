@@ -1,4 +1,7 @@
 
+# april 3, 2019:
+# error happens for "targeted" disturbance where the simulation gets stuck in the while loop for accumulating patch disturbance
+
 library(mvtnorm)
 #library(marima)
 require(mvtnorm)
