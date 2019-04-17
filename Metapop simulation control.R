@@ -1,6 +1,11 @@
 
 # april 3, 2019:
 # error happens for "targeted" disturbance where the simulation gets stuck in the while loop for accumulating patch disturbance
+# solution? - if the sum of all high productivity patches is NOT enough to reach the TARGET LOSS then (1) take the next most productive patch or (2) nuke every last animal in that patch
+# april 16, 2019:
+# run the assessment for all available years of data after disturbance but with some data-weighting for recent years
+
+# solutions: first 10 years post-disturbance is of interest (IUCN & COSEWIC criteria)
 
 library(mvtnorm)
 #library(marima)
@@ -38,9 +43,9 @@ disturbance_levels <- c("uniform","random","random_patch","targeted")
 dispersal_levels <- c(0,seq(1e-3,0.25,length.out=Nlevels-1))
 alpha_levels <- c("same","variable")
 beta_levels <- c("same","variable")
-spatial_levels <- c(10,1) # from low spatial dependency to high
-temporal_levels <- c(0.1,0.7) # from low temporal autocorrelation to high
-stochastic_levels <- c(0.01,0.5,1.0) # coefficient of variation on lognormal recruitment deviates
+spatial_levels <- c(10,5,1) # from low spatial dependency to high
+temporal_levels <- c(0.01,0.2,0.5) # from low temporal autocorrelation to high
+stochastic_levels <- c(1e-6) # coefficient of variation on lognormal recruitment deviates
 
 recovery <- array(NA,dim=c(length(network_levels),
                            length(disturbance_levels),

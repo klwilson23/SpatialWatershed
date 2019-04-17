@@ -1,8 +1,28 @@
 
-metaPop <- function(Npatches=16,distance_matrix,Nburnin=50,NyrsPost=100,omega=0.02,m=1,alpha=3,metaK=1000,alpha_p=rep(3,Npatches),beta_p=rep(1000,Npatches),k_p=rep(1000,Npatches),cv=0.01,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=0,rho.dist=1e3,compensationLag=25)
+metaPop <- function(Npatches=16,
+                    distance_matrix,
+                    Nburnin=50,
+                    NyrsPost=100,
+                    omega=0.02,
+                    m=1,
+                    alpha=3,
+                    metaK=1000,
+                    alpha_p=rep(3,Npatches),
+                    beta_p=rep(1000,Npatches),
+                    k_p=rep(1000,Npatches),
+                    cv=0.01,
+                    DistScenario="uniform",
+                    magnitude_of_decline=0.9,
+                    lagTime=1,
+                    prodType="Beverton-Holt",
+                    rho.time=0,
+                    rho.dist=1e3,
+                    compensationLag=25)
 {
   Nyears <- Nburnin+NyrsPost
+  
   # part i - set some empty arrays
+  
   # patch-specific dynamics to track
   popDyn <- array(NA,dim=c(Nyears,Npatches,2),dimnames=list("Year"=1:Nyears,"Patch No."=1:Npatches,"Stage"=c("Recruits","Spawners")))
   # ecological metrics to track over time:
