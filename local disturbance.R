@@ -49,10 +49,19 @@ Disturbance <- function(metaPop,magnitude=0.5,DisType="uniform",N_p,prod)
   
   if(DisType=="random_patch")
   {
-    # remove all animals from randomly selected patches
+    # remove all animals from randomly selected patches to reach totalLoss
+    target <- 0
     d_patches <- sample(1:Npatches,targetPatches)
     deaths_p <- rep(0,Npatches)
     deaths_p[d_patches] <- N_p[d_patches]
+    target <- sum(deaths_p,na.rm=TRUE)
+    while(target<totalLoss)
+    {
+      d_patches <- sample(1:Npatches,targetPatches)
+      deaths_p <- rep(0,Npatches)
+      deaths_p[d_patches] <- N_p[d_patches]
+      target <- sum(deaths_p,na.rm=TRUE)
+    }
   }
   
   if(DisType=="targeted")

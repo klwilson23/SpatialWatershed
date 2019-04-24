@@ -11,8 +11,8 @@ dispersal <- function(maxDispersal,distDecay,dist_matrix,recruitment) # recruitm
   # rows correspond to emigrants away from patch
   # columns correspond to immigrants into patch
   dispersers <- migration*recruitment
-  immigrants <- round(colSums(dispersers))
-  emigrants <- round(rowSums(dispersers))
+  immigrants <- colSums(dispersers)
+  emigrants <- rowSums(dispersers)
   return(list("immigrants"=immigrants,"emigrants"=emigrants,"dispersers"=dispersers))
 }
 

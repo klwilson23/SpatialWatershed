@@ -10,34 +10,17 @@ source("local disturbance.R")
 source("some functions.R")
 source("popDynFn.R")
 
-networkType <- "complex"
+networkType <- "dendritic"
 
 network <- makeNetworks(networkType,16,1)
-
-plottingFunc <- function(network,type){
-  if(type=="linear"){
-    plot(network$landscape,col="dodgerblue",layout=cbind(0,seq(1,-1,length.out = gorder(network$landscape))),vertex.size=network$node.size*nodeScalar,xlim=c(-1,1),ylim=c(-1,1),rescale=FALSE)
-  }
-  if(type=="dendritic"){
-    plot(network$landscape,col="dodgerblue",layout=layout_as_tree(network$landscape,root=V(network$landscape)[1]),vertex.size=network$node.size*nodeScalar)
-  }
-  if(type=="star"){
-    plot(network$landscape,col="dodgerblue",layout=layout.reingold.tilford(network$landscape,circular=T),vertex.size=network$node.size*nodeScalar)
-  }
-  if(type=="complex"){
-    
-    spatialLayout <- matrix(MORELETTERS(1:Npatches),nrow=sqrt(Npatches),ncol=sqrt(Npatches),byrow=TRUE)
-    
-    spatialLayout <- t(sapply(1:Npatches,function(x){which(spatialLayout==LETTERS[x],arr.ind=TRUE)}))
-    spatialLayout <- spatialLayout[rank(attr(V(network$landscape),"names")),]
-    plot(network$landscape,col="dodgerblue",layout=spatialLayout,vertex.size=network$node.size*nodeScalar)
-  }
-}
 
 colfunc <- colorRampPalette(c("royalblue4","dodgerblue","lightblue","darkorange1","firebrick"))
 Nlevels <- 10 #  how many levels for plotting spatial outcomes
 nodeScalar <- 40
 distance_matrix <- network$distanceMatrix
+
+dataWeighting <- 0.1#layout(1)
+#curve(1+exp(dataWeighting*x)/max(exp(dataWeighting*x)),from=0,to=-100)
 
 ricker <-function(alpha,beta,Nadults){alpha*Nadults*exp(beta*Nadults)}
 
@@ -50,25 +33,25 @@ Nyears <- Nburnin+NyrsPost
 targetYear <- Nburnin+10
 compensationLag <- 50 # how many years to lag estimates of compensation
 Npatches <- ncol(distance_matrix)
-omega <- 0.01 # proportion of animals in patch that move
-m <- 1 # distance decay function: could set at some proportion of max distance
+omega <- 0.5 # proportion of animals in patch that move
+m <- 100 # distance decay function: could set at some proportion of max distance
 # adult stock-juvenile recruitment traits
 alpha <- 2
 metaK <- Npatches*100
 beta <- -log(alpha)/metaK
-cv <- 0.1
+cv <- 1e-2
 # temporal correlation
 rho.time <- 1e-5
 # distance penalty to spatial correlation: higher means more independent
-rho.dist <- 1e6
+rho.dist <- 1e5
 # how big is the disturbance after Nburnin years?
 magnitude_of_decline <- 0.90
 # what is the lag time between recruits and spawners
 lagTime <- 1
 
-alpha_heterogeneity <- TRUE
+alpha_heterogeneity <- FALSE
 cap_heterogeneity <- TRUE
-DistScenario <- "targeted"
+DistScenario <- "random_patch"
 
 # get the metapopulation & patch level Ricker parameters
 alpha_p <- rep(alpha,Npatches)
@@ -89,6 +72,9 @@ popDyn <- array(NA,dim=c(Nyears,Npatches,2),dimnames=list("Year"=1:Nyears,"Patch
 sink <- source <- psuedoSink <- var.rec <- array(NA,dim=c(Nyears,Npatches),dimnames=list("Year"=1:Nyears,"Patch No."=1:Npatches))
 compensationBias <- rep(NA,Nyears)
 lostCapacity <- rep(NA,Nyears)
+alphaYr <- rep(NA,Nyears)
+metaKYr <- rep(NA,Nyears)
+
 
 # dispersal information to track
 dispersing <- array(NA,dim=c(Nyears,Npatches,3),dimnames=list("Year"=1:Nyears,"Patch No."=1:Npatches,"Disersing"=c("Residents","Immigrants","Emigrants")))
@@ -107,14 +93,17 @@ MetaPop[1:lagTime,"Spawners"] <- sum(popDyn[1:lagTime,,"Spawners"])
 
 var.rec[1:lagTime,] <- rec.dev
 
+alphaLstYr <- alphaYr[1] <- alpha
+metaKLstYr <- metaKYr[1] <- metaK
+
 for(Iyear in (lagTime+1):Nyears)
 {
   
   # part iii - add disturbance
   if(Iyear==(Nburnin+1))
   {
-    deaths_p <- Disturbance(metaPop=MetaPop[Iyear-1,"Spawners"],magnitude=magnitude_of_decline,DisType=DistScenario, N_p=popDyn[Iyear-1,,"Spawners"],prod=k_p)$deaths_p
-    popDyn[Iyear-1,,"Spawners"] <- popDyn[Iyear-1,,"Spawners"]-deaths_p
+    deaths_p <- Disturbance(metaPop=ceiling(MetaPop[Iyear-1,"Spawners"]),magnitude=magnitude_of_decline,DisType=DistScenario, N_p=ceiling(popDyn[Iyear-1,,"Spawners"]),prod=k_p)$deaths_p
+    popDyn[Iyear-1,,"Spawners"] <- pmax(0,popDyn[Iyear-1,,"Spawners"]-deaths_p)
     MetaPop[Iyear-1,"Spawners"] <- sum(popDyn[Iyear-1,,"Spawners"])
   }else{
     deaths_p <- rep(0,Npatches)
@@ -129,11 +118,11 @@ for(Iyear in (lagTime+1):Nyears)
   var.rec[Iyear,] <- rec.dev
   
   rec.obs <- pmax(0,patch_rec*exp(rec.dev-(log(cv^2+1))/2))
-  popDyn[Iyear,,"Recruits"] <- round(rec.obs)
+  popDyn[Iyear,,"Recruits"] <- rec.obs
   
   # part ii - dispersal between patches
   
-  disperse <- dispersal(maxDispersal=omega,distDecay=m,dist_matrix=distance_matrix,recruitment=round(rec.obs))
+  disperse <- dispersal(maxDispersal=omega,distDecay=m,dist_matrix=distance_matrix,recruitment=rec.obs)
   
   im <- disperse$immigrants
   em <- disperse$emigrants
@@ -159,28 +148,32 @@ for(Iyear in (lagTime+1):Nyears)
   MetaPop[Iyear,"Spawners"] <- sum(popDyn[Iyear,,"Spawners"])
   
   # part vii - estimate compensation
-  if(Iyear>(Nburnin+1) & (MetaPop[Iyear,"Recruits"] > 0))
+  if(Iyear > (Nburnin) & MetaPop[Iyear,"Recruits"] > 0)
   {
-    spawnRec <- data.frame("recruits"=MetaPop[2:Iyear,"Recruits"],"spawners"=MetaPop[1:(Iyear-1),"Spawners"],weights=(1-sqrt(abs(2:Iyear-Iyear))/max(sqrt(abs(2:Iyear-Iyear)))))
+    spawnRec <- data.frame("recruits"=MetaPop[2:Iyear,"Recruits"],"spawners"=MetaPop[1:(Iyear-1),"Spawners"],weights=exp(dataWeighting*(2:Iyear-Iyear))/max(exp(dataWeighting*(2:Iyear-Iyear))))
     
     if(model=="Beverton-Holt"){
-      SRfitTry <- lm(log(recruits/spawners)~spawners,data=spawnRec,weights=spawnRec$weights)
-      alphaHat <- pmax(1.01,exp(coef(SRfitTry)["(Intercept)"]))
-      metaK_hat <- pmax(10,-log(alphaHat)/coef(SRfitTry)[2])
+      SRfitTry <- lm(log(recruits/spawners)~spawners,data=spawnRec)
+      alphaHat <- pmax(1.01,alphaLstYr)
+      metaK_hat <- pmax(1,metaKLstYr)
       theta <- as.vector(c(alphaHat,log(metaK_hat),log(summary(SRfitTry)$sigma)))
       SRfit <- optim(theta,SRfn,method="L-BFGS-B",lower=c(1.01,-Inf,-Inf))
       alphaHat <- SRfit$par[1]
       metaK_hat <- exp(SRfit$par[2])
       compHat <- (alphaHat*MetaPop[Iyear-1,"Spawners"])/(1+((alphaHat-1)/metaK_hat)*MetaPop[Iyear-1,"Spawners"])
+      alphaLstYr <- alphaYr[Iyear] <- alphaHat
+      metaKLstYr <- metaKYr[Iyear] <- metaK_hat
     }else{
       SRfit <- lm(log(recruits/spawners)~spawners,data=spawnRec,weights=spawnRec$weights)
       alphaHat <- exp(coef(SRfit)["(Intercept)"])
       metaK_hat <- -log(alphaHat)/coef(SRfit)[2]
       compHat <- alphaHat*MetaPop[Iyear-1,"Spawners"]*exp(-log(alphaHat)/metaK_hat*MetaPop[Iyear-1,"Spawners"])
+      alphaLstYr <- alphaYr[Iyear] <- alphaHat
+      metaKLstYr <- metaKYr[Iyear] <- metaK_hat
     }
     actualComp <- MetaPop[Iyear,"Recruits"] # realized production
     actualK <- sum(k_p)
-    compensationBias[Iyear] <- 100*(as.numeric(compHat-actualComp)/actualComp)
+    compensationBias[Iyear] <- compHat/actualComp
     lostCapacity[Iyear] <- metaK_hat/actualK
   }
 }
@@ -203,7 +196,9 @@ matLayout[7:9,10:12] <- 6
 matLayout[7:9,13:15] <- 7
 matLayout[3:7,16:17] <- 8
 matLayout[10:18,1:9] <- 9
-matLayout[10:18,10:18] <- 10
+matLayout[10:12,10:18] <- 10
+matLayout[13:15,10:18] <- 11
+matLayout[16:18,10:18] <- 12
 layout(matLayout)
 par(mar=c(5,4,1,1))
 levelFactors <- factor(pmax(0.0,pmin(1.0,round(popDyn[Nyears,,"Spawners"]/k_p*Nlevels)/Nlevels)),levels=((0:10)/Nlevels))
@@ -230,13 +225,24 @@ title(main=expression('N'[t]*'/K'),line=1,font.main=1,cex=0.8,xpd=NA)
 #text(x=0.5,y=1.75,expression('N'[t]*'/K'),cex=1.5,xpd=NA)
 
 par(mar=c(5,4,1,1))
-plot(MetaPop[1:(Nyears-1),"Spawners"],MetaPop[2:Nyears,"Recruits"],type="p",xlab="Metapopulation spawners",ylab="Metapopulation recruits",pch=21,bg=ifelse(1:(Nyears-1)>Nburnin,"orange","dodgerblue"))
+plot(MetaPop[1:(Nyears-1),"Spawners"],MetaPop[2:Nyears,"Recruits"],type="p",xlab="Metapopulation spawners",ylab="Metapopulation recruits",pch=21,bg=ifelse(1:(Nyears-1)>Nburnin,"orange","dodgerblue"),xlim=c(0,max(MetaPop[,"Spawners"],na.rm=TRUE)),ylim=c(0,max(MetaPop[,"Recruits"],na.rm=TRUE)))
+
+curve((alpha*x)/(1+((alpha-1)/metaK)*x),from=0,to=max(MetaPop[,"Spawners"],na.rm=TRUE),add=TRUE,lwd=2,col="dodgerblue",xpd=FALSE)
+curve((mean(alphaYr[Nburnin:(Nburnin+10)],na.rm=TRUE)*x)/(1+((mean(alphaYr[Nburnin:(Nburnin+10)],na.rm=TRUE)-1)/mean(metaKYr[Nburnin:(Nburnin+10)],na.rm=TRUE))*x),from=0,to=max(MetaPop[,"Spawners"],na.rm=TRUE),add=TRUE,lwd=2,col="orange",xpd=FALSE)
+
+
 legend("bottomright",c("pre-disturbance","post-disturbance"),pch=21,pt.bg=c("dodgerblue","orange"),bty="n")
 
 par(mar=c(5,4,1,1))
-plot(lostCapacity[(Nburnin+1):Nyears],xlab="Years",ylab="Post-disturbance carrying capacity",type="l",ylim=c(0,max(lostCapacity[(Nburnin+1):Nyears],na.rm=TRUE)),lwd=3)
-#plot(compensationBias,xlab="Years",ylab="% bias in production")
-#cumsum(compensationBias[!is.na(compensationBias)])
+plot(lostCapacity[Nburnin:Nyears],xlab="Years after disturbance",ylab="Relative capacity",type="l",ylim=range(lostCapacity[Nburnin:Nyears],na.rm=TRUE),lwd=2,col="grey50")
+
+par(mar=c(5,4,1,1))
+plot(alphaYr[Nburnin:Nyears]/alpha,xlab="Years after disturbance",ylab="Relative compensation",type="l",ylim=range(alphaYr[Nburnin:Nyears]/alpha,na.rm=TRUE),lwd=2,col="grey50")
+
+par(mar=c(5,4,1,1))
+plot(compensationBias[Nburnin:Nyears],xlab="Years after disturbance",ylab="Relative production",type="l",lwd=2,col="grey50")
+abline(h=median(compensationBias[Nburnin:(Nburnin+10)],na.rm=TRUE),col="black",lty=2,lwd=2,xpd=FALSE)
+cumsum(compensationBias[!is.na(compensationBias)]-1)
 #plot(log(MetaPop[2:Nyears,"Recruits"]/MetaPop[1:(Nyears-1),"Spawners"]))
 
 #matplot(dispersing[,,"Emigrants"],type="l")
@@ -245,6 +251,11 @@ plot(lostCapacity[(Nburnin+1):Nyears],xlab="Years",ylab="Post-disturbance carryi
 #acf(var.rec[,4])
 MetaPop[50,"Spawners"]/MetaPop[49,"Spawners"]
 round(MetaPop[49,"Spawners"]*(1-magnitude_of_decline))
+
+comparisonYr <- 51
+(alphaYr[comparisonYr]*MetaPop[comparisonYr-1,"Spawners"])/(1+((alphaYr[comparisonYr]-1)/metaKYr[comparisonYr])*MetaPop[comparisonYr-1,"Spawners"])
+sum((alpha_p*popDyn[comparisonYr-1,,"Spawners"])/(1+((alpha_p-1)/k_p)*popDyn[comparisonYr-1,,"Spawners"]))
+MetaPop[comparisonYr,"Recruits"]
 
 # policy metrics
 # years to recovery (averaged over 10 years)

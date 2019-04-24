@@ -31,6 +31,8 @@ extend <- function(alphabet) function(i) {
   vapply(i-1L, base10toA, character(1L), alphabet)
 }
 
+MORELETTERS <- extend(LETTERS)
+
 dvSpaceTime <- function(mnSig,lastDV,rhoTime,rhoSpace,distMatrix)
 {
   # function to calculate recruitment deviations correlated through space and time
@@ -45,8 +47,88 @@ SRfn <- function(theta){
   sd.hat <- exp(theta[3])
   rec.mean <- (a.hat*spawnRec$spawners)/(1+((a.hat-1)/b.hat)*spawnRec$spawners)
   nll <- -1*sum(dlnorm(spawnRec$recruits,meanlog=log(rec.mean),sdlog=sd.hat,log=TRUE)*spawnRec$weights,na.rm=TRUE)
-  penalty1 <- -dnorm(a.hat,alpha,3*alpha,log=TRUE) # penalized likelihood on estimated alpha
-  penalty2 <- -dnorm(b.hat,metaK,3*metaK,log=TRUE) # penalized likelihood on estimated carrying capacity
+  penalty1 <- -dnorm(a.hat,alphaLstYr,3*alphaLstYr,log=TRUE) # penalized likelihood on estimated alpha
+  penalty2 <- -dnorm(b.hat,metaKLstYr,3*metaKLstYr,log=TRUE) # penalized likelihood on estimated carrying capacity
   jnll <- sum(c(nll,penalty1,penalty2),na.rm=TRUE)
   return(jnll)
+}
+
+plottingFunc <- function(network,type){
+  if(type=="linear"){
+    plot(network$landscape,col="dodgerblue",layout=cbind(0,seq(1,-1,length.out = gorder(network$landscape))),vertex.size=network$node.size*nodeScalar,xlim=c(-1,1),ylim=c(-1,1),rescale=FALSE)
+  }
+  if(type=="dendritic"){
+    plot(network$landscape,col="dodgerblue",layout=layout_as_tree(network$landscape,root=V(network$landscape)[1]),vertex.size=network$node.size*nodeScalar)
+  }
+  if(type=="star"){
+    plot(network$landscape,col="dodgerblue",layout=layout.reingold.tilford(network$landscape,circular=T),vertex.size=network$node.size*nodeScalar)
+  }
+  if(type=="complex"){
+    
+    spatialLayout <- matrix(MORELETTERS(1:Npatches),nrow=sqrt(Npatches),ncol=sqrt(Npatches),byrow=TRUE)
+    
+    spatialLayout <- t(sapply(1:Npatches,function(x){which(spatialLayout==LETTERS[x],arr.ind=TRUE)}))
+    spatialLayout <- spatialLayout[rank(attr(V(network$landscape),"names")),]
+    plot(network$landscape,col="dodgerblue",layout=spatialLayout,vertex.size=network$node.size*nodeScalar)
+  }
+}
+
+spatialRecoveryPlot <- function()
+{
+  matLayout <- matrix(0,ncol=18,nrow=18,byrow=T)
+  matLayout[1:9,1:9] <- 1
+  matLayout[1:3,10:12] <- 2
+  matLayout[1:3,13:15] <- 3
+  matLayout[4:6,10:12] <- 4
+  matLayout[4:6,13:15] <- 5
+  matLayout[7:9,10:12] <- 6
+  matLayout[7:9,13:15] <- 7
+  matLayout[3:7,16:17] <- 8
+  matLayout[10:18,1:9] <- 9
+  matLayout[10:12,10:18] <- 10
+  matLayout[13:15,10:18] <- 11
+  matLayout[16:18,10:18] <- 12
+  layout(matLayout)
+  par(mar=c(5,4,1,1))
+  levelFactors <- factor(pmax(0.0,pmin(1.0,round(popDyn[Nyears,,"Spawners"]/k_p*Nlevels)/Nlevels)),levels=((0:10)/Nlevels))
+  matplot(t(t(popDyn[,,"Spawners"])/k_p),type="l",xlab="Time",ylab="Relative abundance (N/K)",col=rev(colfunc(Nlevels+1))[levelFactors],ylim=c(0,1.1*max(t(popDyn[,,"Spawners"])/k_p,na.rm=TRUE)))
+  lines(MetaPop[,"Spawners"]/metaK,lwd=3,col="black")
+  segments(y0=0,y1=1.05*max(t(popDyn[,,"Spawners"])/k_p),x0=(recovery+Nburnin),lwd=4,col="orange")
+  
+  text(x=(recovery+Nburnin)-30,y=1.1*max(t(popDyn[,,"Spawners"])/k_p,na.rm=TRUE),"Time to recovery")
+  curvedarrow(from=c((recovery+Nburnin)-30,1.08*max(t(popDyn[,,"Spawners"])/k_p,na.rm=TRUE)),to=c((recovery+Nburnin),1.0*max(t(popDyn[,,"Spawners"])/k_p,na.rm=TRUE)),lwd=2,lty=1,lcol="grey50",arr.col="grey50",curve=0.002,endhead=TRUE,arr.pos=0.65)
+  
+  par(mar=c(1,1,1,1))
+  for(i in c(Nburnin,Nburnin+3,Nburnin+6,Nburnin+9,Nburnin+12,Nburnin+15))
+  {
+    levelFactors <- factor(pmax(0.0,pmin(1.0,round(popDyn[i,,"Spawners"]/k_p*Nlevels)/Nlevels)),levels=((0:10)/Nlevels))
+    V(network$landscape)$color <- rev(colfunc(Nlevels+1))[levelFactors]
+    plottingFunc(network,networkType)
+    title(main=paste("Year",i),line=0,font.main=1,cex=0.8)
+  }
+  
+  par(mar=c(1,1,1,1))
+  plot(NA,xlim=c(-1,1),ylim=c(-1,1),xaxt="n",yaxt="n",xlab="",ylab="",frame.plot=FALSE,xpd=NA)
+  colorlegend(rev(colfunc(Nlevels)),zlevels=Nlevels,zlim=c(0,1),dz=0.1,posx=c(0.35,0.5),posy=c(0.1,0.95),digit=2)
+  title(main=expression('N'[t]*'/K'),line=1,font.main=1,cex=0.8,xpd=NA)
+  #text(x=0.5,y=1.75,expression('N'[t]*'/K'),cex=1.5,xpd=NA)
+  
+  par(mar=c(5,4,1,1))
+  plot(MetaPop[1:(Nyears-1),"Spawners"],MetaPop[2:Nyears,"Recruits"],type="p",xlab="Metapopulation spawners",ylab="Metapopulation recruits",pch=21,bg=ifelse(1:(Nyears-1)>Nburnin,"orange","dodgerblue"),xlim=c(0,max(MetaPop[,"Spawners"],na.rm=TRUE)),ylim=c(0,max(MetaPop[,"Recruits"],na.rm=TRUE)))
+  
+  curve((alpha*x)/(1+((alpha-1)/metaK)*x),from=0,to=max(MetaPop[,"Spawners"],na.rm=TRUE),add=TRUE,lwd=2,col="dodgerblue",xpd=FALSE)
+  curve((mean(alphaYr[Nburnin:(Nburnin+10)],na.rm=TRUE)*x)/(1+((mean(alphaYr[Nburnin:(Nburnin+10)],na.rm=TRUE)-1)/mean(metaKYr[Nburnin:(Nburnin+10)],na.rm=TRUE))*x),from=0,to=max(MetaPop[,"Spawners"],na.rm=TRUE),add=TRUE,lwd=2,col="orange",xpd=FALSE)
+  
+  
+  legend("bottomright",c("pre-disturbance","post-disturbance"),pch=21,pt.bg=c("dodgerblue","orange"),bty="n")
+  
+  par(mar=c(5,4,1,1))
+  plot(lostCapacity[Nburnin:Nyears],xlab="Years after disturbance",ylab="Relative capacity",type="l",ylim=range(lostCapacity[Nburnin:Nyears],na.rm=TRUE),lwd=2,col="grey50")
+  
+  par(mar=c(5,4,1,1))
+  plot(alphaYr[Nburnin:Nyears]/alpha,xlab="Years after disturbance",ylab="Relative compensation",type="l",ylim=range(alphaYr[Nburnin:Nyears]/alpha,na.rm=TRUE),lwd=2,col="grey50")
+  
+  par(mar=c(5,4,1,1))
+  plot(compensationBias[Nburnin:Nyears],xlab="Years after disturbance",ylab="Relative production",type="l",lwd=2,col="grey50")
+  abline(h=median(compensationBias[Nburnin:(Nburnin+10)],na.rm=TRUE),col="black",lty=2,lwd=2,xpd=FALSE)
 }

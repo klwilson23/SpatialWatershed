@@ -1,24 +1,47 @@
+source("make networks.R")
+source("Dispersal function.R")
+source("patch_variance.R")
+source("local disturbance.R")
+source("some functions.R")
+source("popDynFn.R")
+library(mvtnorm)
+library(marima)
+library(diagram)
 
 metaPop <- function(Npatches=16,
-                    distance_matrix,
+                    networkType="linear",
+                    patchDistance=1,
                     Nburnin=50,
                     NyrsPost=100,
-                    omega=0.02,
+                    omega=0.01,
                     m=1,
-                    alpha=3,
-                    metaK=1000,
-                    alpha_p=rep(3,Npatches),
-                    beta_p=rep(1000,Npatches),
-                    k_p=rep(1000,Npatches),
-                    cv=0.01,
+                    alpha=2,
+                    metaK=1600,
+                    cv=1e-2,
                     DistScenario="uniform",
                     magnitude_of_decline=0.9,
                     lagTime=1,
                     prodType="Beverton-Holt",
-                    rho.time=0,
-                    rho.dist=1e3,
-                    compensationLag=25)
+                    rho.time=1e-5,
+                    rho.dist=1e5,
+                    compensationLag=25,
+                    dataWeighting=0.1,
+                    alphaVariable=FALSE,
+                    kVariable=FALSE)
 {
+  # make the spatial network
+  network <- makeNetworks(networkType,Npatches,patchDistance)
+  distance_matrix <- network$distanceMatrix
+  # get the metapopulation & patch level Ricker parameters
+  alpha_p <- rep(alpha,Npatches)
+  k_p <- rep((metaK/Npatches),Npatches)
+  beta_p <- k_p
+  # call function to get the among patch variability in demographic traits
+  patches <- patch_variance(model=model,alphaVariable,kVariable,Npatches,alpha=alpha,alpha_p=alpha_p,metaK=metaK,k_p=k_p)
+  alpha_p <- patches$alpha_p
+  beta_p <- patches$beta_p
+  k_p <- patches$k_p
+  
   Nyears <- Nburnin+NyrsPost
   
   # part i - set some empty arrays
@@ -27,6 +50,11 @@ metaPop <- function(Npatches=16,
   popDyn <- array(NA,dim=c(Nyears,Npatches,2),dimnames=list("Year"=1:Nyears,"Patch No."=1:Npatches,"Stage"=c("Recruits","Spawners")))
   # ecological metrics to track over time:
   sink <- source <- pseudoSink <- var.rec <- array(NA,dim=c(Nyears,Npatches),dimnames=list("Year"=1:Nyears,"Patch No."=1:Npatches))
+  compensationBias <- rep(NA,Nyears)
+  lostCapacity <- rep(NA,Nyears)
+  alphaYr <- rep(NA,Nyears)
+  metaKYr <- rep(NA,Nyears)
+  
   # dispersal information to track
   dispersing <- array(NA,dim=c(Nyears,Npatches,3),dimnames=list("Year"=1:Nyears,"Patch No."=1:Npatches,"Disersing"=c("Residents","Immigrants","Emigrants")))
   # metapopulation dynamics to track
@@ -39,13 +67,16 @@ metaPop <- function(Npatches=16,
   MetaPop[1:lagTime,"Spawners"] <- sum(popDyn[1:lagTime,,"Spawners"])
   var.rec[1:lagTime,] <- rec.dev
   
+  alphaLstYr <- alphaYr[1] <- alpha
+  metaKLstYr <- metaKYr[1] <- metaK
+  
   for(Iyear in (lagTime+1):Nyears)
   {
     # part iii - add disturbance
     if(Iyear==(Nburnin+1))
     {
-      deaths_p <- Disturbance(metaPop=MetaPop[Iyear-1,"Spawners"],magnitude=magnitude_of_decline,DisType=DistScenario, N_p=popDyn[Iyear-1,,"Spawners"],prod=k_p)$deaths_p
-      popDyn[Iyear-1,,"Spawners"] <- popDyn[Iyear-1,,"Spawners"]-deaths_p
+      deaths_p <- Disturbance(metaPop=ceiling(MetaPop[Iyear-1,"Spawners"]),magnitude=magnitude_of_decline,DisType=DistScenario, N_p=ceiling(popDyn[Iyear-1,,"Spawners"]),prod=k_p)$deaths_p
+      popDyn[Iyear-1,,"Spawners"] <- pmax(0,popDyn[Iyear-1,,"Spawners"]-deaths_p)
       MetaPop[Iyear-1,"Spawners"] <- sum(popDyn[Iyear-1,,"Spawners"])
     }else{
       deaths_p <- rep(0,Npatches)
@@ -59,17 +90,17 @@ metaPop <- function(Npatches=16,
     rec.dev <- dvSpaceTime(mnSig=sqrt(log(cv^2+1)),lastDV=var.rec[Iyear-lagTime,],rhoTime=rho.time,rhoSpa=rho.dist,distMatrix = distance_matrix)
     var.rec[Iyear,] <- rec.dev
     rec.obs <- pmax(0,patch_rec*exp(rec.dev-(log(cv^2+1))/2))
-    popDyn[Iyear,,"Recruits"] <- round(rec.obs)
+    popDyn[Iyear,,"Recruits"] <- rec.obs
     
     # part v - dispersal between patches
     # dispersal() function calculates emigration & immigration based on distance matrix and penalty to movement
-    disperse <- dispersal(maxDispersal=omega,distDecay=m,dist_matrix=distance_matrix,recruitment=round(rec.obs))
+    disperse <- dispersal(maxDispersal=omega,distDecay=m,dist_matrix=distance_matrix,recruitment=rec.obs)
     im <- disperse$immigrants
     em <- disperse$emigrants
     dispersing[Iyear,,"Residents"] <- popDyn[Iyear,,"Recruits"]-em
     dispersing[Iyear,,"Immigrants"] <- im
     dispersing[Iyear,,"Emigrants"] <- em
-    popDyn[Iyear,,"Spawners"] <- popDyn[Iyear,,"Recruits"] + dispersing[Iyear,,"Immigrants"] - dispersing[Iyear,,"Emigrants"]
+    popDyn[Iyear,,"Spawners"] <- pmax(0,popDyn[Iyear,,"Recruits"] + dispersing[Iyear,,"Immigrants"] - dispersing[Iyear,,"Emigrants"])
     
     # not sure these calculations should have recruitment lag times or not
     # part vi - calculate metapopulation dynamics & ecological metrics
@@ -81,24 +112,32 @@ metaPop <- function(Npatches=16,
     MetaPop[Iyear,"Spawners"] <- sum(popDyn[Iyear,,"Spawners"])
     
     # part vii - estimate compensation
-    if(Iyear>(compensationLag+1) & (MetaPop[Iyear,"Recruits"] > 0))
+    if(Iyear > (Nburnin) & (MetaPop[Iyear,"Recruits"] > 0))
     {
-      spawnRec <- data.frame("recruits"=MetaPop[((Iyear-compensationLag)+1):Iyear,"Recruits"],"spawners"=MetaPop[(Iyear-compensationLag):(Iyear-1),"Spawners"],weights=sqrt(1:compensationLag)/max(sqrt(1:compensationLag)))
+      spawnRec <- data.frame("recruits"=MetaPop[2:Iyear,"Recruits"],"spawners"=MetaPop[1:(Iyear-1),"Spawners"],weights=exp(dataWeighting*(2:Iyear-Iyear))/max(exp(dataWeighting*(2:Iyear-Iyear))))
+      
       if(model=="Beverton-Holt"){
-        theta <- as.vector(c(alpha,log(metaK),log(1)))
-        SRfit <- optim(theta,SRfn,method="L-BFGS-B",lower=c(1.01,0,-Inf),upper=c(50,10*metaK,Inf))
+        SRfitTry <- lm(log(recruits/spawners)~spawners,data=spawnRec)
+        alphaHat <- pmax(1.01,alphaLstYr)
+        metaK_hat <- pmax(1,metaKLstYr)
+        theta <- as.vector(c(alphaHat,log(metaK_hat),log(summary(SRfitTry)$sigma)))
+        SRfit <- optim(theta,SRfn,method="L-BFGS-B",lower=c(1.01,-Inf,-Inf))
         alphaHat <- SRfit$par[1]
         metaK_hat <- exp(SRfit$par[2])
         compHat <- (alphaHat*MetaPop[Iyear-1,"Spawners"])/(1+((alphaHat-1)/metaK_hat)*MetaPop[Iyear-1,"Spawners"])
+        alphaLstYr <- alphaYr[Iyear] <- alphaHat
+        metaKLstYr <- metaKYr[Iyear] <- metaK_hat
       }else{
         SRfit <- lm(log(recruits/spawners)~spawners,data=spawnRec,weights=spawnRec$weights)
         alphaHat <- exp(coef(SRfit)["(Intercept)"])
         metaK_hat <- -log(alphaHat)/coef(SRfit)[2]
         compHat <- alphaHat*MetaPop[Iyear-1,"Spawners"]*exp(-log(alphaHat)/metaK_hat*MetaPop[Iyear-1,"Spawners"])
+        alphaLstYr <- alphaYr[Iyear] <- alphaHat
+        metaKLstYr <- metaKYr[Iyear] <- metaK_hat
       }
       actualComp <- MetaPop[Iyear,"Recruits"] # realized production
       actualK <- sum(k_p)
-      compensationBias[Iyear] <- 100*(as.numeric(compHat-actualComp)/actualComp)
+      compensationBias[Iyear] <- compHat/actualComp
       lostCapacity[Iyear] <- metaK_hat/actualK
     }
   }
@@ -109,6 +148,8 @@ metaPop <- function(Npatches=16,
   patchOccupancy <- sum(popDyn[Nyears,,"Recruits"]>(0.05*k_p))/Npatches
   postDistBias <- sum(compensationBias[!is.na(compensationBias)])
   lostCompensation <- alphaHat/alpha
+  
+  #spatialRecoveryPlot()
   
   return(list("MetaPop"=MetaPop,"popDyn"=popDyn,"sink"=sink,"source"=source,"pseudoSink"=pseudoSink,"dispersing"=dispersing,"bias"=postDistBias,"lostCompensation"=lostCompensation,"lostCapacity"=lostCapacity[Nyears],"recovery"=recovery,"extinction"=extinction,"patchOccupancy"=patchOccupancy))
 }

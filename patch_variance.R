@@ -29,7 +29,7 @@ patch_variance <- function(model="Beverton-Holt",alpha_heterogeneity=F,cap_heter
     alpha_M <- alpha
     alpha_p <- rnorm(Npatches,0,1)
     alpha_p <- (alpha_p-mean(alpha_p))/sd(alpha_p)
-    alpha_p <- alpha_M + alpha_p 
+    alpha_p <- alpha_M + alpha_p
     while(any(alpha_p<1.0)){
       alpha_p <- rnorm(Npatches,0,1)
       alpha_p <- (alpha_p-mean(alpha_p))/sd(alpha_p)
@@ -47,6 +47,11 @@ patch_variance <- function(model="Beverton-Holt",alpha_heterogeneity=F,cap_heter
       k_p <- as.vector(rmultinom(1,metaK,prob=(exp(sample_prop)/sum(exp(sample_prop)))))
     }
     
+    beta_p <- k_p
+  }
+  
+  if(model=="Beverton-Holt")
+  {
     beta_p <- k_p
   }
   
