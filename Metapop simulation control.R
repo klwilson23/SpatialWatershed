@@ -7,6 +7,8 @@
 
 # solutions: first 10 years post-disturbance is of interest (IUCN & COSEWIC criteria)
 
+# april 23, 2019: we could use some level of "transience" or "variability" in the post-disturbance regime between year of disturbance and year of recovery.
+
 library(mvtnorm)
 #library(marima)
 require(mvtnorm)

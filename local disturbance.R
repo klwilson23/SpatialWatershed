@@ -31,6 +31,8 @@ Disturbance <- function(metaPop,magnitude=0.5,DisType="uniform",N_p,prod)
     target <- 0
     d_patches <- sample(1:Npatches,targetPatches)
     animals <- animals_all[animals_all$Patch%in%d_patches,]
+    total_p <- aggregate(Animal~Patch,data=animals,FUN=length)
+    target <- nrow(animals)
     while(target<totalLoss)
     {
       d_patches <- sample(1:Npatches,targetPatches)
@@ -57,11 +59,13 @@ Disturbance <- function(metaPop,magnitude=0.5,DisType="uniform",N_p,prod)
   {
     # randomly remove animals from populations, vulnerability across selected patches depends on local productivity
     target <- 0
-    d_patches <- sample(1:Npatches,targetPatches,prob=exp(prod)/sum(exp(prod)))
+    d_patches <- sample(1:Npatches,targetPatches,prob=prod/sum(prod))
     animals <- animals_all[animals_all$Patch%in%d_patches,]
+    total_p <- aggregate(Animal~Patch,data=animals,FUN=length)
+    target <- nrow(animals)
     while(target<totalLoss)
     {
-      d_patches <- sample(1:Npatches,targetPatches,prob=exp(prod)/sum(exp(prod)))
+      d_patches <- sample(1:Npatches,targetPatches,prob=prod/sum(prod))
       animals <- animals_all[animals_all$Patch%in%d_patches,]
       total_p <- aggregate(Animal~Patch,data=animals,FUN=length)
       target <- nrow(animals)

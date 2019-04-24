@@ -1,4 +1,4 @@
-patch_variance <- function(model="Beverton-Holt",alpha_heterogeneity=F,cap_heterogeneity=F,Npatches=16,alpha,alpha_p,metaK,k_p)
+patch_variance <- function(model="Beverton-Holt",alpha_heterogeneity=F,cap_heterogeneity=F,Npatches=16,alpha,alpha_p,metaK,k_p,magnitude_of_decline)
 {
   if(alpha_heterogeneity & model=="Ricker")
   {
@@ -18,6 +18,9 @@ patch_variance <- function(model="Beverton-Holt",alpha_heterogeneity=F,cap_heter
   {
     sample_prop <- runif(Npatches,0,1)
     k_p <- as.vector(rmultinom(1,metaK,prob=(exp(sample_prop)/sum(exp(sample_prop)))))
+    while(any(k_p >= metaK*(1-magnitude_of_decline))){
+      k_p <- as.vector(rmultinom(1,metaK,prob=(exp(sample_prop)/sum(exp(sample_prop)))))
+    }
     beta_p <- -log(alpha_p)/k_p
   }
   
@@ -39,6 +42,11 @@ patch_variance <- function(model="Beverton-Holt",alpha_heterogeneity=F,cap_heter
   {
     sample_prop <- runif(Npatches,0,1)
     k_p <- as.vector(rmultinom(1,metaK,prob=(exp(sample_prop)/sum(exp(sample_prop)))))
+    
+    while(any(k_p >= metaK*(1-magnitude_of_decline))){
+      k_p <- as.vector(rmultinom(1,metaK,prob=(exp(sample_prop)/sum(exp(sample_prop)))))
+    }
+    
     beta_p <- k_p
   }
   

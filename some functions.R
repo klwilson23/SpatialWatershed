@@ -47,6 +47,6 @@ SRfn <- function(theta){
   nll <- -1*sum(dlnorm(spawnRec$recruits,meanlog=log(rec.mean),sdlog=sd.hat,log=TRUE)*spawnRec$weights,na.rm=TRUE)
   penalty1 <- -dnorm(a.hat,alpha,3*alpha,log=TRUE) # penalized likelihood on estimated alpha
   penalty2 <- -dnorm(b.hat,metaK,3*metaK,log=TRUE) # penalized likelihood on estimated carrying capacity
-  jnll <- nll + penalty1 + penalty2
+  jnll <- sum(c(nll,penalty1,penalty2),na.rm=TRUE)
   return(jnll)
 }

@@ -105,5 +105,5 @@ makeNetworks <- function(network,Npatches,patchDist)
     landscape <- complexLandscape
   }
   
-  return(list("distanceMatrix"=dist_matrix,"landscape"=landscape))
+  return(list("distanceMatrix"=dist_matrix,"landscape"=landscape,"node.size"=node.size))
 }
