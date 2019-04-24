@@ -50,17 +50,17 @@ Nyears <- Nburnin+NyrsPost
 targetYear <- Nburnin+10
 compensationLag <- 50 # how many years to lag estimates of compensation
 Npatches <- ncol(distance_matrix)
-omega <- 0.02 # proportion of animals in patch that move
+omega <- 0.01 # proportion of animals in patch that move
 m <- 1 # distance decay function: could set at some proportion of max distance
 # adult stock-juvenile recruitment traits
 alpha <- 2
-metaK <- Npatches*1000
+metaK <- Npatches*100
 beta <- -log(alpha)/metaK
-cv <- 1e-5
+cv <- 0.1
 # temporal correlation
-rho.time <- 0.0001
+rho.time <- 1e-5
 # distance penalty to spatial correlation: higher means more independent
-rho.dist <- 5
+rho.dist <- 1e6
 # how big is the disturbance after Nburnin years?
 magnitude_of_decline <- 0.90
 # what is the lag time between recruits and spawners
