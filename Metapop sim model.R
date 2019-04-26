@@ -10,7 +10,7 @@ source("local disturbance.R")
 source("some functions.R")
 source("popDynFn.R")
 
-networkType <- "star"
+networkType <- "complex"
 
 network <- makeNetworks(networkType,16,1)
 
@@ -33,13 +33,13 @@ Nyears <- Nburnin+NyrsPost
 targetYear <- Nburnin+10
 compensationLag <- 50 # how many years to lag estimates of compensation
 Npatches <- ncol(distance_matrix)
-omega <- 0.5 # proportion of animals in patch that move
+omega <- 1e-4 # proportion of animals in patch that move
 m <- 100 # distance decay function: could set at some proportion of max distance
 # adult stock-juvenile recruitment traits
 alpha <- 2
 metaK <- Npatches*100
 beta <- -log(alpha)/metaK
-cv <- 1e-2
+cv <- 1e-1
 # temporal correlation
 rho.time <- 1e-5
 # distance penalty to spatial correlation: higher means more independent
