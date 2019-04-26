@@ -10,7 +10,7 @@ source("local disturbance.R")
 source("some functions.R")
 source("popDynFn.R")
 
-networkType <- "dendritic"
+networkType <- "star"
 
 network <- makeNetworks(networkType,16,1)
 
@@ -186,62 +186,8 @@ patchOccupancy <- sum(popDyn[Nyears,,"Recruits"]>(0.05*k_p))/Npatches
 postDistBias <- sum(compensationBias[!is.na(compensationBias)])
 lostCompensation <- alphaHat/alpha
 
-matLayout <- matrix(0,ncol=18,nrow=18,byrow=T)
-matLayout[1:9,1:9] <- 1
-matLayout[1:3,10:12] <- 2
-matLayout[1:3,13:15] <- 3
-matLayout[4:6,10:12] <- 4
-matLayout[4:6,13:15] <- 5
-matLayout[7:9,10:12] <- 6
-matLayout[7:9,13:15] <- 7
-matLayout[3:7,16:17] <- 8
-matLayout[10:18,1:9] <- 9
-matLayout[10:12,10:18] <- 10
-matLayout[13:15,10:18] <- 11
-matLayout[16:18,10:18] <- 12
-layout(matLayout)
-par(mar=c(5,4,1,1))
-levelFactors <- factor(pmax(0.0,pmin(1.0,round(popDyn[Nyears,,"Spawners"]/k_p*Nlevels)/Nlevels)),levels=((0:10)/Nlevels))
-matplot(t(t(popDyn[,,"Spawners"])/k_p),type="l",xlab="Time",ylab="Relative abundance (N/K)",col=rev(colfunc(Nlevels+1))[levelFactors],ylim=c(0,1.1*max(t(popDyn[,,"Spawners"])/k_p,na.rm=TRUE)))
-lines(MetaPop[,"Spawners"]/metaK,lwd=3,col="black")
-segments(y0=0,y1=1.05*max(t(popDyn[,,"Spawners"])/k_p),x0=(recovery+Nburnin),lwd=4,col="orange")
+spatialRecoveryPlot()
 
-text(x=(recovery+Nburnin)-30,y=1.1*max(t(popDyn[,,"Spawners"])/k_p,na.rm=TRUE),"Time to recovery")
-curvedarrow(from=c((recovery+Nburnin)-30,1.08*max(t(popDyn[,,"Spawners"])/k_p,na.rm=TRUE)),to=c((recovery+Nburnin),1.0*max(t(popDyn[,,"Spawners"])/k_p,na.rm=TRUE)),lwd=2,lty=1,lcol="grey50",arr.col="grey50",curve=0.002,endhead=TRUE,arr.pos=0.65)
-
-par(mar=c(1,1,1,1))
-for(i in c(Nburnin,Nburnin+3,Nburnin+6,Nburnin+9,Nburnin+12,Nburnin+15))
-{
-  levelFactors <- factor(pmax(0.0,pmin(1.0,round(popDyn[i,,"Spawners"]/k_p*Nlevels)/Nlevels)),levels=((0:10)/Nlevels))
-  V(network$landscape)$color <- rev(colfunc(Nlevels+1))[levelFactors]
-  plottingFunc(network,networkType)
-  title(main=paste("Year",i),line=0,font.main=1,cex=0.8)
-}
-
-par(mar=c(1,1,1,1))
-plot(NA,xlim=c(-1,1),ylim=c(-1,1),xaxt="n",yaxt="n",xlab="",ylab="",frame.plot=FALSE,xpd=NA)
-colorlegend(rev(colfunc(Nlevels)),zlevels=Nlevels,zlim=c(0,1),dz=0.1,posx=c(0.35,0.5),posy=c(0.1,0.95),digit=2)
-title(main=expression('N'[t]*'/K'),line=1,font.main=1,cex=0.8,xpd=NA)
-#text(x=0.5,y=1.75,expression('N'[t]*'/K'),cex=1.5,xpd=NA)
-
-par(mar=c(5,4,1,1))
-plot(MetaPop[1:(Nyears-1),"Spawners"],MetaPop[2:Nyears,"Recruits"],type="p",xlab="Metapopulation spawners",ylab="Metapopulation recruits",pch=21,bg=ifelse(1:(Nyears-1)>Nburnin,"orange","dodgerblue"),xlim=c(0,max(MetaPop[,"Spawners"],na.rm=TRUE)),ylim=c(0,max(MetaPop[,"Recruits"],na.rm=TRUE)))
-
-curve((alpha*x)/(1+((alpha-1)/metaK)*x),from=0,to=max(MetaPop[,"Spawners"],na.rm=TRUE),add=TRUE,lwd=2,col="dodgerblue",xpd=FALSE)
-curve((mean(alphaYr[Nburnin:(Nburnin+10)],na.rm=TRUE)*x)/(1+((mean(alphaYr[Nburnin:(Nburnin+10)],na.rm=TRUE)-1)/mean(metaKYr[Nburnin:(Nburnin+10)],na.rm=TRUE))*x),from=0,to=max(MetaPop[,"Spawners"],na.rm=TRUE),add=TRUE,lwd=2,col="orange",xpd=FALSE)
-
-
-legend("bottomright",c("pre-disturbance","post-disturbance"),pch=21,pt.bg=c("dodgerblue","orange"),bty="n")
-
-par(mar=c(5,4,1,1))
-plot(lostCapacity[Nburnin:Nyears],xlab="Years after disturbance",ylab="Relative capacity",type="l",ylim=range(lostCapacity[Nburnin:Nyears],na.rm=TRUE),lwd=2,col="grey50")
-
-par(mar=c(5,4,1,1))
-plot(alphaYr[Nburnin:Nyears]/alpha,xlab="Years after disturbance",ylab="Relative compensation",type="l",ylim=range(alphaYr[Nburnin:Nyears]/alpha,na.rm=TRUE),lwd=2,col="grey50")
-
-par(mar=c(5,4,1,1))
-plot(compensationBias[Nburnin:Nyears],xlab="Years after disturbance",ylab="Relative production",type="l",lwd=2,col="grey50")
-abline(h=median(compensationBias[Nburnin:(Nburnin+10)],na.rm=TRUE),col="black",lty=2,lwd=2,xpd=FALSE)
 cumsum(compensationBias[!is.na(compensationBias)]-1)
 #plot(log(MetaPop[2:Nyears,"Recruits"]/MetaPop[1:(Nyears-1),"Spawners"]))
 

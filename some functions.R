@@ -1,3 +1,4 @@
+library(ggplot2)
 Corner_text <- function(text, location="topright",...) #function to write text to the corner of plots
 {
   legend(location,legend=text, bty ="n", pch=NA,...)
@@ -122,13 +123,13 @@ spatialRecoveryPlot <- function()
   
   legend("bottomright",c("pre-disturbance","post-disturbance"),pch=21,pt.bg=c("dodgerblue","orange"),bty="n")
   
-  par(mar=c(5,4,1,1))
-  plot(lostCapacity[Nburnin:Nyears],xlab="Years after disturbance",ylab="Relative capacity",type="l",ylim=range(lostCapacity[Nburnin:Nyears],na.rm=TRUE),lwd=2,col="grey50")
+  par(mar=c(4,4,1,1))
+  plot(lostCapacity[Nburnin:Nyears],xlab="",ylab="Relative capacity",type="l",ylim=range(lostCapacity[Nburnin:Nyears],na.rm=TRUE),lwd=2,col="grey50",xpd=NA)
   
-  par(mar=c(5,4,1,1))
-  plot(alphaYr[Nburnin:Nyears]/alpha,xlab="Years after disturbance",ylab="Relative compensation",type="l",ylim=range(alphaYr[Nburnin:Nyears]/alpha,na.rm=TRUE),lwd=2,col="grey50")
+  par(mar=c(5,4,0,1))
+  plot(alphaYr[Nburnin:Nyears]/alpha,xlab="",ylab="Relative compensation",type="l",ylim=range(alphaYr[Nburnin:Nyears]/alpha,na.rm=TRUE),lwd=2,col="grey50",xpd=NA)
   
-  par(mar=c(5,4,1,1))
-  plot(compensationBias[Nburnin:Nyears],xlab="Years after disturbance",ylab="Relative production",type="l",lwd=2,col="grey50")
+  par(mar=c(5,4,0,1))
+  plot(compensationBias[Nburnin:Nyears],xlab="Years after disturbance",ylab="Relative production",type="l",lwd=2,col="grey50",xpd=NA)
   abline(h=median(compensationBias[Nburnin:(Nburnin+10)],na.rm=TRUE),col="black",lty=2,lwd=2,xpd=FALSE)
 }
