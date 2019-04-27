@@ -161,3 +161,13 @@ for(iNet in 1:length(network_levels))
 }
 endtime <- Sys.time()-ptm
 endtime
+
+saveRDS(recovery,"recovery.rds")
+saveRDS(recovered,"recovered.rds")
+saveRDS(extinction,"extinction.rds")
+saveRDS(extinctionRate,"extinctionRate.rds")
+saveRDS(bias,"bias.rds")
+saveRDS(patchOcc,"patchOcc.rds")
+saveRDS(compensation,"compensation.rds")
+saveRDS(capacity,"capacity.rds")
+saveRDS(metaAbund,"metaAbund.rds")
