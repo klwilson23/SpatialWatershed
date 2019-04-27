@@ -10,11 +10,7 @@ source("local disturbance.R")
 source("some functions.R")
 source("popDynFn.R")
 
-<<<<<<< HEAD
-networkType <- "complex"
-=======
 networkType <- "linear"
->>>>>>> ac16bbb525603e69b937f6217ebf1892d4e47a1f
 
 network <- makeNetworks(networkType,16,1)
 
