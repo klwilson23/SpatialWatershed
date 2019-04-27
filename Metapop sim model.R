@@ -10,7 +10,7 @@ source("local disturbance.R")
 source("some functions.R")
 source("popDynFn.R")
 
-networkType <- "star"
+networkType <- "complex"
 
 network <- makeNetworks(networkType,16,1)
 
