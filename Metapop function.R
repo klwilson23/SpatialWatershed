@@ -149,7 +149,7 @@ metaPop <- function(Npatches=16,
   postDistBias <- sum(compensationBias[!is.na(compensationBias)])
   lostCompensation <- alphaHat/alpha
   
-  #spatialRecoveryPlot()
+  spatialRecoveryPlot()
   
   return(list("MetaPop"=MetaPop,"popDyn"=popDyn,"sink"=sink,"source"=source,"pseudoSink"=pseudoSink,"dispersing"=dispersing,"bias"=postDistBias,"lostCompensation"=lostCompensation,"lostCapacity"=lostCapacity[Nyears],"recovery"=recovery,"extinction"=extinction,"patchOccupancy"=patchOccupancy))
 }

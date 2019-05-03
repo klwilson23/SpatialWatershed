@@ -186,7 +186,10 @@ patchOccupancy <- sum(popDyn[Nyears,,"Recruits"]>(0.05*k_p))/Npatches
 postDistBias <- sum(compensationBias[!is.na(compensationBias)])
 lostCompensation <- alphaHat/alpha
 
-spatialRecoveryPlot()
+#jpeg(paste(networkType," example.jpeg",sep=""),res=800,units="in",height=8,width=9)
+#nodeScalar=35
+#spatialRecoveryPlot(textSize=0.8)
+#dev.off()
 
 cumsum(compensationBias[!is.na(compensationBias)]-1)
 #plot(log(MetaPop[2:Nyears,"Recruits"]/MetaPop[1:(Nyears-1),"Spawners"]))
