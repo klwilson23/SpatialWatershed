@@ -20,7 +20,10 @@ plot(network$landscape,col="dodgerblue",layout=layout.reingold.tilford(network$l
 title(main="Star",line=0,font.main=1)
 
 network <- makeNetworks("complex",Npatches=Npatches,patchDist=patchDist)
-plot(network$landscape,col="dodgerblue",layout=layout_nicely(network$landscape,dim=2),vertex.size=network$node.size*nodeScalar)
+spatialLayout <- matrix(MORELETTERS(1:Npatches),nrow=sqrt(Npatches),ncol=sqrt(Npatches),byrow=TRUE)
+spatialLayout <- t(sapply(1:Npatches,function(x){which(spatialLayout==LETTERS[x],arr.ind=TRUE)}))
+spatialLayout <- spatialLayout[rank(attr(V(network$landscape),"names")),]
+plot(network$landscape,col="dodgerblue",layout=spatialLayout,vertex.size=network$node.size*nodeScalar)
 title(main="Complex",line=0,font.main=1)
 dev.off()
 
@@ -41,6 +44,9 @@ plot(network$landscape,col="dodgerblue",layout=layout.reingold.tilford(network$l
 title(main="Star",line=0,font.main=1)
 
 network <- makeNetworks("complex",Npatches=Npatches,patchDist=patchDist)
-plot(network$landscape,col="dodgerblue",layout=layout_nicely(network$landscape,dim=2),vertex.size=network$node.size*nodeScalar)
+spatialLayout <- matrix(MORELETTERS(1:Npatches),nrow=sqrt(Npatches),ncol=sqrt(Npatches),byrow=TRUE)
+spatialLayout <- t(sapply(1:Npatches,function(x){which(spatialLayout==LETTERS[x],arr.ind=TRUE)}))
+spatialLayout <- spatialLayout[rank(attr(V(network$landscape),"names")),]
+plot(network$landscape,col="dodgerblue",layout=spatialLayout,vertex.size=network$node.size*nodeScalar)
 title(main="Complex",line=0,font.main=1)
 dev.off()
