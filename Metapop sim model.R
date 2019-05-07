@@ -152,9 +152,9 @@ patchOccupancy <- sum(popDyn[Nyears,,"Recruits"]>(0.10*k_p))/Npatches
 postDistBias <- compensationBias[!is.na(compensationBias)]
 lostCompensation <- alphaHat/alpha
 
-#jpeg(paste(networkType," example.jpeg",sep=""),res=800,units="in",height=8,width=9)
+jpeg(paste(networkType," example.jpeg",sep=""),res=800,units="in",height=8,width=9)
 spatialRecoveryPlot(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recovery,Nburnin,Nyears,alpha,metaK,alphaYr,metaKYr,lostCapacity,compensationBias,nodeScalar=35,network=network,networkType=networkType,Npatches=Npatches)
-#dev.off()
+dev.off()
 
 
 resultList <- list("MetaPop"=MetaPop,"popDyn"=popDyn,"sink"=sink,"source"=source,"pseudoSink"=pseudoSink,"dispersing"=dispersing,"bias"=sum(postDistBias,na.rm=TRUE)/sum(!is.na(postDistBias)),"lostCompensation"=sum(lostCompensation,na.rm=TRUE)/sum(!is.na(lostCompensation)),"lostCapacity"=sum(lostCapacity,na.rm=TRUE)/sum(!is.na(lostCapacity)),"recovery"=recovery,"extinction"=extinction,"patchOccupancy"=patchOccupancy)
