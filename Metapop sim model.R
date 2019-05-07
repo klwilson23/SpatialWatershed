@@ -1,4 +1,6 @@
 
+# short-term, medium-term, and long-term dynamics captures in metrics would be useful
+
 library(mvtnorm)
 library(marima)
 library(diagram)
@@ -11,15 +13,15 @@ source("some functions.R")
 source("popDynFn.R")
 
 Npatches=16
-networkType="dendritic"
+networkType="linear"
 patchDistance=1
 Nburnin=50
 NyrsPost=100
-omega=1e-5
+omega=1e-6
 m=100
-alpha=1.1
+alpha=1.5
 metaK=1600
-cv=1e-5
+cv=1e-1
 DistScenario="uniform"
 magnitude_of_decline=0.9
 lagTime=1
@@ -164,8 +166,5 @@ sinkCV <- sd(sinkVar)/mean(sinkVar)
 sourceCV <- sd(sourceVar)/mean(sourceVar)
 pseudoSinkCV <- sd(pseudoSinkVar)/mean(pseudoSinkVar)
 layout(1)
-plot(sinkVar,sourceVar)
-plot(sinkVar,pseudoSinkVar)
-plot(sourceVar,pseudoSinkVar)
 library("plot3D")
 scatter3D(sinkVar,sourceVar,pseudoSinkVar,phi=20,theta=135,type="h",bty="g",pch=19,lwd=2,xlab="Time as sink",ylab="Time as source",zlab="Time as Pseudo-sink",axes=TRUE,clab="Proportion",col=ramp.col(c("dodgerblue", "orange")),ticktype = "detailed")
