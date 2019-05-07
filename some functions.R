@@ -42,19 +42,19 @@ dvSpaceTime <- function(mnSig,lastDV,rhoTime,rhoSpace,distMatrix)
   return(dvST)
 }
 
-SRfn <- function(theta){
+SRfn <- function(theta,data,lastYr){
   a.hat <- theta[1]
   b.hat <- exp(theta[2])
   sd.hat <- exp(theta[3])
-  rec.mean <- (a.hat*spawnRec$spawners)/(1+((a.hat-1)/b.hat)*spawnRec$spawners)
-  nll <- -1*sum(dlnorm(spawnRec$recruits,meanlog=log(rec.mean),sdlog=sd.hat,log=TRUE)*spawnRec$weights,na.rm=TRUE)
-  penalty1 <- -dnorm(a.hat,alphaLstYr,3*alphaLstYr,log=TRUE) # penalized likelihood on estimated alpha
-  penalty2 <- -dnorm(b.hat,metaKLstYr,3*metaKLstYr,log=TRUE) # penalized likelihood on estimated carrying capacity
+  rec.mean <- (a.hat*data$spawners)/(1+((a.hat-1)/b.hat)*data$spawners)
+  nll <- -1*sum(dlnorm(data$recruits,meanlog=log(rec.mean),sdlog=sd.hat,log=TRUE)*data$weights,na.rm=TRUE)
+  penalty1 <- -dnorm(a.hat,lastYr$alphaLstYr,3*lastYr$alphaLstYr,log=TRUE) # penalized likelihood on estimated alpha
+  penalty2 <- -dnorm(b.hat,lastYr$metaKLstYr,3*lastYr$metaKLstYr,log=TRUE) # penalized likelihood on estimated carrying capacity
   jnll <- sum(c(nll,penalty1,penalty2),na.rm=TRUE)
   return(jnll)
 }
 
-plottingFunc <- function(network,type){
+plottingFunc <- function(network,type,nodeScalar,Npatches){
   par(xpd=TRUE,usr=c(-1.572561,1.572561,-1.080000,1.080000),mar=c(1,1,1,1))
   if(type=="linear"){
     plot(network$landscape,col="dodgerblue",layout=cbind(seq(-1,1,length.out = gorder(network$landscape)),seq(1,-1,length.out = gorder(network$landscape))),vertex.size=network$node.size*nodeScalar,xlim=c(-1,1),ylim=c(-1,1),rescale=FALSE)
@@ -75,8 +75,10 @@ plottingFunc <- function(network,type){
   }
 }
 
-spatialRecoveryPlot <- function(textSize=1)
+spatialRecoveryPlot <- function(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recovery,Nburnin,Nyears,alpha,metaK,alphaYr,metaKYr,lostCapacity,compensationBias,nodeScalar=35,network,networkType=networkType,Npatches=Npatches)
 {
+  colfunc <- colorRampPalette(c("royalblue4","dodgerblue","lightblue","darkorange1","firebrick"))
+  
   matLayout <- matrix(0,ncol=18,nrow=18,byrow=T)
   matLayout[1:9,1:9] <- 1
   matLayout[1:4,10:12] <- 2
@@ -95,7 +97,7 @@ spatialRecoveryPlot <- function(textSize=1)
   lines(MetaPop[,"Spawners"]/metaK,lwd=3,col="black")
   segments(y0=0,y1=1.05*max(t(popDyn[,,"Spawners"])/k_p),x0=(recovery+Nburnin),lwd=4,col="orange")
   
-  recoverText <- ifelse(recovery+Nburnin>Nyears,"Not recovered","Time to recovery")
+  recoverText <- ifelse((recovery+Nburnin)==Nyears,"Not recovered","Time to recovery")
   text(x=(recovery+Nburnin)-30,y=1.1*max(t(popDyn[,,"Spawners"])/k_p,na.rm=TRUE),recoverText,cex=textSize*0.8)
   curvedarrow(from=c((recovery+Nburnin)-30,1.08*max(t(popDyn[,,"Spawners"])/k_p,na.rm=TRUE)),to=c((recovery+Nburnin),1.0*max(t(popDyn[,,"Spawners"])/k_p,na.rm=TRUE)),lwd=2,lty=1,lcol="grey50",arr.col="grey50",curve=0.002,endhead=TRUE,arr.pos=0.65)
   
@@ -106,7 +108,7 @@ spatialRecoveryPlot <- function(textSize=1)
   {
     levelFactors <- factor(pmax(0.0,pmin(1.0,round(popDyn[i,,"Spawners"]/k_p*Nlevels)/Nlevels)),levels=((0:10)/Nlevels))
     V(network$landscape)$color <- rev(colfunc(Nlevels+1))[levelFactors]
-    plottingFunc(network,networkType)
+    plottingFunc(network,networkType,nodeScalar,Npatches)
     title(main=paste("Year",i),line=0,font.main=1,cex.main=textSize)
   }
 

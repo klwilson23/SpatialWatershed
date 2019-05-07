@@ -2,15 +2,7 @@ patch_variance <- function(model="Beverton-Holt",alpha_heterogeneity=F,cap_heter
 {
   if(alpha_heterogeneity & model=="Ricker")
   {
-    alpha_M <- alpha
-    alpha_p <- rnorm(Npatches,0,1)
-    alpha_p <- (alpha_p-mean(alpha_p))/sd(alpha_p)
-    alpha_p <- alpha_M + alpha_p 
-    while(any(alpha_p<1.0)){
-      alpha_p <- rnorm(Npatches,0,1)
-      alpha_p <- (alpha_p-mean(alpha_p))/sd(alpha_p)
-      alpha_p <- alpha_M + alpha_p 
-    }
+    alpha_p <- rtruncnorm(N=Npatches,mean=alpha,sd=alpha/3,a=1.01,b=alpha*2+1.01)
     beta_p <- -log(alpha_p)/k_p
   }
   
@@ -26,15 +18,7 @@ patch_variance <- function(model="Beverton-Holt",alpha_heterogeneity=F,cap_heter
   
   if(alpha_heterogeneity & model=="Beverton-Holt")
   {
-    alpha_M <- alpha
-    alpha_p <- rnorm(Npatches,0,1)
-    alpha_p <- (alpha_p-mean(alpha_p))/sd(alpha_p)
-    alpha_p <- alpha_M + alpha_p
-    while(any(alpha_p<1.0)){
-      alpha_p <- rnorm(Npatches,0,1)
-      alpha_p <- (alpha_p-mean(alpha_p))/sd(alpha_p)
-      alpha_p <- alpha_M + alpha_p 
-    }
+    alpha_p <- rtruncnorm(N=Npatches,mean=alpha,sd=alpha/3,a=1+1e-5,b=alpha*2+(1+1e-5))
     beta_p <- k_p
   }
   
@@ -58,7 +42,19 @@ patch_variance <- function(model="Beverton-Holt",alpha_heterogeneity=F,cap_heter
   return(list("alpha_p"=alpha_p,"beta_p"=beta_p,"k_p"=k_p))
 }
 
-# ignore this below
+rtruncnorm <- function(N, mean = 0, sd = 1, a = -Inf, b = Inf)
+{
+  if (a > b) stop('Error: Truncation range is empty');
+  U <- runif(N, pnorm(a, mean, sd), pnorm(b, mean, sd));
+  target <- qnorm(U, mean, sd)
+  target_c <- target-mean(target)+mean
+  while(any(target_c<1.0)){
+    U <- runif(N, pnorm(a, mean, sd), pnorm(b, mean, sd));
+    target <- qnorm(U, mean, sd)
+    target_c <- target-mean(target)+mean
+  }
+  return(target_c)
+}
 
 function()
 {

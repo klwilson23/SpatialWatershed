@@ -30,14 +30,14 @@ metaPop <- function(Npatches=16,
                     kVariable=FALSE)
 {
   # make the spatial network
-  network <- makeNetworks(networkType,Npatches,patchDistance)
+  network <- makeNetworks(network=networkType,Npatches=Npatches,patchDist=patchDistance)
   distance_matrix <- network$distanceMatrix
   # get the metapopulation & patch level Ricker parameters
   alpha_p <- rep(alpha,Npatches)
   k_p <- rep((metaK/Npatches),Npatches)
   beta_p <- k_p
   # call function to get the among patch variability in demographic traits
-  patches <- patch_variance(model=model,alphaVariable,kVariable,Npatches,alpha=alpha,alpha_p=alpha_p,metaK=metaK,k_p=k_p)
+  patches <- patch_variance(model=prodType,alphaVariable,kVariable,Npatches=Npatches,alpha=alpha,alpha_p=alpha_p,metaK=metaK,k_p=k_p,magnitude_of_decline=magnitude_of_decline)
   alpha_p <- patches$alpha_p
   beta_p <- patches$beta_p
   k_p <- patches$k_p
@@ -75,7 +75,7 @@ metaPop <- function(Npatches=16,
     # part iii - add disturbance
     if(Iyear==(Nburnin+1))
     {
-      deaths_p <- Disturbance(metaPop=ceiling(MetaPop[Iyear-1,"Spawners"]),magnitude=magnitude_of_decline,DisType=DistScenario, N_p=ceiling(popDyn[Iyear-1,,"Spawners"]),prod=k_p)$deaths_p
+      deaths_p <- Disturbance(metaPop=ceiling(MetaPop[Iyear-1,"Spawners"]),magnitude=magnitude_of_decline,DisType=DistScenario, N_p=ceiling(popDyn[Iyear-1,,"Spawners"]),prod=k_p,Npatches=Npatches)$deaths_p
       popDyn[Iyear-1,,"Spawners"] <- pmax(0,popDyn[Iyear-1,,"Spawners"]-deaths_p)
       MetaPop[Iyear-1,"Spawners"] <- sum(popDyn[Iyear-1,,"Spawners"])
     }else{
@@ -83,7 +83,7 @@ metaPop <- function(Npatches=16,
     }
     
     # part iva - population dynamics
-    patch_rec <- popDynamics(alpha=alpha_p,beta=beta_p,Nadults=popDyn[Iyear-lagTime,,"Spawners"],model=model)$recruits
+    patch_rec <- popDynamics(alpha=alpha_p,beta=beta_p,Nadults=popDyn[Iyear-lagTime,,"Spawners"],model=prodType)$recruits
     
     # part ivb - stochastic recruitment
     # function dvSpaceTime adds spatial & temporal correlation
@@ -116,12 +116,11 @@ metaPop <- function(Npatches=16,
     {
       spawnRec <- data.frame("recruits"=MetaPop[2:Iyear,"Recruits"],"spawners"=MetaPop[1:(Iyear-1),"Spawners"],weights=exp(dataWeighting*(2:Iyear-Iyear))/max(exp(dataWeighting*(2:Iyear-Iyear))))
       
-      if(model=="Beverton-Holt"){
-        SRfitTry <- lm(log(recruits/spawners)~spawners,data=spawnRec)
+      if(prodType=="Beverton-Holt"){
         alphaHat <- pmax(1.01,alphaLstYr)
         metaK_hat <- pmax(1,metaKLstYr)
-        theta <- as.vector(c(alphaHat,log(metaK_hat),log(summary(SRfitTry)$sigma)))
-        SRfit <- optim(theta,SRfn,method="L-BFGS-B",lower=c(1.01,-Inf,-Inf))
+        theta <- as.vector(c(alphaHat,log(metaK_hat),log(0.2)))
+        SRfit <- optim(theta,SRfn,method="L-BFGS-B",lower=c(1.01,-Inf,-Inf),data=spawnRec,lastYr=list("alphaLstYr"=alphaLstYr,"metaKLstYr"=metaKLstYr))
         alphaHat <- SRfit$par[1]
         metaK_hat <- exp(SRfit$par[2])
         compHat <- (alphaHat*MetaPop[Iyear-1,"Spawners"])/(1+((alphaHat-1)/metaK_hat)*MetaPop[Iyear-1,"Spawners"])
@@ -145,11 +144,16 @@ metaPop <- function(Npatches=16,
   recovered[(Nburnin+1):(Nyears-4)] <- running.mean(MetaPop[(Nburnin+1):Nyears,"Spawners"],5)>=mean(MetaPop[1:Nburnin,"Spawners"])
   recovery <- ifelse(any(recovered),min(which(recovered))-Nburnin,NyrsPost)
   extinction <- ifelse(any(MetaPop[,"Spawners"]==0),min(which(MetaPop[,"Spawners"]==0))-Nburnin,NyrsPost)
-  patchOccupancy <- sum(popDyn[Nyears,,"Recruits"]>(0.05*k_p))/Npatches
-  postDistBias <- sum(compensationBias[!is.na(compensationBias)])
+  patchOccupancy <- sum(popDyn[Nyears,,"Recruits"]>(0.10*k_p))/Npatches
+  postDistBias <- sum(compensationBias[!is.na(compensationBias) & 1:Nyears>Nburnin & 1:Nyears<(Nburnin+10)])/sum(1:Nyears>Nburnin & 1:Nyears<(Nburnin+10))
   lostCompensation <- alphaHat/alpha
   
-  spatialRecoveryPlot()
+  #spatialRecoveryPlot(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recovery,Nburnin,Nyears,alpha,metaK,alphaYr,metaKYr,lostCapacity,compensationBias,nodeScalar=35,network=network,networkType=networkType,Npatches=Npatches)
   
   return(list("MetaPop"=MetaPop,"popDyn"=popDyn,"sink"=sink,"source"=source,"pseudoSink"=pseudoSink,"dispersing"=dispersing,"bias"=postDistBias,"lostCompensation"=lostCompensation,"lostCapacity"=lostCapacity[Nyears],"recovery"=recovery,"extinction"=extinction,"patchOccupancy"=patchOccupancy))
 }
+
+#makeMeta <- metaPop(networkType = "linear", m=100)
+#makeMeta <- metaPop(networkType = "dendritic", m=100)
+#makeMeta <- metaPop(networkType = "star", m=100)
+#makeMeta <- metaPop(networkType = "complex", m=100)

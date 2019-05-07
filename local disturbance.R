@@ -1,4 +1,4 @@
-Disturbance <- function(metaPop,magnitude=0.5,DisType="uniform",N_p,prod)
+Disturbance <- function(metaPop,magnitude=0.5,DisType="uniform",N_p,prod,Npatches)
 {
   # function to apply the disturbance regime to patchy populations
   metaPop = round(metaPop) # what is our total metapopulation
