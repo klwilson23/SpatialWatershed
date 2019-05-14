@@ -140,15 +140,6 @@ for(iNet in 1:length(network_levels))
                 compensation[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="lostCompensation"),]))
                 
                 metaAbund[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(lapply(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="MetaPop"),],function(x){x[Nburnin+NyrsPost,"Spawners"]})))/metaK
-                #MetaPop <- boatyMcboot[[which(dimnames(boatyMcboot)[[1]]=="MetaPop")]]
-                #popDyn <- boatyMcboot[[which(dimnames(boatyMcboot)[[1]]=="popDyn")]]
-                #layout(matrix(1:2,ncol=1,nrow=2,byrow=T))
-                #par(mar=c(5,4,1,1))
-                #matplot(popDyn[,,"Spawners"]/k_p,type="l",xlab="Time",ylab="Relative abundance (N/K)")
-                #lines(MetaPop[,"Spawners"]/metaK,lwd=3,col="black")
-                #plot(MetaPop[1:((Nburnin+NyrsPost)-1),"Spawners"],MetaPop[2:(Nburnin+NyrsPost),"Recruits"],type="p",xlab="Metapopulation spawners",ylab="Metapopulation recruits",pch=21,bg=ifelse(1:((Nburnin+NyrsPost)-1)>Nburnin,"orange","dodgerblue"))
-                #legend("topright",c("pre-disturbance","post-disturbance"),pch=21,pt.bg=c("dodgerblue","orange"),bty="n")
-                #layout(1)
                 counter <- counter + 1
                 setTxtProgressBar(progBar, counter)
               }
@@ -162,12 +153,12 @@ for(iNet in 1:length(network_levels))
 endtime <- Sys.time()-ptm
 endtime
 
-saveRDS(recovery,"recovery.rds")
-saveRDS(recovered,"recovered.rds")
-saveRDS(extinction,"extinction.rds")
-saveRDS(extinctionRate,"extinctionRate.rds")
-saveRDS(bias,"bias.rds")
-saveRDS(patchOcc,"patchOcc.rds")
-saveRDS(compensation,"compensation.rds")
-saveRDS(capacity,"capacity.rds")
-saveRDS(metaAbund,"metaAbund.rds")
+saveRDS(recovery,paste("recovery",Sys.Date(),".rds",sep=""))
+saveRDS(recovered,paste("recovered",Sys.Date(),".rds",sep=""))
+saveRDS(extinction,paste("extinction",Sys.Date(),".rds",sep=""))
+saveRDS(extinctionRate,paste("extinctionRate",Sys.Date(),".rds",sep=""))
+saveRDS(bias,paste("bias",Sys.Date(),".rds",sep=""))
+saveRDS(patchOcc,paste("patchOcc",Sys.Date(),".rds",sep=""))
+saveRDS(compensation,paste("compensation",Sys.Date(),".rds",sep=""))
+saveRDS(capacity,paste("capacity",Sys.Date(),".rds",sep=""))
+saveRDS(metaAbund,paste("metaAbund",Sys.Date(),".rds",sep=""))
