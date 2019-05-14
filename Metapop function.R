@@ -144,13 +144,23 @@ metaPop <- function(Npatches=16,
   recovered[(Nburnin+1):(Nyears-4)] <- running.mean(MetaPop[(Nburnin+1):Nyears,"Spawners"],5)>=mean(MetaPop[1:Nburnin,"Spawners"])
   recovery <- ifelse(any(recovered),min(which(recovered))-Nburnin,NyrsPost)
   extinction <- ifelse(any(MetaPop[,"Spawners"]==0),min(which(MetaPop[,"Spawners"]==0))-Nburnin,NyrsPost)
-  patchOccupancy <- sum(popDyn[Nyears,,"Recruits"]>(0.10*k_p))/Npatches
-  postDistBias <- sum(compensationBias[!is.na(compensationBias) & 1:Nyears>Nburnin & 1:Nyears<(Nburnin+10)])/sum(1:Nyears>Nburnin & 1:Nyears<(Nburnin+10))
-  lostCompensation <- alphaHat/alpha
+  patchOccupancy <- sum(popDyn[Nyears,,"Recruits"]>(0.05*k_p))/Npatches
+  
+  shortTermProd <- mean(compensationBias[Nburnin:(Nburnin+5)],na.rm=TRUE)
+  shortTermComp <- mean(alphaYr[Nburnin:(Nburnin+5)]/alpha,na.rm=TRUE)
+  shortTermCap <- mean(metaKYr[Nburnin:(Nburnin+5)]/actualK,na.rm=TRUE)
+  
+  medTermProd <- mean(compensationBias[Nburnin:(Nburnin+10)],na.rm=TRUE)
+  medTermComp <- mean(alphaYr[Nburnin:(Nburnin+10)]/alpha,na.rm=TRUE)
+  medTermCap <- mean(metaKYr[Nburnin:(Nburnin+10)]/actualK,na.rm=TRUE)
+  
+  longTermProd <- mean(compensationBias[Nburnin:(Nburnin+25)],na.rm=TRUE)
+  longTermComp <- mean(alphaYr[Nburnin:(Nburnin+25)]/alpha,na.rm=TRUE)
+  longTermCap <- mean(metaKYr[Nburnin:(Nburnin+25)]/actualK,na.rm=TRUE)
   
   #spatialRecoveryPlot(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recovery,Nburnin,Nyears,alpha,metaK,alphaYr,metaKYr,lostCapacity,compensationBias,nodeScalar=35,network=network,networkType=networkType,Npatches=Npatches)
   
-  return(list("MetaPop"=MetaPop,"popDyn"=popDyn,"sink"=sink,"source"=source,"pseudoSink"=pseudoSink,"dispersing"=dispersing,"bias"=postDistBias,"lostCompensation"=lostCompensation,"lostCapacity"=lostCapacity[Nyears],"recovery"=recovery,"extinction"=extinction,"patchOccupancy"=patchOccupancy))
+  return(list("MetaPop"=MetaPop,"popDyn"=popDyn,"sink"=sink,"source"=source,"pseudoSink"=pseudoSink,"dispersing"=dispersing,"shortTermProd"=shortTermProd,"shortTermComp"=shortTermComp,"shortTermCap"=shortTermCap,"medTermProd"=medTermProd,"medTermComp"=medTermComp,"medTermCap"=medTermCap,"longTermProd"=longTermProd,"longTermComp"=longTermComp,"longTermCap"=longTermCap,"recovery"=recovery,"extinction"=extinction,"patchOccupancy"=patchOccupancy))
 }
 
 #makeMeta <- metaPop(networkType = "linear", m=100)

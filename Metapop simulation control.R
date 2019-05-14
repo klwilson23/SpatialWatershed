@@ -21,8 +21,8 @@ source("some functions.R")
 source("Metapop function.R")
 source("popDynFn.R")
 
-Nboots <- 50
-Nlevels <- 5
+Nboots <- 200
+Nlevels <- 16
 model <- "Beverton-Holt"
 # simulation parameters
 Npatches <- 16
@@ -34,7 +34,7 @@ compLag <- 25 # how many years to lag estimates of compensation
 dataWeighting <- 0.1 # penalty to past years for data weighting
 m <- 100 # distance decay function: penalty of 1 says about 60% of dispersing recruits move to neighbor patches. penalty of 2 says about 90% of dispersing recruits move to neighbor patches
 # adult stock-juvenile recruitment traits
-alpha <- 3
+alpha <- 2
 metaK <- 1600
 # how big is the disturbance after Nburnin years?
 magnitude_of_decline <- 0.9
@@ -43,12 +43,12 @@ lagTime <- 1
 
 network_levels <- c("linear","dendritic","star","complex")
 disturbance_levels <- c("uniform","random","random_patch","targeted")
-dispersal_levels <- c(0,seq(1e-3,0.1,length.out=Nlevels-1))
+dispersal_levels <- c(0,10^(seq(log10(1e-4),log10(0.15),length.out=Nlevels-1)))
 alpha_levels <- c("same","variable")
 beta_levels <- c("same","variable")
-spatial_levels <- c(100,10,1) # from low spatial dependency to high
+spatial_levels <- c(1e4,10,1) # from low spatial dependency to high
 temporal_levels <- c(1e-5,0.2,0.6) # from low temporal autocorrelation to high
-stochastic_levels <- c(1e-1,0.2) # coefficient of variation on lognormal recruitment deviates
+stochastic_levels <- c(1e-6,0.05,0.3) # coefficient of variation on lognormal recruitment deviates
 
 recovery <- array(NA,dim=c(length(network_levels),
                            length(disturbance_levels),
@@ -67,7 +67,7 @@ recovery <- array(NA,dim=c(length(network_levels),
                              "temporal"=temporal_levels,
                              "stochastic"=stochastic_levels))
 
-metaAbund <- compensation <- capacity <- bias <- patchOcc <- extinctionRate <- extinction <- recovered <- recovery
+metaAbund <- med_compensation <- med_capacity <- med_bias <- long_compensation <- long_capacity <- long_bias <- short_compensation <- short_capacity <- short_bias <- patchOcc <- extinctionRate <- extinction <- recovered <- recovery
 
 nScenarios <- length(recovery) # how many scenarios are we simulating
 
@@ -133,11 +133,23 @@ for(iNet in 1:length(network_levels))
                 
                 patchOcc[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="patchOccupancy"),]))
                 
-                bias[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="bias"),]))
+                short_bias[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="shortTermProd"),]))
                 
-                capacity[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="lostCapacity"),]))
+                short_capacity[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="shortTermCap"),]))
                 
-                compensation[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="lostCompensation"),]))
+                short_compensation[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="shortTermComp"),]))
+                
+                med_bias[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="medTermProd"),]))
+                
+                med_capacity[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="medTermCap"),]))
+                
+                med_compensation[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="medTermComp"),]))
+                
+                long_bias[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="longTermProd"),]))
+                
+                long_capacity[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="longTermCap"),]))
+                
+                long_compensation[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="longTermComp"),]))
                 
                 metaAbund[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(lapply(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="MetaPop"),],function(x){x[Nburnin+NyrsPost,"Spawners"]})))/metaK
                 counter <- counter + 1
@@ -157,8 +169,14 @@ saveRDS(recovery,paste("recovery",Sys.Date(),".rds",sep=""))
 saveRDS(recovered,paste("recovered",Sys.Date(),".rds",sep=""))
 saveRDS(extinction,paste("extinction",Sys.Date(),".rds",sep=""))
 saveRDS(extinctionRate,paste("extinctionRate",Sys.Date(),".rds",sep=""))
-saveRDS(bias,paste("bias",Sys.Date(),".rds",sep=""))
 saveRDS(patchOcc,paste("patchOcc",Sys.Date(),".rds",sep=""))
-saveRDS(compensation,paste("compensation",Sys.Date(),".rds",sep=""))
-saveRDS(capacity,paste("capacity",Sys.Date(),".rds",sep=""))
+saveRDS(short_bias,paste("short_bias",Sys.Date(),".rds",sep=""))
+saveRDS(short_compensation,paste("short_compensation",Sys.Date(),".rds",sep=""))
+saveRDS(short_capacity,paste("short_capacity",Sys.Date(),".rds",sep=""))
+saveRDS(med_bias,paste("med_bias",Sys.Date(),".rds",sep=""))
+saveRDS(med_compensation,paste("med_compensation",Sys.Date(),".rds",sep=""))
+saveRDS(med_capacity,paste("med_capacity",Sys.Date(),".rds",sep=""))
+saveRDS(long_bias,paste("long_bias",Sys.Date(),".rds",sep=""))
+saveRDS(long_compensation,paste("long_compensation",Sys.Date(),".rds",sep=""))
+saveRDS(long_capacity,paste("long_capacity",Sys.Date(),".rds",sep=""))
 saveRDS(metaAbund,paste("metaAbund",Sys.Date(),".rds",sep=""))

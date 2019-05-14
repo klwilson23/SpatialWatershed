@@ -34,7 +34,7 @@ metaPop(Npatches=16,
 dev.off()
 
 tiff("dendritic example.tiff",res=800,units="in",compression="lzw",height=6,width=6)
-metaPop()
+metaPop(networkType = "dendritic")
 dev.off()
 
 tiff("star example.tiff",res=800,units="in",compression="lzw",height=6,width=6)
