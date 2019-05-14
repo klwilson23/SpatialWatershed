@@ -21,7 +21,7 @@ source("some functions.R")
 source("Metapop function.R")
 source("popDynFn.R")
 
-Nboots <- 200
+Nboots <- 250
 Nlevels <- 16
 model <- "Beverton-Holt"
 # simulation parameters
@@ -48,7 +48,7 @@ alpha_levels <- c("same","variable")
 beta_levels <- c("same","variable")
 spatial_levels <- c(1e4,10,1) # from low spatial dependency to high
 temporal_levels <- c(1e-5,0.2,0.6) # from low temporal autocorrelation to high
-stochastic_levels <- c(1e-6,0.05,0.3) # coefficient of variation on lognormal recruitment deviates
+stochastic_levels <- c(1e-6,0.01,0.3) # coefficient of variation on lognormal recruitment deviates
 
 recovery <- array(NA,dim=c(length(network_levels),
                            length(disturbance_levels),
@@ -165,18 +165,18 @@ for(iNet in 1:length(network_levels))
 endtime <- Sys.time()-ptm
 endtime
 
-saveRDS(recovery,paste("recovery",Sys.Date(),".rds",sep=""))
-saveRDS(recovered,paste("recovered",Sys.Date(),".rds",sep=""))
-saveRDS(extinction,paste("extinction",Sys.Date(),".rds",sep=""))
-saveRDS(extinctionRate,paste("extinctionRate",Sys.Date(),".rds",sep=""))
-saveRDS(patchOcc,paste("patchOcc",Sys.Date(),".rds",sep=""))
-saveRDS(short_bias,paste("short_bias",Sys.Date(),".rds",sep=""))
-saveRDS(short_compensation,paste("short_compensation",Sys.Date(),".rds",sep=""))
-saveRDS(short_capacity,paste("short_capacity",Sys.Date(),".rds",sep=""))
-saveRDS(med_bias,paste("med_bias",Sys.Date(),".rds",sep=""))
-saveRDS(med_compensation,paste("med_compensation",Sys.Date(),".rds",sep=""))
-saveRDS(med_capacity,paste("med_capacity",Sys.Date(),".rds",sep=""))
-saveRDS(long_bias,paste("long_bias",Sys.Date(),".rds",sep=""))
-saveRDS(long_compensation,paste("long_compensation",Sys.Date(),".rds",sep=""))
-saveRDS(long_capacity,paste("long_capacity",Sys.Date(),".rds",sep=""))
-saveRDS(metaAbund,paste("metaAbund",Sys.Date(),".rds",sep=""))
+saveRDS(recovery,paste("Simulations/recovery",Sys.Date(),".rds",sep=""))
+saveRDS(recovered,paste("Simulations/recovered",Sys.Date(),".rds",sep=""))
+saveRDS(extinction,paste("Simulations/extinction",Sys.Date(),".rds",sep=""))
+saveRDS(extinctionRate,paste("Simulations/extinctionRate",Sys.Date(),".rds",sep=""))
+saveRDS(patchOcc,paste("Simulations/patchOcc",Sys.Date(),".rds",sep=""))
+saveRDS(short_bias,paste("Simulations/short_bias",Sys.Date(),".rds",sep=""))
+saveRDS(short_compensation,paste("Simulations/short_compensation",Sys.Date(),".rds",sep=""))
+saveRDS(short_capacity,paste("Simulations/short_capacity",Sys.Date(),".rds",sep=""))
+saveRDS(med_bias,paste("Simulations/med_bias",Sys.Date(),".rds",sep=""))
+saveRDS(med_compensation,paste("Simulations/med_compensation",Sys.Date(),".rds",sep=""))
+saveRDS(med_capacity,paste("Simulations/med_capacity",Sys.Date(),".rds",sep=""))
+saveRDS(long_bias,paste("Simulations/long_bias",Sys.Date(),".rds",sep=""))
+saveRDS(long_compensation,paste("Simulations/long_compensation",Sys.Date(),".rds",sep=""))
+saveRDS(long_capacity,paste("Simulations/long_capacity",Sys.Date(),".rds",sep=""))
+saveRDS(metaAbund,paste("Simulations/metaAbund",Sys.Date(),".rds",sep=""))

@@ -146,17 +146,18 @@ metaPop <- function(Npatches=16,
   extinction <- ifelse(any(MetaPop[,"Spawners"]==0),min(which(MetaPop[,"Spawners"]==0))-Nburnin,NyrsPost)
   patchOccupancy <- sum(popDyn[Nyears,,"Recruits"]>(0.05*k_p))/Npatches
   
-  shortTermProd <- mean(compensationBias[Nburnin:(Nburnin+5)],na.rm=TRUE)
-  shortTermComp <- mean(alphaYr[Nburnin:(Nburnin+5)]/alpha,na.rm=TRUE)
-  shortTermCap <- mean(metaKYr[Nburnin:(Nburnin+5)]/actualK,na.rm=TRUE)
+  distYear <- Nburnin+1 # what is the target reference year
+  shortTermProd <- mean(compensationBias[distYear:(distYear+5)],na.rm=TRUE)
+  shortTermComp <- mean(alphaYr[distYear:(distYear+5)]/alpha,na.rm=TRUE)
+  shortTermCap <- mean(metaKYr[distYear:(distYear+5)]/actualK,na.rm=TRUE)
   
-  medTermProd <- mean(compensationBias[Nburnin:(Nburnin+10)],na.rm=TRUE)
-  medTermComp <- mean(alphaYr[Nburnin:(Nburnin+10)]/alpha,na.rm=TRUE)
-  medTermCap <- mean(metaKYr[Nburnin:(Nburnin+10)]/actualK,na.rm=TRUE)
+  medTermProd <- mean(compensationBias[distYear:(distYear+10)],na.rm=TRUE)
+  medTermComp <- mean(alphaYr[distYear:(distYear+10)]/alpha,na.rm=TRUE)
+  medTermCap <- mean(metaKYr[distYear:(distYear+10)]/actualK,na.rm=TRUE)
   
-  longTermProd <- mean(compensationBias[Nburnin:(Nburnin+25)],na.rm=TRUE)
-  longTermComp <- mean(alphaYr[Nburnin:(Nburnin+25)]/alpha,na.rm=TRUE)
-  longTermCap <- mean(metaKYr[Nburnin:(Nburnin+25)]/actualK,na.rm=TRUE)
+  longTermProd <- mean(compensationBias[distYear:(distYear+25)],na.rm=TRUE)
+  longTermComp <- mean(alphaYr[distYear:(distYear+25)]/alpha,na.rm=TRUE)
+  longTermCap <- mean(metaKYr[distYear:(distYear+25)]/actualK,na.rm=TRUE)
   
   #spatialRecoveryPlot(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recovery,Nburnin,Nyears,alpha,metaK,alphaYr,metaKYr,lostCapacity,compensationBias,nodeScalar=35,network=network,networkType=networkType,Npatches=Npatches)
   
