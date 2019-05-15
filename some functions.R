@@ -133,3 +133,6 @@ spatialRecoveryPlot <- function(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recover
   lines(compensationBias[Nburnin:Nyears],lwd=2,col="grey50")
   legend("bottomright",c("capacity","compensation","production"),lty=1,col=c("dodgerblue","orange","grey50"),lwd=2,bty="n",cex=textSize)
 }
+
+
+

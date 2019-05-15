@@ -140,6 +140,9 @@ metaPop <- function(Npatches=16,
       lostCapacity[Iyear] <- metaK_hat/actualK
     }
   }
+  
+  # calculate MSY per patch, and sum across patches
+  
   recovered <- rep(FALSE,Nyears)
   recovered[(Nburnin+1):(Nyears-4)] <- running.mean(MetaPop[(Nburnin+1):Nyears,"Spawners"],5)>=mean(MetaPop[1:Nburnin,"Spawners"])
   recovery <- ifelse(any(recovered),min(which(recovered))-Nburnin,NyrsPost)

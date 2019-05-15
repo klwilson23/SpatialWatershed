@@ -48,7 +48,7 @@ alpha_levels <- c("same","variable")
 beta_levels <- c("same","variable")
 spatial_levels <- c(1e4,10,1) # from low spatial dependency to high
 temporal_levels <- c(1e-5,0.2,0.6) # from low temporal autocorrelation to high
-stochastic_levels <- c(1e-6,0.01,0.3) # coefficient of variation on lognormal recruitment deviates
+stochastic_levels <- c(1e-2,0.1,0.3) # coefficient of variation on lognormal recruitment deviates
 
 recovery <- array(NA,dim=c(length(network_levels),
                            length(disturbance_levels),
