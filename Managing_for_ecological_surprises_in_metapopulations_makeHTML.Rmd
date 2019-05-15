@@ -7,8 +7,7 @@ author: |
   | $^2$Fisheries & Oceans Canada
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
-  pdf_document:
-    keep_tex: yes
+  html_document:
     pandoc_args:
     - --biblio
     - Metapop_references.bib
@@ -17,7 +16,8 @@ output:
   fig_caption: yes
   fontsize: 12pt
   highlight: tango
-  html_document:
+  pdf_document:
+    keep_tex: yes
     pandoc_args:
     - --biblio
     - Metapop_references.bib

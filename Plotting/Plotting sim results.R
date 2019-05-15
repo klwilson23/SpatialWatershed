@@ -64,7 +64,7 @@ layout(matLayout)
 dist_colours <- c("grey50","dodgerblue","orange","black")
 for(i in 1:length(network_levels))
 {
-  matplot(dispersal_levels,t(recovery[i,,,"variable","variable",1,1,2]),col=dist_colours,lty=i,type="b",lwd=2,pch=21,ylab="Recovery",xlab="Dispersal rate",ylim=range(c(0,recovery[,,,"variable","variable",1,1,2])))
+  matplot(dispersal_levels,t(recovery[i,,,"variable","same",1,1,1]),col=dist_colours,lty=i,type="b",lwd=2,pch=21,ylab="Recovery",xlab="Dispersal rate",ylim=range(c(0,recovery[,,,"variable","variable",1,1,1])))
 }
 
 

@@ -13,13 +13,13 @@ source("some functions.R")
 source("popDynFn.R")
 
 Npatches=16
-networkType="linear"
+networkType="dendritic"
 patchDistance=1
 Nburnin=50
 NyrsPost=100
-omega=1e-6
+omega=0.01
 m=100
-alpha=1.2
+alpha=1.5
 metaK=1600
 cv=1e-5
 DistScenario="uniform"
@@ -110,7 +110,7 @@ for(Iyear in (lagTime+1):Nyears)
   # part vi - calculate metapopulation dynamics & ecological metrics
   sink[Iyear,] <- (popDyn[Iyear,,"Recruits"] < popDyn[Iyear-lagTime,,"Spawners"]) & (dispersing[Iyear,,"Emigrants"] < dispersing[Iyear,,"Immigrants"])
   source[Iyear,] <- (popDyn[Iyear,,"Recruits"] > popDyn[Iyear-lagTime,,"Spawners"]) & (dispersing[Iyear,,"Emigrants"] > dispersing[Iyear,,"Immigrants"])
-  pseudoSink[Iyear,] <- ((popDyn[Iyear,,"Recruits"] > popDyn[Iyear-lagTime,,"Spawners"]) & (popDyn[Iyear,,"Recruits"] > (popDyn[Iyear-lagTime,,"Spawners"]-dispersing[Iyear-lagTime,,"Immigrants"]))) & (dispersing[Iyear,,"Emigrants"] < dispersing[Iyear,,"Immigrants"])
+  pseudoSink[Iyear,] <- ((popDyn[Iyear,,"Recruits"] < popDyn[Iyear-lagTime,,"Spawners"]) & (popDyn[Iyear,,"Recruits"] < (popDyn[Iyear-lagTime,,"Spawners"]-dispersing[Iyear-lagTime,,"Immigrants"]))) & (dispersing[Iyear,,"Emigrants"] < dispersing[Iyear,,"Immigrants"])
   
   MetaPop[Iyear,"Recruits"] <- sum(popDyn[Iyear,,"Recruits"])
   MetaPop[Iyear,"Spawners"] <- sum(popDyn[Iyear,,"Spawners"])
@@ -152,9 +152,9 @@ patchOccupancy <- sum(popDyn[Nyears,,"Recruits"]>(0.10*k_p))/Npatches
 postDistBias <- compensationBias[!is.na(compensationBias)]
 lostCompensation <- alphaHat/alpha
 
-jpeg(paste(networkType," example.jpeg",sep=""),res=800,units="in",height=8,width=9)
+#jpeg(paste(networkType," example.jpeg",sep=""),res=800,units="in",height=8,width=9)
 spatialRecoveryPlot(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recovery,Nburnin,Nyears,alpha,metaK,alphaYr,metaKYr,lostCapacity,compensationBias,nodeScalar=35,network=network,networkType=networkType,Npatches=Npatches)
-dev.off()
+#dev.off()
 
 
 resultList <- list("MetaPop"=MetaPop,"popDyn"=popDyn,"sink"=sink,"source"=source,"pseudoSink"=pseudoSink,"dispersing"=dispersing,"bias"=sum(postDistBias,na.rm=TRUE)/sum(!is.na(postDistBias)),"lostCompensation"=sum(lostCompensation,na.rm=TRUE)/sum(!is.na(lostCompensation)),"lostCapacity"=sum(lostCapacity,na.rm=TRUE)/sum(!is.na(lostCapacity)),"recovery"=recovery,"extinction"=extinction,"patchOccupancy"=patchOccupancy)

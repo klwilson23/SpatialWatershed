@@ -143,11 +143,18 @@ metaPop <- function(Npatches=16,
   
   # calculate MSY per patch, and sum across patches
   
-  recovered <- rep(FALSE,Nyears)
+  recovered <- half_recovered <- rep(FALSE,Nyears)
   recovered[(Nburnin+1):(Nyears-4)] <- running.mean(MetaPop[(Nburnin+1):Nyears,"Spawners"],5)>=mean(MetaPop[1:Nburnin,"Spawners"])
+  
+  half_recovered[(Nburnin+1):(Nyears-4)] <- running.mean(MetaPop[(Nburnin+1):Nyears,"Spawners"],5)>=(0.5*mean(MetaPop[1:Nburnin,"Spawners"]))
+  
   recovery <- ifelse(any(recovered),min(which(recovered))-Nburnin,NyrsPost)
+  half_recovery <- ifelse(any(half_recovered),min(which(half_recovered))-Nburnin,NyrsPost)
+  
   extinction <- ifelse(any(MetaPop[,"Spawners"]==0),min(which(MetaPop[,"Spawners"]==0))-Nburnin,NyrsPost)
   patchOccupancy <- sum(popDyn[Nyears,,"Recruits"]>(0.05*k_p))/Npatches
+  
+  # calculate three portfolio effects here within the half-recovery, recovery, and whole-disturbance window
   
   distYear <- Nburnin+1 # what is the target reference year
   shortTermProd <- mean(compensationBias[distYear:(distYear+5)],na.rm=TRUE)
@@ -162,12 +169,12 @@ metaPop <- function(Npatches=16,
   longTermComp <- mean(alphaYr[distYear:(distYear+25)]/alpha,na.rm=TRUE)
   longTermCap <- mean(metaKYr[distYear:(distYear+25)]/actualK,na.rm=TRUE)
   
-  #spatialRecoveryPlot(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recovery,Nburnin,Nyears,alpha,metaK,alphaYr,metaKYr,lostCapacity,compensationBias,nodeScalar=35,network=network,networkType=networkType,Npatches=Npatches)
+  spatialRecoveryPlot(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recovery,Nburnin,Nyears,alpha,metaK,alphaYr,metaKYr,lostCapacity,compensationBias,nodeScalar=35,network=network,networkType=networkType,Npatches=Npatches)
   
   return(list("MetaPop"=MetaPop,"popDyn"=popDyn,"sink"=sink,"source"=source,"pseudoSink"=pseudoSink,"dispersing"=dispersing,"shortTermProd"=shortTermProd,"shortTermComp"=shortTermComp,"shortTermCap"=shortTermCap,"medTermProd"=medTermProd,"medTermComp"=medTermComp,"medTermCap"=medTermCap,"longTermProd"=longTermProd,"longTermComp"=longTermComp,"longTermCap"=longTermCap,"recovery"=recovery,"extinction"=extinction,"patchOccupancy"=patchOccupancy))
 }
 
-#makeMeta <- metaPop(networkType = "linear", m=100)
-#makeMeta <- metaPop(networkType = "dendritic", m=100)
-#makeMeta <- metaPop(networkType = "star", m=100)
-#makeMeta <- metaPop(networkType = "complex", m=100)
+makeMeta <- metaPop(networkType = "linear", m=100)
+makeMeta <- metaPop(networkType = "dendritic", m=100)
+makeMeta <- metaPop(networkType = "star", m=100)
+makeMeta <- metaPop(networkType = "complex", m=100)
