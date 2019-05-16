@@ -34,7 +34,7 @@ compLag <- 25 # how many years to lag estimates of compensation
 dataWeighting <- 0.1 # penalty to past years for data weighting
 m <- 100 # distance decay function: penalty of 1 says about 60% of dispersing recruits move to neighbor patches. penalty of 2 says about 90% of dispersing recruits move to neighbor patches
 # adult stock-juvenile recruitment traits
-alpha <- 1.8
+alpha <- 2
 metaK <- 1600
 # how big is the disturbance after Nburnin years?
 magnitude_of_decline <- 0.9
