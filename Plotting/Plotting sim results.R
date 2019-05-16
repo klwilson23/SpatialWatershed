@@ -53,18 +53,21 @@ stochastic_levels <- c(1e-1,0.2) # coefficient of variation on lognormal recruit
 
 matLayout <- matrix(1:4,nrow=2,ncol=2)
 layout(matLayout)
-dist_colours <- c("grey50","dodgerblue","orange","black")
+dist_colours <- c("grey50","dodgerblue","orange")
 for(i in 1:length(network_levels))
 {
-  matplot(dispersal_levels,t(recovery[i,,,"same","same",1,1,1]),col=dist_colours,lty=i,type="b",lwd=2,pch=21,ylab="Recovery",xlab="Dispersal rate",ylim=range(c(0,recovery[,,,"same","same",1,1,1])))
+  matplot(dispersal_levels,t(recovery[i,,,"same","same",1,1,1]),col=dist_colours,lty=1,type="b",lwd=2,pch=21,ylab="Recovery (generations)",xlab="Dispersal rate",ylim=range(c(0,recovery[,,,"same","same",1,1,1])))
+  Corner_text(network_levels[i],"topright")
 }
+legend("right",disturbance_levels,col=dist_colours,lty=1,lwd=2,bty="n")
 
 matLayout <- matrix(1:4,nrow=2,ncol=2)
 layout(matLayout)
 dist_colours <- c("grey50","dodgerblue","orange","black")
 for(i in 1:length(network_levels))
 {
-  matplot(dispersal_levels,t(recovery[i,,,"variable","same",1,1,1]),col=dist_colours,lty=i,type="b",lwd=2,pch=21,ylab="Recovery",xlab="Dispersal rate",ylim=range(c(0,recovery[,,,"variable","variable",1,1,1])))
+  matplot(dispersal_levels,t(recovery[i,,,"variable","same",1,1,1]),col=dist_colours,lty=i,type="b",lwd=2,pch=21,ylab="Recovery (generations)",xlab="Dispersal rate",ylim=range(c(0,recovery[,,,"variable","variable",1,1,1])))
+  Corner_text(network_levels[i],"topright")
 }
 
 

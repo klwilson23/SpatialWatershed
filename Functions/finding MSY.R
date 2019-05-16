@@ -22,8 +22,8 @@ yieldRoot<-function(alpha,beta,Fcur,model)
   if(model=="Ricker")
   {
     # population model is R ~ CR * S * e(-log(CR)/K * S): reparameterized Ricker
-    adults <- (-log(alpha)/beta)*exp(-Fcur)
-    recruits <- alpha*adults*exp(beta*adults)
+    adults <- beta*exp(-Fcur)
+    recruits <- alpha*adults*exp((-log(alpha)/beta)*adults)
     yield <- recruits-adults
   }
   return(list(recruits=recruits,adults=adults,yield=yield))
@@ -50,13 +50,3 @@ findMSY <- function(alpha,beta,Npatches,model){
   MSY <- sapply(1:Npatches,function(x){yieldRoot(alpha=alpha[x],beta=beta[x],Fcur=F_msy[[x]][1],model=model)})
   return(list("F_msy"=F_msy,"MSY"=MSY))
 }
-
-Npatches <- 5
-alpha <- runif(Npatches,1.2,3)
-beta <- runif(Npatches,50,150)
-model <- "Beverton-Holt"
-findMSY(alpha=alpha,beta=beta,Npatches=Npatches,model=model)
-
-
-curve((alpha[1]*x)/(1+((alpha[1]-1)/beta[1])*x)-x,from=0,to=max(beta))
-abline(v=findMSY(alpha=alpha,beta=beta,Npatches=Npatches,model=model)$MSY["adults",1])

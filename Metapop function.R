@@ -4,6 +4,7 @@ source("patch_variance.R")
 source("local disturbance.R")
 source("some functions.R")
 source("popDynFn.R")
+source("Functions/finding MSY.R")
 library(mvtnorm)
 library(marima)
 library(diagram)
@@ -14,10 +15,10 @@ metaPop <- function(Npatches=16,
                     Nburnin=50,
                     NyrsPost=100,
                     omega=0.01,
-                    m=1,
+                    m=100,
                     alpha=2,
                     metaK=1600,
-                    cv=1e-2,
+                    cv=1e-6,
                     DistScenario="uniform",
                     magnitude_of_decline=0.9,
                     lagTime=1,
@@ -26,9 +27,11 @@ metaPop <- function(Npatches=16,
                     rho.dist=1e5,
                     compensationLag=25,
                     dataWeighting=0.1,
-                    alphaVariable=FALSE,
-                    kVariable=FALSE)
+                    alphaVariable=TRUE,
+                    kVariable=TRUE,
+                    spatialPlots=TRUE)
 {
+
   # make the spatial network
   network <- makeNetworks(network=networkType,Npatches=Npatches,patchDist=patchDistance)
   distance_matrix <- network$distanceMatrix
@@ -42,6 +45,12 @@ metaPop <- function(Npatches=16,
   beta_p <- patches$beta_p
   k_p <- patches$k_p
   
+  MSY_p <- unlist(findMSY(alpha=alpha_p,beta=k_p,Npatches=Npatches,model=prodType)$MSY["yield",])
+  RMSY_p <- unlist(findMSY(alpha=alpha_p,beta=k_p,Npatches=Npatches,model=prodType)$MSY["recruits",])
+  NMSY_p <- unlist(findMSY(alpha=alpha_p,beta=k_p,Npatches=Npatches,model=prodType)$MSY["adults",])
+  
+
+  
   Nyears <- Nburnin+NyrsPost
   
   # part i - set some empty arrays
@@ -54,6 +63,8 @@ metaPop <- function(Npatches=16,
   lostCapacity <- rep(NA,Nyears)
   alphaYr <- rep(NA,Nyears)
   metaKYr <- rep(NA,Nyears)
+  MSYYr <- rep(NA,Nyears)
+  surplusProd <- rep(NA,Nyears)
   
   # dispersal information to track
   dispersing <- array(NA,dim=c(Nyears,Npatches,3),dimnames=list("Year"=1:Nyears,"Patch No."=1:Npatches,"Disersing"=c("Residents","Immigrants","Emigrants")))
@@ -111,21 +122,35 @@ metaPop <- function(Npatches=16,
     MetaPop[Iyear,"Recruits"] <- sum(popDyn[Iyear,,"Recruits"])
     MetaPop[Iyear,"Spawners"] <- sum(popDyn[Iyear,,"Spawners"])
     
-    # part vii - estimate compensation
+    # part vii - resource assessment
     if(Iyear > (Nburnin) & (MetaPop[Iyear,"Recruits"] > 0))
     {
-      spawnRec <- data.frame("recruits"=MetaPop[2:Iyear,"Recruits"],"spawners"=MetaPop[1:(Iyear-1),"Spawners"],weights=exp(dataWeighting*(2:Iyear-Iyear))/max(exp(dataWeighting*(2:Iyear-Iyear))))
+      spawnRec <- data.frame("recruits"=MetaPop[2:Iyear,"Recruits"],"spawners"=MetaPop[1:(Iyear-1),"Spawners"],weights=pmax(0.05,exp(dataWeighting*(2:Iyear-Iyear))/max(exp(dataWeighting*(2:Iyear-Iyear)))))
       
       if(prodType=="Beverton-Holt"){
-        alphaHat <- pmax(1.01,alphaLstYr)
-        metaK_hat <- pmax(1,metaKLstYr)
+        alphaHat <- max(1.01,alphaLstYr,na.rm=TRUE)
+        metaK_hat <- max(1,metaKLstYr,na.rm=TRUE)
         theta <- as.vector(c(alphaHat,log(metaK_hat),log(0.2)))
-        SRfit <- optim(theta,SRfn,method="L-BFGS-B",lower=c(1.01,-Inf,-Inf),data=spawnRec,lastYr=list("alphaLstYr"=alphaLstYr,"metaKLstYr"=metaKLstYr))
-        alphaHat <- SRfit$par[1]
-        metaK_hat <- exp(SRfit$par[2])
-        compHat <- (alphaHat*MetaPop[Iyear-1,"Spawners"])/(1+((alphaHat-1)/metaK_hat)*MetaPop[Iyear-1,"Spawners"])
-        alphaLstYr <- alphaYr[Iyear] <- alphaHat
-        metaKLstYr <- metaKYr[Iyear] <- metaK_hat
+
+        SRfit <- try(optim(theta,SRfn,method="L-BFGS-B",lower=c(1.01,-Inf,-Inf),data=spawnRec,lastYr=list("alphaLstYr"=alphaLstYr,"metaKLstYr"=metaKLstYr)), silent=T) # optimize likelihood function
+        check<-is.numeric(SRfit[[1]]) # check to see if model converged
+        
+        ## store values only if model converged
+        if(check[[1]] == "TRUE"){
+          alphaHat <- SRfit$par[[1]]
+          metaK_hat <- exp(SRfit$par[[2]])
+          compHat <- (alphaHat*MetaPop[Iyear-1,"Spawners"])/(1+((alphaHat-1)/metaK_hat)*MetaPop[Iyear-1,"Spawners"])
+          alphaLstYr <- alphaYr[Iyear] <- alphaHat
+          metaKLstYr <- metaKYr[Iyear] <- metaK_hat
+        }else{
+          alphaHat <- max(1.01,alphaLstYr,na.rm=TRUE)
+          metaK_hat <- max(1,metaKLstYr,na.rm=TRUE)
+          compHat <- (alphaHat*MetaPop[Iyear-1,"Spawners"])/(1+((alphaHat-1)/metaK_hat)*MetaPop[Iyear-1,"Spawners"])
+          alphaYr[Iyear] <- alphaHat
+          alphaLstYr <- ifelse(is.na(mean(alphaYr[(Iyear-6):(Iyear-1)],na.rm=TRUE)),alpha,mean(alphaYr[(Iyear-6):(Iyear-1)],na.rm=TRUE))
+          metaKYr[Iyear] <- metaK_hat
+          metaKLstYr <- ifelse(is.na(mean(metaKYr[(Iyear-6):(Iyear-1)],na.rm=TRUE)),metaK,mean(metaKYr[(Iyear-6):(Iyear-1)],na.rm=TRUE))
+        }
       }else{
         SRfit <- lm(log(recruits/spawners)~spawners,data=spawnRec,weights=spawnRec$weights)
         alphaHat <- exp(coef(SRfit)["(Intercept)"])
@@ -138,6 +163,8 @@ metaPop <- function(Npatches=16,
       actualK <- sum(k_p)
       compensationBias[Iyear] <- compHat/actualComp
       lostCapacity[Iyear] <- metaK_hat/actualK
+      MSYYr[Iyear] <- unlist(findMSY(alpha=alphaYr[Iyear],beta=metaKYr[Iyear],Npatches=1,model=model)$MSY["yield",])/sum(MSY_p)
+      surplusProd[Iyear] <- (MetaPop[Iyear,"Spawners"]-unlist(findMSY(alpha=alphaYr[Iyear],beta=metaKYr[Iyear],Npatches=1,model=model)$MSY["adults",]))/sum(popDyn[Iyear,,"Spawners"]-NMSY_p)
     }
   }
   
@@ -152,29 +179,37 @@ metaPop <- function(Npatches=16,
   half_recovery <- ifelse(any(half_recovered),min(which(half_recovered))-Nburnin,NyrsPost)
   
   extinction <- ifelse(any(MetaPop[,"Spawners"]==0),min(which(MetaPop[,"Spawners"]==0))-Nburnin,NyrsPost)
-  patchOccupancy <- sum(popDyn[Nyears,,"Recruits"]>(0.05*k_p))/Npatches
-  
-  # calculate three portfolio effects here within the half-recovery, recovery, and whole-disturbance window
+  patchOccupancy <- sapply(1:Nyears,function(x){sum(popDyn[x,,"Recruits"]>(0.1*k_p))/Npatches})
   
   distYear <- Nburnin+1 # what is the target reference year
+  
+  shortTermCV <- sd(popDyn[distYear:(Nburnin+half_recovery),,"Spawners"])/mean(popDyn[distYear:(Nburnin+half_recovery),,"Spawners"])
+  medTermCV <- sd(popDyn[distYear:(Nburnin+recovery),,"Spawners"])/mean(popDyn[distYear:(Nburnin+recovery),,"Spawners"])
+  longTermCV <- sd(popDyn[distYear:(Nyears),,"Spawners"])/mean(popDyn[distYear:(Nyears),,"Spawners"])
+  
   shortTermProd <- mean(compensationBias[distYear:(distYear+5)],na.rm=TRUE)
   shortTermComp <- mean(alphaYr[distYear:(distYear+5)]/alpha,na.rm=TRUE)
   shortTermCap <- mean(metaKYr[distYear:(distYear+5)]/actualK,na.rm=TRUE)
+  shortTermMSY <- mean(MSYYr[distYear:(distYear+5)],na.rm=TRUE)
+  shortTermOcc <- mean(patchOccupancy[distYear:(distYear+5)],na.rm=TRUE)
   
   medTermProd <- mean(compensationBias[distYear:(distYear+10)],na.rm=TRUE)
   medTermComp <- mean(alphaYr[distYear:(distYear+10)]/alpha,na.rm=TRUE)
   medTermCap <- mean(metaKYr[distYear:(distYear+10)]/actualK,na.rm=TRUE)
+  medTermMSY <- mean(MSYYr[distYear:(distYear+10)],na.rm=TRUE)
+  medTermOcc <- mean(patchOccupancy[distYear:(distYear+10)],na.rm=TRUE)
+  
   
   longTermProd <- mean(compensationBias[distYear:(distYear+25)],na.rm=TRUE)
   longTermComp <- mean(alphaYr[distYear:(distYear+25)]/alpha,na.rm=TRUE)
   longTermCap <- mean(metaKYr[distYear:(distYear+25)]/actualK,na.rm=TRUE)
+  longTermMSY <- mean(MSYYr[distYear:(distYear+25)],na.rm=TRUE)
+  longTermOcc <- mean(patchOccupancy[distYear:(distYear+25)],na.rm=TRUE)
   
-  spatialRecoveryPlot(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recovery,Nburnin,Nyears,alpha,metaK,alphaYr,metaKYr,lostCapacity,compensationBias,nodeScalar=35,network=network,networkType=networkType,Npatches=Npatches)
-  
-  return(list("MetaPop"=MetaPop,"popDyn"=popDyn,"sink"=sink,"source"=source,"pseudoSink"=pseudoSink,"dispersing"=dispersing,"shortTermProd"=shortTermProd,"shortTermComp"=shortTermComp,"shortTermCap"=shortTermCap,"medTermProd"=medTermProd,"medTermComp"=medTermComp,"medTermCap"=medTermCap,"longTermProd"=longTermProd,"longTermComp"=longTermComp,"longTermCap"=longTermCap,"recovery"=recovery,"extinction"=extinction,"patchOccupancy"=patchOccupancy))
-}
+  if(spatialPlots)
+  {
+    spatialRecoveryPlot(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recovery,Nburnin,Nyears,alpha,metaK,alphaYr,metaKYr,lostCapacity,compensationBias,MSYYr,nodeScalar=35,network=network,networkType=networkType,Npatches=Npatches) 
+  }
 
-makeMeta <- metaPop(networkType = "linear", m=100)
-makeMeta <- metaPop(networkType = "dendritic", m=100)
-makeMeta <- metaPop(networkType = "star", m=100)
-makeMeta <- metaPop(networkType = "complex", m=100)
+  return(list("MetaPop"=MetaPop,"popDyn"=popDyn,"sink"=sink,"source"=source,"pseudoSink"=pseudoSink,"dispersing"=dispersing,"shortTermProd"=shortTermProd,"shortTermComp"=shortTermComp,"shortTermCap"=shortTermCap,"medTermProd"=medTermProd,"medTermComp"=medTermComp,"medTermCap"=medTermCap,"longTermProd"=longTermProd,"longTermComp"=longTermComp,"longTermCap"=longTermCap,"recovery"=recovery,"extinction"=extinction,"shortTermOcc"=shortTermOcc,"medTermOcc"=medTermOcc,"longTermOcc"=longTermOcc,"shortTermMSY"=shortTermMSY,"medTermMSY"=medTermMSY,"longTermMSY"=longTermMSY,"shortTermCV"=shortTermCV,"medTermCV"=medTermCV,"longTermCV"=longTermCV))
+}
