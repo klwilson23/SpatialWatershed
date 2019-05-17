@@ -20,8 +20,9 @@ source("local disturbance.R")
 source("some functions.R")
 source("Metapop function.R")
 source("popDynFn.R")
+source("Functions/finding MSY.R")
 
-Nboots <- 100
+Nboots <- 50
 Nlevels <- 11
 model <- "Beverton-Holt"
 # simulation parameters
@@ -48,7 +49,7 @@ alpha_levels <- c("same","variable")
 beta_levels <- c("same","variable")
 spatial_levels <- c(1e4,5,1e-1) # from low spatial dependency to high
 temporal_levels <- c(1e-5,0.2,0.6) # from low temporal autocorrelation to high
-stochastic_levels <- c(1e-4,1e-1) # coefficient of variation on lognormal recruitment deviates
+stochastic_levels <- c(1e-3,1e-1) # coefficient of variation on lognormal recruitment deviates
 
 recovery <- array(NA,dim=c(length(network_levels),
                            length(disturbance_levels),
@@ -67,144 +68,126 @@ recovery <- array(NA,dim=c(length(network_levels),
                              "temporal"=temporal_levels,
                              "stochastic"=stochastic_levels))
 
-shortCV <- medCV <- longCV <- shortMSY <- medMSY <- longMSY <- shortOcc <- medOcc <- longOcc <- metaAbund <- med_compensation <- med_capacity <- med_bias <- long_compensation <- long_capacity <- long_bias <- short_compensation <- short_capacity <- short_bias <- extinctionRate <- extinction <- recovered <- recovery
-
 nScenarios <- length(recovery) # how many scenarios are we simulating
 
 counter <- 0
-#iNet = 1
-#iDisturb=1
-#iDisperse=1
-#iAlpha=1
-#iBeta=1
-#iSpatial=1
-#iTemporal=1
-#iStochastic=1
-
+results <- as.data.frame(expand.grid(dimnames(recovery)))
+results$stochastic <- as.numeric(as.character(results$stochastic))
+results$spatial <- as.numeric(as.character(results$spatial))
+results$temporal <- as.numeric(as.character(results$temporal))
+results$dispersal <- as.numeric(as.character(results$dispersal))
+results <- data.frame(results,
+                      "recovery"=rep(NA,nrow(results)),
+                      "recovered"=rep(NA,nrow(results)),
+                      "extinction"=rep(NA,nrow(results)),
+                      "extinctionRate"=rep(NA,nrow(results)),
+                      "short_bias"=rep(NA,nrow(results)),
+                      "short_capacity"=rep(NA,nrow(results)),
+                      "short_compensation"=rep(NA,nrow(results)),
+                      "long_bias"=rep(NA,nrow(results)),
+                      "long_capacity"=rep(NA,nrow(results)),
+                      "long_compensation"=rep(NA,nrow(results)),
+                      "med_bias"=rep(NA,nrow(results)),
+                      "med_capacity"=rep(NA,nrow(results)),
+                      "med_compensation"=rep(NA,nrow(results)),
+                      "metaAbund"=rep(NA,nrow(results)),
+                      "longOcc"=rep(NA,nrow(results)),
+                      "medOcc"=rep(NA,nrow(results)),
+                      "shortOcc"=rep(NA,nrow(results)),
+                      "longMSY"=rep(NA,nrow(results)),
+                      "medMSY"=rep(NA,nrow(results)),
+                      "shortMSY"=rep(NA,nrow(results)),
+                      "longCV"=rep(NA,nrow(results)),
+                      "medCV"=rep(NA,nrow(results)),
+                      "shortCV"=rep(NA,nrow(results)))
 progBar <- txtProgressBar(min = 0,  max = nScenarios, style = 3, initial = 0)
-ptm = Sys.time()
-for(iNet in 1:length(network_levels))
-  {
-  for(iDisturb in 1:length(disturbance_levels))
-    {
-    for(iDisperse in 1:length(dispersal_levels))
-      {
-      for(iAlpha in 1:length(alpha_levels))
-        {
-        for(iBeta in 1:length(beta_levels))
-          {
-          for(iSpatial in 1:length(spatial_levels))
-            {
-            for(iTemporal in 1:length(temporal_levels))
-              {
-              for(iStochastic in 1:length(stochastic_levels))
-                {
-                # call function to get the among patch variability in demographic traits
-                alphaVariable <- ifelse(alpha_levels[iAlpha]=="same",FALSE,TRUE)
-                kVariable <- ifelse(beta_levels[iBeta]=="same",FALSE,TRUE)
-                boatyMcboot <- replicate(Nboots,metaPop(Npatches=Npatches,
-                                                        networkType=network_levels[iNet],
-                                                        patchDistance=patchDist,
-                                                        Nburnin=Nburnin,
-                                                        NyrsPost=NyrsPost,
-                                                        omega=dispersal_levels[iDisperse],
-                                                        m=m,
-                                                        alpha=alpha,
-                                                        metaK=metaK,
-                                                        cv=stochastic_levels[iStochastic],
-                                                        DistScenario=disturbance_levels[iDisturb],
-                                                        magnitude_of_decline=magnitude_of_decline,
-                                                        lagTime=lagTime,
-                                                        prodType=model,
-                                                        rho.time=temporal_levels[iTemporal],
-                                                        rho.dist=spatial_levels[iSpatial],
-                                                        compensationLag=compLag,
-                                                        dataWeighting=dataWeighting,
-                                                        alphaVariable=FALSE,
-                                                        kVariable=FALSE))
-                
-                recovery[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="recovery"),]))
-                
-                recovered[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- sum(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="recovery"),])!=(NyrsPost))
-                
-                extinctionRate[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="extinction"),]))
-                
-                extinction[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- sum(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="extinction"),])!=(NyrsPost))
-                
-                shortOcc[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="shortTermOcc"),]))
-                
-                medOcc[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="medTermOcc"),]))
-                
-                longOcc[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="longTermOcc"),]))
-                
-                shortCV[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="shortTermCV"),]))
-                
-                medCV[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="medTermCV"),]))
-                
-                longCV[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="longTermCV"),]))
-                
-                shortMSY[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="shortTermMSY"),]))
-                
-                medMSY[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="medTermMSY"),]))
-                
-                longMSY[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="longTermMSY"),]))
-                
-                short_bias[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="shortTermProd"),]))
-                
-                short_capacity[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="shortTermCap"),]))
-                
-                short_compensation[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="shortTermComp"),]))
-                
-                med_bias[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="medTermProd"),]))
-                
-                med_capacity[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="medTermCap"),]))
-                
-                med_compensation[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="medTermComp"),]))
-                
-                long_bias[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="longTermProd"),]))
-                
-                long_capacity[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="longTermCap"),]))
-                
-                long_compensation[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="longTermComp"),]))
-                
-                metaAbund[iNet,iDisturb,iDisperse,iAlpha,iBeta,iSpatial,iTemporal,iStochastic] <- mean(unlist(lapply(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="MetaPop"),],function(x){x[Nburnin+NyrsPost,"Spawners"]})))/metaK
-                counter <- counter + 1
-                setTxtProgressBar(progBar, counter)
-              }
-            }
-          }
-        }
-      }
-    }
-  }
+ptm <- Sys.time()
+
+for(Isim in 1:nrow(results))
+{
+  # call function to get the among patch variability in demographic traits
+  alphaVariable <- ifelse(results$alpha[Isim]=="same",FALSE,TRUE)
+  kVariable <- ifelse(results$beta[Isim]=="same",FALSE,TRUE)
+  boatyMcboot <- replicate(Nboots,metaPop(Npatches=Npatches,
+                                          networkType=results$network[Isim],
+                                          patchDistance=patchDist,
+                                          Nburnin=Nburnin,
+                                          NyrsPost=NyrsPost,
+                                          omega=results$dispersal[Isim],
+                                          m=m,
+                                          alpha=alpha,
+                                          metaK=metaK,
+                                          cv=results$stochastic[Isim],
+                                          DistScenario=results$disturbance[Isim],
+                                          magnitude_of_decline=magnitude_of_decline,
+                                          lagTime=lagTime,
+                                          prodType=model,
+                                          rho.time=results$temporal[Isim],
+                                          rho.dist=results$spatial[Isim],
+                                          compensationLag=compLag,
+                                          dataWeighting=dataWeighting,
+                                          alphaVariable=alphaVariable,
+                                          kVariable=kVariable,
+                                          spatialPlots = FALSE))
+  
+  results$recovery[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="recovery"),]))
+  
+  results$recovered[Isim] <- sum(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="recovery"),])!=(NyrsPost))/Nboots
+  
+  results$extinctionRate[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="extinction"),]))
+  
+  results$extinction[Isim] <- sum(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="extinction"),])!=(NyrsPost))/Nboots
+  
+  results$shortOcc[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="shortTermOcc"),]))
+  
+  results$medOcc[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="medTermOcc"),]))
+  
+  results$longOcc[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="longTermOcc"),]))
+  
+  results$shortCV[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="shortTermCV"),]))
+  
+  results$medCV[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="medTermCV"),]))
+  
+  results$longCV[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="longTermCV"),]))
+  
+  results$shortMSY[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="shortTermMSY"),]))
+  
+  results$medMSY[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="medTermMSY"),]))
+  
+  results$longMSY[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="longTermMSY"),]))
+  
+  results$short_bias[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="shortTermProd"),]))
+  
+  results$short_capacity[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="shortTermCap"),]))
+  
+  results$short_compensation[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="shortTermComp"),]))
+  results$med_bias[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="medTermProd"),]))
+  
+  results$med_capacity[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="medTermCap"),]))
+  
+  results$med_compensation[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="medTermComp"),]))
+  
+  results$long_bias[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="longTermProd"),]))
+  
+  results$long_capacity[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="longTermCap"),]))
+  
+  results$long_compensation[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="longTermComp"),]))
+  
+  results$metaAbund[Isim] <- mean(unlist(lapply(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="MetaPop"),],function(x){x[Nburnin+NyrsPost,"Spawners"]})))/metaK
+  counter <- counter + 1
+  setTxtProgressBar(progBar, counter)
 }
 endtime <- Sys.time()-ptm
 endtime
 
-saveRDS(recovery,paste("Simulations/recovery",Sys.Date(),".rds",sep=""))
-saveRDS(recovered,paste("Simulations/recovered",Sys.Date(),".rds",sep=""))
-saveRDS(extinction,paste("Simulations/extinction",Sys.Date(),".rds",sep=""))
-saveRDS(extinctionRate,paste("Simulations/extinctionRate",Sys.Date(),".rds",sep=""))
-saveRDS(shortOcc,paste("Simulations/shortOcc",Sys.Date(),".rds",sep=""))
-saveRDS(medOcc,paste("Simulations/medOcc",Sys.Date(),".rds",sep=""))
-saveRDS(longOcc,paste("Simulations/longOcc",Sys.Date(),".rds",sep=""))
+scenarios <- list("network"=network_levels,
+              "disturbance"=disturbance_levels,
+              "dispersal"=dispersal_levels,
+              "alpha"=alpha_levels,
+              "beta"=beta_levels,
+              "spatial"=spatial_levels,
+              "temporal"=temporal_levels,
+              "stochastic"=stochastic_levels)
 
-saveRDS(shortCV,paste("Simulations/shortCV",Sys.Date(),".rds",sep=""))
-saveRDS(medCV,paste("Simulations/medCV",Sys.Date(),".rds",sep=""))
-saveRDS(longCV,paste("Simulations/longCV",Sys.Date(),".rds",sep=""))
-
-saveRDS(shortMSY,paste("Simulations/shortMSY",Sys.Date(),".rds",sep=""))
-saveRDS(medMSY,paste("Simulations/medMSY",Sys.Date(),".rds",sep=""))
-saveRDS(longMSY,paste("Simulations/longMSY",Sys.Date(),".rds",sep=""))
-
-
-saveRDS(short_bias,paste("Simulations/short_bias",Sys.Date(),".rds",sep=""))
-saveRDS(short_compensation,paste("Simulations/short_compensation",Sys.Date(),".rds",sep=""))
-saveRDS(short_capacity,paste("Simulations/short_capacity",Sys.Date(),".rds",sep=""))
-saveRDS(med_bias,paste("Simulations/med_bias",Sys.Date(),".rds",sep=""))
-saveRDS(med_compensation,paste("Simulations/med_compensation",Sys.Date(),".rds",sep=""))
-saveRDS(med_capacity,paste("Simulations/med_capacity",Sys.Date(),".rds",sep=""))
-saveRDS(long_bias,paste("Simulations/long_bias",Sys.Date(),".rds",sep=""))
-saveRDS(long_compensation,paste("Simulations/long_compensation",Sys.Date(),".rds",sep=""))
-saveRDS(long_capacity,paste("Simulations/long_capacity",Sys.Date(),".rds",sep=""))
-saveRDS(metaAbund,paste("Simulations/metaAbund",Sys.Date(),".rds",sep=""))
+saveRDS(results,paste("Simulations/results",Sys.Date(),".rds",sep=""))
+saveRDS(scenarios,paste("Simulations/scenarios",Sys.Date(),".rds",sep=""))

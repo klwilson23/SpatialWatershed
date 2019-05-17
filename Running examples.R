@@ -44,3 +44,5 @@ dev.off()
 tiff("complex example.tiff",res=800,units="in",compression="lzw",height=6,width=6)
 metaPop(networkType = "complex")
 dev.off()
+
+replicate(100,metaPop(networkType = "linear",cv=1e-2,DistScenario = "random_patch",spatialPlots = TRUE,omega=0))

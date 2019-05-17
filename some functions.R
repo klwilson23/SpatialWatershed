@@ -48,8 +48,8 @@ SRfn <- function(theta,data,lastYr){
   sd.hat <- exp(theta[3])
   rec.mean <- (a.hat*data$spawners)/(1+((a.hat-1)/b.hat)*data$spawners)
   nll <- -1*sum(dlnorm(data$recruits,meanlog=log(rec.mean),sdlog=sd.hat,log=TRUE)*data$weights,na.rm=TRUE)
-  penalty1 <- -dnorm(a.hat,lastYr$alphaLstYr,3*lastYr$alphaLstYr,log=TRUE) # penalized likelihood on estimated alpha
-  penalty2 <- -dnorm(b.hat,lastYr$metaKLstYr,3*lastYr$metaKLstYr,log=TRUE) # penalized likelihood on estimated carrying capacity
+  penalty1 <- -dnorm(a.hat,lastYr$alphaLstYr,4*lastYr$alphaLstYr,log=TRUE) # penalized likelihood on estimated alpha
+  penalty2 <- -dnorm(b.hat,lastYr$metaKLstYr,4*lastYr$metaKLstYr,log=TRUE) # penalized likelihood on estimated carrying capacity
   jnll <- sum(c(nll,penalty1,penalty2),na.rm=TRUE)
   return(jnll)
 }
@@ -75,7 +75,7 @@ plottingFunc <- function(network,type,nodeScalar,Npatches){
   }
 }
 
-spatialRecoveryPlot <- function(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recovery,Nburnin,Nyears,alpha,metaK,alphaYr,metaKYr,lostCapacity,compensationBias,MSY,nodeScalar=35,network,networkType=networkType,Npatches=Npatches)
+spatialRecoveryPlot <- function(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recovery,Nburnin,Nyears,alpha,metaK,alphaYr,metaKYr,lostCapacity,compensationBias,MSY,nodeScalar=35,network,networkType=networkType,Npatches=Npatches,NMsy)
 {
   colfunc <- colorRampPalette(c("royalblue4","dodgerblue","lightblue","darkorange1","firebrick"))
   
@@ -119,13 +119,16 @@ spatialRecoveryPlot <- function(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recover
   #text(x=0.5,y=1.75,expression('N'[t]*'/K'),cex=1.5,xpd=NA)
   
   par(mar=c(5,5,1,1))
-  plot(MetaPop[1:(Nyears-1),"Spawners"],MetaPop[2:Nyears,"Recruits"],type="p",xlab="Metapopulation spawners",ylab="Metapopulation recruits",pch=21,bg=ifelse(1:(Nyears-1)>Nburnin,"orange","dodgerblue"),xlim=c(0,max(MetaPop[,"Spawners"],na.rm=TRUE)),ylim=c(0,max(MetaPop[,"Recruits"],na.rm=TRUE)),cex.lab=textSize)
+  plot(MetaPop[1:(Nyears-1),"Spawners"],MetaPop[2:Nyears,"Recruits"],type="p",xlab="Metapopulation adults",ylab="Metapopulation recruits",pch=21,bg=ifelse(1:(Nyears-1)>Nburnin,"orange","dodgerblue"),xlim=c(0,max(MetaPop[,"Spawners"],na.rm=TRUE)),ylim=c(0,max(MetaPop[,"Recruits"],na.rm=TRUE)),cex.lab=textSize)
   
   curve((alpha*x)/(1+((alpha-1)/metaK)*x),from=0,to=max(MetaPop[,"Spawners"],na.rm=TRUE),add=TRUE,lwd=2,col="dodgerblue",xpd=FALSE)
-  curve((mean(alphaYr[(Nburnin+5):(Nburnin+15)],na.rm=TRUE)*x)/(1+((mean(alphaYr[(Nburnin+5):(Nburnin+15)],na.rm=TRUE)-1)/mean(metaKYr[(Nburnin+5):(Nburnin+15)],na.rm=TRUE))*x),from=0,to=max(MetaPop[,"Spawners"],na.rm=TRUE),add=TRUE,lwd=2,col="orange",xpd=FALSE)
+  curve((mean(alphaYr[(Nburnin+1):(Nburnin+recovery)],na.rm=TRUE)*x)/(1+((mean(alphaYr[(Nburnin+1):(Nburnin+recovery)],na.rm=TRUE)-1)/mean(metaKYr[(Nburnin+1):(Nburnin+recovery)],na.rm=TRUE))*x),from=0,to=max(MetaPop[,"Spawners"],na.rm=TRUE),add=TRUE,lwd=2,col="orange",xpd=FALSE)
+  
+  abline(v=NMsy[1],lwd=2,lty=2,col="dodgerblue",xpd=FALSE)
+  abline(v=NMsy[2],lwd=2,lty=2,col="orange",xpd=FALSE)
   
   
-  legend("bottomright",c("pre-disturbance","post-disturbance"),pch=21,pt.bg=c("dodgerblue","orange"),bty="n",cex=textSize)
+  legend("bottomright",c("Recrutment - pristine","Recruitment - disturbed","N(MSY) - pristine","N(MSY) - disturbed"),pch=c(21,21,NA,NA),pt.bg=c("dodgerblue","orange",NA,NA),lwd=c(1,1,2,2),lty=c(1,1,2,2),col=c("dodgerblue","orange","dodgerblue","orange"),bty="n",cex=textSize)
   
   par(mar=c(5,4,1,1))
   plot(lostCapacity[Nburnin:Nyears],xlab="Years after disturbance",ylab="Relative bias",type="l",ylim=range(c(0,lostCapacity[Nburnin:Nyears],alphaYr[Nburnin:Nyears]/alpha,compensationBias[Nburnin:Nyears],MSY[Nburnin:Nyears]),na.rm=TRUE),lwd=2,col="dodgerblue",xpd=NA,cex.lab=textSize)

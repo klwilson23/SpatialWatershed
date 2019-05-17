@@ -65,6 +65,8 @@ metaPop <- function(Npatches=16,
   metaKYr <- rep(NA,Nyears)
   MSYYr <- rep(NA,Nyears)
   surplusProd <- rep(NA,Nyears)
+  Yield_MSY <- rep(NA,Nyears)
+  NMSY_y <- rep(NA,Nyears)
   
   # dispersal information to track
   dispersing <- array(NA,dim=c(Nyears,Npatches,3),dimnames=list("Year"=1:Nyears,"Patch No."=1:Npatches,"Disersing"=c("Residents","Immigrants","Emigrants")))
@@ -113,7 +115,6 @@ metaPop <- function(Npatches=16,
     dispersing[Iyear,,"Emigrants"] <- em
     popDyn[Iyear,,"Spawners"] <- pmax(0,popDyn[Iyear,,"Recruits"] + dispersing[Iyear,,"Immigrants"] - dispersing[Iyear,,"Emigrants"])
     
-    # not sure these calculations should have recruitment lag times or not
     # part vi - calculate metapopulation dynamics & ecological metrics
     sink[Iyear,] <- (popDyn[Iyear,,"Recruits"] < popDyn[Iyear-lagTime,,"Spawners"]) & (dispersing[Iyear,,"Emigrants"] < dispersing[Iyear,,"Immigrants"])
     source[Iyear,] <- (popDyn[Iyear,,"Recruits"] > popDyn[Iyear-lagTime,,"Spawners"]) & (dispersing[Iyear,,"Emigrants"] > dispersing[Iyear,,"Immigrants"])
@@ -122,17 +123,17 @@ metaPop <- function(Npatches=16,
     MetaPop[Iyear,"Recruits"] <- sum(popDyn[Iyear,,"Recruits"])
     MetaPop[Iyear,"Spawners"] <- sum(popDyn[Iyear,,"Spawners"])
     
-    # part vii - resource assessment
+    spawnRec <- data.frame("recruits"=MetaPop[(1+lagTime):Iyear,"Recruits"],"spawners"=MetaPop[1:(Iyear-lagTime),"Spawners"],weights=exp(dataWeighting*((1+lagTime):Iyear-Iyear))/max(exp(dataWeighting*((1+lagTime):Iyear-Iyear))))
+    
+    # part vii - resource assessment after disturbance
     if(Iyear > (Nburnin) & (MetaPop[Iyear,"Recruits"] > 0))
     {
-      spawnRec <- data.frame("recruits"=MetaPop[2:Iyear,"Recruits"],"spawners"=MetaPop[1:(Iyear-1),"Spawners"],weights=pmax(0.05,exp(dataWeighting*(2:Iyear-Iyear))/max(exp(dataWeighting*(2:Iyear-Iyear)))))
-      
       if(prodType=="Beverton-Holt"){
-        alphaHat <- max(1.01,alphaLstYr,na.rm=TRUE)
+        alphaHat <- max(1.01,alphaLstYr,na.rm=TRUE) # initial values must be positive
         metaK_hat <- max(1,metaKLstYr,na.rm=TRUE)
         theta <- as.vector(c(alphaHat,log(metaK_hat),log(0.2)))
 
-        SRfit <- try(optim(theta,SRfn,method="L-BFGS-B",lower=c(1.01,-Inf,-Inf),data=spawnRec,lastYr=list("alphaLstYr"=alphaLstYr,"metaKLstYr"=metaKLstYr)), silent=T) # optimize likelihood function
+        SRfit <- try(optim(theta,SRfn,method="L-BFGS-B",lower=c(1.01,-Inf,-Inf),data=spawnRec,lastYr=list("alphaLstYr"=mean(c(alpha,alphaHat)),"metaKLstYr"=mean(c(metaK_hat,metaK)))), silent=T) # optimize likelihood function
         check<-is.numeric(SRfit[[1]]) # check to see if model converged
         
         ## store values only if model converged
@@ -142,33 +143,55 @@ metaPop <- function(Npatches=16,
           compHat <- (alphaHat*MetaPop[Iyear-1,"Spawners"])/(1+((alphaHat-1)/metaK_hat)*MetaPop[Iyear-1,"Spawners"])
           alphaLstYr <- alphaYr[Iyear] <- alphaHat
           metaKLstYr <- metaKYr[Iyear] <- metaK_hat
-        }else{
-          alphaHat <- max(1.01,alphaLstYr,na.rm=TRUE)
-          metaK_hat <- max(1,metaKLstYr,na.rm=TRUE)
-          compHat <- (alphaHat*MetaPop[Iyear-1,"Spawners"])/(1+((alphaHat-1)/metaK_hat)*MetaPop[Iyear-1,"Spawners"])
-          alphaYr[Iyear] <- alphaHat
-          alphaLstYr <- ifelse(is.na(mean(alphaYr[(Iyear-6):(Iyear-1)],na.rm=TRUE)),alpha,mean(alphaYr[(Iyear-6):(Iyear-1)],na.rm=TRUE))
-          metaKYr[Iyear] <- metaK_hat
-          metaKLstYr <- ifelse(is.na(mean(metaKYr[(Iyear-6):(Iyear-1)],na.rm=TRUE)),metaK,mean(metaKYr[(Iyear-6):(Iyear-1)],na.rm=TRUE))
+        }else{ # if model didn't converge, fit a Ricker
+          SRfit <- lm(log(recruits/spawners)~spawners,data=spawnRec,weights=spawnRec$weights)
+          alphaHat <- pmax(1.01,exp(coef(SRfit)["(Intercept)"]),na.rm=TRUE)
+          metaK_hat <- pmax(1,-log(alphaHat)/coef(SRfit)[2],na.rm=TRUE)
+          compHat <- alphaHat*MetaPop[Iyear-1,"Spawners"]*exp(-log(alphaHat)/metaK_hat*MetaPop[Iyear-1,"Spawners"])
+          alphaLstYr <- alphaYr[Iyear] <- alphaHat
+          metaKLstYr <- metaKYr[Iyear] <- metaK_hat
         }
-      }else{
+      }else{ # if model truly is Ricker, then fit a Ricker
         SRfit <- lm(log(recruits/spawners)~spawners,data=spawnRec,weights=spawnRec$weights)
-        alphaHat <- exp(coef(SRfit)["(Intercept)"])
-        metaK_hat <- -log(alphaHat)/coef(SRfit)[2]
+        alphaHat <- pmax(1.01,exp(coef(SRfit)["(Intercept)"]),na.rm=TRUE)
+        metaK_hat <- pmax(1,-log(alphaHat)/coef(SRfit)[2],na.rm=TRUE)
         compHat <- alphaHat*MetaPop[Iyear-1,"Spawners"]*exp(-log(alphaHat)/metaK_hat*MetaPop[Iyear-1,"Spawners"])
         alphaLstYr <- alphaYr[Iyear] <- alphaHat
         metaKLstYr <- metaKYr[Iyear] <- metaK_hat
+      } # estimate this year's estimated and realized production, MSY, etc.
+      actualComp <- MetaPop[Iyear,"Recruits"]
+      actualK <- sum(k_p)
+      compensationBias[Iyear] <- compHat/actualComp
+      lostCapacity[Iyear] <- metaK_hat/sum(k_p)
+      
+      tryMSY <- tryCatch(
+        findMSY(alpha=alphaYr[Iyear],beta=metaKYr[Iyear],Npatches=1,model=model),
+        error=function(e) e
+      )
+      
+      if(!inherits(tryMSY, "error")){
+        Yield_MSY[Iyear] <- unlist(tryMSY$MSY["yield",])
+        NMSY_y[Iyear] <- unlist(tryMSY$MSY["adults",])
+      }else{
+        Yield_MSY[Iyear] <- 0
+        NMSY_y[Iyear] <- 0
       }
+      
+      MSYYr[Iyear] <- Yield_MSY[Iyear]/sum(MSY_p)
+      surplusProd[Iyear] <- (MetaPop[Iyear,"Spawners"]-NMSY_y[Iyear])/sum(popDyn[Iyear,,"Spawners"]-NMSY_p)
+    }
+    if(Iyear > (Nburnin) & (MetaPop[Iyear,"Recruits"] == 0))
+    { # if the populaton went extinct, set estimated production and MSY to 0
+      compHat <- 0
+      metaK_hat <- 0
       actualComp <- MetaPop[Iyear,"Recruits"] # realized production
       actualK <- sum(k_p)
       compensationBias[Iyear] <- compHat/actualComp
-      lostCapacity[Iyear] <- metaK_hat/actualK
-      MSYYr[Iyear] <- unlist(findMSY(alpha=alphaYr[Iyear],beta=metaKYr[Iyear],Npatches=1,model=model)$MSY["yield",])/sum(MSY_p)
-      surplusProd[Iyear] <- (MetaPop[Iyear,"Spawners"]-unlist(findMSY(alpha=alphaYr[Iyear],beta=metaKYr[Iyear],Npatches=1,model=model)$MSY["adults",]))/sum(popDyn[Iyear,,"Spawners"]-NMSY_p)
+      lostCapacity[Iyear] <- metaK_hat/sum(k_p)
+      MSYYr[Iyear] <- 0/sum(MSY_p)
+      surplusProd[Iyear] <- (MetaPop[Iyear,"Spawners"]-0)/sum(popDyn[Iyear,,"Spawners"]-NMSY_p)
     }
   }
-  
-  # calculate MSY per patch, and sum across patches
   
   recovered <- half_recovered <- rep(FALSE,Nyears)
   recovered[(Nburnin+1):(Nyears-4)] <- running.mean(MetaPop[(Nburnin+1):Nyears,"Spawners"],5)>=mean(MetaPop[1:Nburnin,"Spawners"])
@@ -189,26 +212,27 @@ metaPop <- function(Npatches=16,
   
   shortTermProd <- mean(compensationBias[distYear:(distYear+5)],na.rm=TRUE)
   shortTermComp <- mean(alphaYr[distYear:(distYear+5)]/alpha,na.rm=TRUE)
-  shortTermCap <- mean(metaKYr[distYear:(distYear+5)]/actualK,na.rm=TRUE)
+  shortTermCap <- mean(metaKYr[distYear:(distYear+5)]/sum(k_p),na.rm=TRUE)
   shortTermMSY <- mean(MSYYr[distYear:(distYear+5)],na.rm=TRUE)
   shortTermOcc <- mean(patchOccupancy[distYear:(distYear+5)],na.rm=TRUE)
   
   medTermProd <- mean(compensationBias[distYear:(distYear+10)],na.rm=TRUE)
   medTermComp <- mean(alphaYr[distYear:(distYear+10)]/alpha,na.rm=TRUE)
-  medTermCap <- mean(metaKYr[distYear:(distYear+10)]/actualK,na.rm=TRUE)
+  medTermCap <- mean(metaKYr[distYear:(distYear+10)]/sum(k_p),na.rm=TRUE)
   medTermMSY <- mean(MSYYr[distYear:(distYear+10)],na.rm=TRUE)
   medTermOcc <- mean(patchOccupancy[distYear:(distYear+10)],na.rm=TRUE)
   
-  
   longTermProd <- mean(compensationBias[distYear:(distYear+25)],na.rm=TRUE)
   longTermComp <- mean(alphaYr[distYear:(distYear+25)]/alpha,na.rm=TRUE)
-  longTermCap <- mean(metaKYr[distYear:(distYear+25)]/actualK,na.rm=TRUE)
+  longTermCap <- mean(metaKYr[distYear:(distYear+25)]/sum(k_p),na.rm=TRUE)
   longTermMSY <- mean(MSYYr[distYear:(distYear+25)],na.rm=TRUE)
   longTermOcc <- mean(patchOccupancy[distYear:(distYear+25)],na.rm=TRUE)
   
+  mnNMSY <- mean(NMSY_y[distYear:(Nburnin+recovery)],na.rm=TRUE)
+  
   if(spatialPlots)
   {
-    spatialRecoveryPlot(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recovery,Nburnin,Nyears,alpha,metaK,alphaYr,metaKYr,lostCapacity,compensationBias,MSYYr,nodeScalar=35,network=network,networkType=networkType,Npatches=Npatches) 
+    spatialRecoveryPlot(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recovery,Nburnin,Nyears,alpha,metaK,alphaYr,metaKYr,lostCapacity,compensationBias,MSYYr,nodeScalar=35,network=network,networkType=networkType,Npatches=Npatches,NMsy=c(sum(NMSY_p),mnNMSY)) 
   }
 
   return(list("MetaPop"=MetaPop,"popDyn"=popDyn,"sink"=sink,"source"=source,"pseudoSink"=pseudoSink,"dispersing"=dispersing,"shortTermProd"=shortTermProd,"shortTermComp"=shortTermComp,"shortTermCap"=shortTermCap,"medTermProd"=medTermProd,"medTermComp"=medTermComp,"medTermCap"=medTermCap,"longTermProd"=longTermProd,"longTermComp"=longTermComp,"longTermCap"=longTermCap,"recovery"=recovery,"extinction"=extinction,"shortTermOcc"=shortTermOcc,"medTermOcc"=medTermOcc,"longTermOcc"=longTermOcc,"shortTermMSY"=shortTermMSY,"medTermMSY"=medTermMSY,"longTermMSY"=longTermMSY,"shortTermCV"=shortTermCV,"medTermCV"=medTermCV,"longTermCV"=longTermCV))
