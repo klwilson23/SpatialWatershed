@@ -1,7 +1,7 @@
 
 # april 3, 2019:
 # error happens for "targeted" disturbance where the simulation gets stuck in the while loop for accumulating patch disturbance
-# solution? - if the sum of all high productivity patches is NOT enough to reach the TARGET LOSS then (1) take the next most productive patch or (2) nuke every last animal in that patch
+# solution? - if the sum of all high productivity patches is NOT enough to reach the TARGET LOSS then (1) take the next most productive patch or (2) remove every last animal in that patch
 # april 16, 2019:
 # run the assessment for all available years of data after disturbance but with some data-weighting for recent years
 
