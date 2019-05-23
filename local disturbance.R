@@ -7,6 +7,7 @@ Disturbance <- function(metaPop,magnitude=0.5,DisType="uniform",N_p,prod,Npatche
   targetPatchMax <- min(which(cumsum(sort(N_p,decreasing=FALSE))>=totalLoss)) # calculate the minimum number of patches necessary to get target total losses
   targetPatchMin <- min(which(cumsum(sort(N_p,decreasing=TRUE))>=totalLoss)) # calculate the maximum number of patches necessary to get target total losses
   targetPatches <- round(mean(c(targetPatchMin,targetPatchMax))) # average number of matches necessary to get total loss
+  targetPatches <- ifelse(targetPatches==Npatches,targetPatchMin,targetPatches)
   animals_all <- data.frame("Animal"=1:sum(N_p),"Patch"=rep(1:Npatches,times=N_p)) # arrange animals as individuals susceptible to disturbance
   
   if(DisType=="uniform")
