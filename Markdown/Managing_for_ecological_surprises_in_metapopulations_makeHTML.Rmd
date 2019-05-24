@@ -1,0 +1,887 @@
+---
+title: "Managing for ecological surprises in metapopulations"
+author: |
+  | Kyle Logan Wilson$^1$, Colin Bailey$^1$, William Atlas$^1$, and Doug Braun$^2$
+  |
+  | $^1$Earth to Ocean Research Group, Simon Fraser University
+  | $^2$Fisheries & Oceans Canada
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output:
+  pdf_document:
+    keep_tex: yes
+    pandoc_args:
+    - --biblio
+    - Metapop_references.bib
+    - --csl
+    - methods-in-ecology-and-evolution.csl
+  fig_caption: yes
+  fontsize: 12pt
+  highlight: tango
+  html_document:
+    pandoc_args:
+    - --biblio
+    - Metapop_references.bib
+    - --csl
+    - methods-in-ecology-and-evolution.csl
+  word_document: default
+  df_print: kable
+subtitle: Supplemental materials
+header-includes:
+- \usepackage{wrapfig}
+- \usepackage{lipsum}
+- \usepackage{float}
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(knitcitations)
+opts_chunk$set(echo=TRUE)
+opts_chunk$set(tidy=TRUE)
+opts_chunk$set(fig.show = "hold", collapse=TRUE)
+knitr::opts_chunk$set(fig.pos = 'H')
+#library(devtools)
+#install.packages("knitcitations")
+cleanbib()
+options("citation_format" = "pandoc")
+
+defOut <- knitr::knit_hooks$get("plot")  # save the default plot hook 
+knitr::knit_hooks$set(plot = function(x, options) {  # set new plot hook ...
+  x <- defOut(x, options)  # first apply the default hook
+  if(!is.null(options$wrapfigure)) {  # then, if option wrapfigure is given ...
+    # create the new opening string for the wrapfigure environment ...
+    wf <- sprintf("\\begin{wrapfigure}{%s}{%g\\textwidth}", options$wrapfigure[[1]], options$wrapfigure[[2]])
+    x  <- gsub("\\begin{figure}", wf, x, fixed = T)  # and replace the default one with it.
+    x  <- gsub("{figure}", "{wrapfigure}", x, fixed = T)  # also replace the environment ending
+  }
+  return(x)
+})
+
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+```{r source,echo=FALSE,echo=FALSE,warning = FALSE, message = FALSE}
+library(mvtnorm)
+library(marima)
+library(diagram)
+source("Functions/make networks.R")
+source("Functions/Dispersal function.R")
+source("Functions/patch_variance.R")
+source("Functions/local disturbance.R")
+source("Functions/some functions.R")
+source("Functions/popDynFn.R")
+source("Functions/Metapop function.R")
+source("Functions/finding MSY.R")
+```
+
+## Metapopulation model
+### Local & metapopulation dynamics
+Our metapopulation is defined by a set of local populations $N_p$ with time-dynamics that follows birth (i.e., recruitment *R*), immigration, death, and emigration (BIDE) processes:
+
+<center> $N_{it}= R_{it}\epsilon_{it}+I_{it}-D_{it}-E_{it}$ </center>
+
+where $N_{it+1}$ is the number of adults in patch *i* at time *t*, $R_{it}$ is number of recruits, $I_{it}$ is number of recruits immigrating into patch *i* from any other patch, $D_{it}$ is number of recruits that die due to disturbance regime, $E_{it}$ is the number of recruits emigrating from patch *i* into any other patch, and $\epsilon_{it}$ is stochasticity in recruitment.
+
+Resoure monitoring often occurs at the scale of the metapopulation, hence we define metapopulation adults as:
+
+${MN}_t = \sum_{i=1}^{N_p} N_{it}$
+
+with metapopulation recruits:
+
+$MR_t = \sum_{i=1}^{N_p} R_{it}$
+
+Local patch recruitment at time *t* depended on adult densities at *t-1* and followed a reparameterized Beverton-Holt function:
+
+$R_{it}=\cfrac{\alpha_iN_{it-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{it-1}}$
+
+where $\alpha_i$ is the recruitment compensation ratio and $\beta_i$ is local patch carrying capacity.
+
+For example, in a two patch model that varies $\alpha_i$ and $\beta_i$ parameters such that
+
+```{r recruitment}
+alpha <- c(2,4)
+beta <- c(100,200)
+```
+Management often monitors metapopulation resources as the aggregate of all local populations. In this way, recruitment compensation from local patches $\alpha_i$ gets averaged across the metapopulation leading mean compensation $\bar{\alpha}$ of `r mean(alpha)`. Likewise, the total carrying capacity of the metapopulation $\bar{\beta}$ becomes the summation of local patch carrying capacities $\sum\beta_i$, which is `r sum(beta)`. This scale of monitoring generates the following local patch and metapopulation dynamics:
+<br>
+```{r recruit curves, echo=FALSE,warning = F, message = F,fig.hold=TRUE,fig.width=7, fig.height = 6,fig.cap="Metapopulation and local patch recruitment dynamics.",fig.align="center"}
+curve((alpha[1]*x)/(1+((alpha[1]-1)/beta[1])*x),from=0,to=beta[1],lwd=2,col="orange",xlab="Adults (t-1)",ylab="Recruits (t)",ylim=c(0,sum(beta)),xlim=c(0,sum(beta)))
+curve((alpha[2]*x)/(1+((alpha[2]-1)/beta[2])*x),from=0,to=beta[2],lwd=2,col="dodgerblue",add=TRUE)
+curve((mean(alpha)*x)/(1+((mean(alpha)-1)/sum(beta))*x),from=0,to=sum(beta),lwd=2,col="black",add=TRUE)
+legend("bottomright",c("Patch 1","Patch 2","Metapopulation"),bty="n",lwd=2,col=c("orange","dodgerblue","black"))
+
+```
+<br>
+
+### Creating the spatial networks
+The next aspect to our metapopulation model is connecting the set of patches to one another. We need to specify the number of patches, their arrangements (i.e., connections), and how far apart they are from one another. We followed some classic metapopulation and source-sink arrangements to create four networks that generalize across a few real-world topologies: a linear habitat network (e.g., coastline), a dendritic or branching network (e.g., coastal rivers), a star network (e.g., mountain & valley), and a complex network (e.g., terrestrial plants). 
+  
+To make networks comparable, each spatial network type needs the same leading parameters (e.g., $N_p$ and $\bar{d}$) . In this case for number of patches, we set $N_p$ to `16` and $\bar{d}$ to `1` unit (distance units are arbitrary). We used the `igraph` package and some custom code to arrange our spatial networks as the following:
+
+<br>
+```{r networks, echo=FALSE,fig.hold=TRUE,fig.width=5, fig.height = 5,fig.cap="Four spatial network topologies.",fig.align="center"}
+source("Functions/some functions.R")
+source("Functions/make networks.R")
+patchDist <- 1
+Npatches <- 16
+layout(matrix(1:4,nrow=2,ncol=2,byrow=T))
+par(mar=c(1,1,1,1),oma=c(0,0,0,0))
+
+nodeScalar <- 16
+network <- makeNetworks("linear",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,col="dodgerblue",layout=cbind(0,seq(1,-1,length.out = gorder(network$landscape))),vertex.size=network$node.size*nodeScalar,xlim=c(-1,1),ylim=c(-1,1),rescale=FALSE)
+title(main="Linear",line=0,font.main=1)
+
+nodeScalar <- 18
+network <- makeNetworks("dendritic",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,col="dodgerblue",layout=layout_as_tree(network$landscape,root=V(network$landscape)[1]),vertex.size=network$node.size*nodeScalar)
+title(main="Dendritic",line=0,font.main=1)
+
+network <- makeNetworks("star",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,col="dodgerblue",layout=layout.reingold.tilford(network$landscape,circular=T),vertex.size=network$node.size*nodeScalar)
+title(main="Star",line=0,font.main=1)
+
+network <- makeNetworks("complex",Npatches=Npatches,patchDist=patchDist)
+spatialLayout <- matrix(MORELETTERS(1:Npatches),nrow=sqrt(Npatches),ncol=sqrt(Npatches),byrow=TRUE)
+spatialLayout <- t(sapply(1:Npatches,function(x){which(spatialLayout==LETTERS[x],arr.ind=TRUE)}))
+spatialLayout <- spatialLayout[rank(attr(V(network$landscape),"names")),]
+plot(network$landscape,col="dodgerblue",layout=spatialLayout,vertex.size=network$node.size*nodeScalar)
+title(main="Complex",line=0,font.main=1)
+
+```
+<br>
+
+Note that distances between neighbor patches in the above networks are equal.
+
+<br>
+
+An example dispersal matrix for the complex network: 
+```{r distance matrix,echo=FALSE}
+print(network$distanceMatrix)
+```
+<br>
+
+### Dispersal
+
+Dispersal from patch *i* into patch *j* depends on constant dispersal rate $\omega$ (defined as the proportion of total local recruits that will disperse) and an exponential distance-decay function between *i* and *j* with distance cost to dispersal $m$ following:
+
+$E_{ij(t)}=\omega R_{it}p_{ij}$
+
+where $E_{ij}$ is the total dispersing animals from patch *i* into patch *j* and probability of dispersal between patches $p_{ij}$:
+
+$p_{ij}=\dfrac{e^{-md_{ij}}}{\sum\limits_{\substack{j=1 \\ j\neq i}}^{N_p} e^{-md_{ij}}}$
+
+where $d_{ij}$ is the pairwise distance between patches. The summation term in the denominator normalizes the probability of moving to any patch to between 0 and 1. With $\bar{d}= 1$, $m=0.5$, $\omega=0.1$, $R_{it}=100$ in a linear network:
+
+<br>
+
+```{r dispersal,echo=FALSE,fig.hold=TRUE,fig.height=5.5,fig.width=6,fig.cap="Example dispersal patterns across linear network.",fig.align="center"}
+patchDist <- 1
+Npatches <- 16
+m <- 0.5
+omega <- 0.10
+network <- makeNetworks("linear",Npatches=Npatches,patchDist=patchDist)
+N <- 100
+E <- dispersal(omega,m,network$distanceMatrix,N)
+
+layOut <- matrix(1,nrow=8,ncol=12,byrow=T)
+layOut[-8,5:11] <- 2
+layout(layOut)
+par(mar=c(5,4,0,0))
+plot(network$distanceMatrix[,"A"],E$dispersers[,"A"],xlab="Distance from patch i to j",ylab="Number of dispersers",lwd=2,type="l",cex.lab=1.5)
+par(mar=c(1,1,1,1))
+nodeScalar <- 14
+plot(network$landscape,col="dodgerblue",layout=cbind(1,seq(1,-1,length.out = gorder(network$landscape))),vertex.size=network$node.size*nodeScalar,xlim=c(-1,1),ylim=c(-1,1),rescale=FALSE)
+```
+<br>
+
+### Recruitment stochasticity
+Enter some text here
+
+#### Spatio-temporal correlations
+Enter some more text here
+
+### Disturbance regimes
+
+In all scenarios, disturbance was applied after `50` years of equilibrating the metapopulaton at pristine conditions. At year `50+1`, we applied the disturbance regime (the regime varied from *uniform*, *localized, random*, and *localized, extirpation* - see *Scenarios* below). Disturbance immediately removes a set proportion of the metapopulation adults at that time (i.e., `0.9` of $MN_{t=51}$). Once applied, the metapopulation is no longer disturbed and spatio-temporal dynamics emerge naturally from these new conditions.
+
+## Emergent outcomes
+We measured the following ecological outcomes that have direction application for conservation metrics.
+
+1. Recovered & recovery rate after disturbance - the number of simulations where metapopulation abundance averaged `1.0` carrying capacity for `5` consecutive years post-disturbance and the number of years it took to get there.
+
+2. Extinction & extinction rate - the number of simulations where metapopulation abundance was `<0.05` carrying capacity and the mean number of years it took to get there.
+
+3. Patch occupancy - the mean number of patches with `>0.1` local carrying capacity.
+
+5. Spatial variance
+
+6. Temporal variation in source, sink, pseudo-sink defined as:
+    a. Sources provide surplus recruits and net emigrants such that: $(R_{it}>N_{it})$ & $(E_{it}>I_{it})$
+    b. Sinks consume recruits and net immigrants such that: $(R_{it} < N_{it})$ & $(E_{it} < I_{it})$
+    c. Pseudo-sinks would provide surplus recruits in the absence of dispersal such that $(R_{it}>N_{it})$ but $(R_{it}+E_{it}) < (R_{it-1}+I_{it-1}-E_{it-1})$
+
+7. Fit stock-recruitment model to aggregate of metapopulation to estimate:
+    a. Recruitment compensaton ratio compared to true metapopulation average
+    b. Metapopulation carrying capacities compared to true sum of carrying capacities across metapopulation
+    c. Expected recruitment production to true recruitment production across all patches
+    d. Expected maximum sustainable yield *MSY* to true maximum sustainable yield across all patches
+
+### Monitoring & management at aggregate-scale
+While true metapopulation dynamics are controlled by local patch dynamics and dispersal such that:
+
+$N_{it}= R_{it}\epsilon_{it}+I_{it}-D_{it}-E_{it}$
+
+$R_{it}=\cfrac{\alpha_iN_{it-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{it-1}}$
+
+${MN}_t = \sum_{i=1}^{N_p} N_{it}$
+
+${MR}_t = \sum_{i=1}^{N_p} R_{it}$
+
+natural resoure managers often monitors and manages at the scale of the metapopulation. Hence, management at this scale inherently defines the stock-recruitment dynamics of the aggregate complex of patches (i.e., metapopulation) as:
+
+${MR}_{t}=\cfrac{\hat{\alpha_t}{MN}_{t-1}}{1+\cfrac{\hat{\alpha_t}-1}{\hat{\beta_t}}{MN}_{it-1}}$
+
+where $\hat{\alpha_t}$ is the estimated compensation ratio averaged across the metapopulation at time *t* and $\hat{\beta_t}$ is the estimated carrying capacity of the entire metapopulation. Necessarily, these estimates emerge from monitoring data collected across all patches and are sensitive to the quality of the data and how local patches perform through time. For example, temporal shifts in productivity regimes may be masked if most of the data were sampled before the regime shift. To help surmount these issues, modern resource assessments use data weighting and penalties (i.e., priors) when fitting models to data.
+
+In our assessment, we weighted recent years of sampling over more distant years such that:
+
+```{r ,echo=FALSE,fig.hold=TRUE,fig.height=5.5,fig.width=6,fig.cap="Likelihood weighting for samples collected over time from current year of sampling.",fig.align="center"}
+dataWeighting <- 0.1
+curve(exp(dataWeighting*(-x))/max(exp(dataWeighting*(-x))),from=0,to=100,xlab="Years lagged",ylab="Likelihood weight")
+```
+
+Furthermore, we used penalized normal likelihoods on both $\hat{\alpha_t}$ and $\hat{\beta_t}$ such that:
+
+$\hat{\alpha_t} \sim N(\mu=\hat{\alpha_{t-1}},\sigma=3\hat{\alpha_{t-1}})$
+
+and
+
+$\hat{\beta_t} \sim N(\mu=\hat{\beta_{t-1}},\sigma=3\hat{\beta_{t-1}})$
+
+where $\mu=\hat{\alpha_{t-1}}$ and $\mu=\hat{\beta_{t-1}}$ represents the best estimates from the previous assessment and the `3` in the $\sigma$ term represents a 300% coefficient of variation. We used these penalized likelihoods to fit the above aggregate stock-recruitment model with *lognormal* error to the metapopulation stock-recruit data collected at time *t*. We used the following function and fitted to the below $\theta$ parameters (termed `theta` in the function `optim()` using the `L-BFGS-B` optimizer with a lower bound on $\hat{\alpha}$ of `1.01` (i.e., constrained to be at least above replacement).
+
+```{r assessment model}
+SRfn <- function(theta){
+  a.hat <- theta[1]
+  b.hat <- exp(theta[2])
+  sd.hat <- exp(theta[3])
+  rec.mean <- (a.hat*spawnRec$spawners)/(1+((a.hat-1)/b.hat)*spawnRec$spawners)
+  # negative log likelihood on recruitment parameters
+  nll <- -1*sum(dlnorm(spawnRec$recruits,meanlog=log(rec.mean),sdlog=sd.hat,log=TRUE)*spawnRec$weights,na.rm=TRUE)
+  # penalized likelihood on estimated alpha
+  penalty1 <- -dnorm(a.hat,alphaLstYr,3*alphaLstYr,log=TRUE)
+  # penalized likelihood on estimated carrying capacity
+  penalty2 <- -dnorm(b.hat,metaKLstYr,3*metaKLstYr,log=TRUE)
+  jnll <- sum(c(nll,penalty1,penalty2),na.rm=TRUE)
+  return(jnll)
+}
+```
+
+
+This above function allows us to assess the bias in $\hat{\alpha_t}$, $\hat{\beta_t}$, and $\hat{MR_t}$ compared to true $\bar{\alpha}$, $\bar{\beta}$, and ${MR}_t$ across the metapopulation. This then allows us to see how much information management & monitoring programs are missing when they assess metapopulations at the aggregate (rather than local) scales.
+
+### Finding maximum sustainable yield (MSY)
+
+Enter some more text here.
+
+## Scenarios
+
+We tested all combinations of the following eight proccesses (below) and ran a `100` bootstraps per scenario to estimate the mean for each of the above outcomes.
+
+1. Homogenous and spatially variable recruitment compensation ratio across patches, i.e. intrinsic rate of population growth ($\alpha_i$).
+
+2. Homogenous and spatially variable local carrying capacity across patches, i.e. asymptote of expected recruits at high adult densities ($\beta_i$)
+
+3. Disturbances where a proportion of individuals removed from metapopulation (e.g., `0.90`) occurs.
+    a. *uniform* - random individuals removed at equal vulnerability across all patches.
+    b. *localized, random* - random individuals removed from randomly selected subset of patches (as long as target loss can be achieved in subset)
+    c. *localized, extirpation* - total extirpation of randomly selected subset of patches (as long as target loss can be achieved in subset)
+
+4. Density-independent dispersal rates $\omega$ from 0 to 20% of individuals within a patch will disperse.
+
+5. Topology of the spatial networks with linear, dendritic, star, and complex networks. Each network with $N_p$ of `16` and distance between patches $\bar{d}$ of `1`.
+
+6. Stochastic recruitment deviates from low, medium, high coefficient of variation on lognormal error. Generate stochasticity in time-dynamics via random recruitement deviates away from expected.
+
+7. Temporal correlation in recruitment deviates from low, medium, high correlation (i.e., good year at time *t* begets good year at time *t+1*).
+
+8. Spatial correlation in recruitment deviates among patches from low, medium, to high correlation (i.e., neighboring patches go up or down together).
+
+### Example results
+
+We can demonstrate our concepts with a model on a linear network composed of `16` patches, a dispersal rate of `0.01` and a high enough dispersal cost such that individuals are willing to move only to their closest neighboring patches. This limits the strength of potential rescue effects. For this example, patches varied in their productivity and carrying capacity but will have deterministic population dynamics.
+
+```{r example results1, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Spatial recovery regime of metapopulation with linear topology through time (top left) and space (top right). Recruitment dynamics before and 10 years after disturbance (bottom left). Relative bias in aggregate-scale estimates of carrying capacity, compensation ratio, and recruitment production in recovery phase (bottom right).",fig.align="center"}
+linearSim <- metaPop(Npatches=16,networkType="linear",patchDistance=1,Nburnin=50,NyrsPost=50,omega=0.01,m=100,alpha=2,metaK=1600,cv=1e-6,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=TRUE)
+```
+<br>
+
+We can then contrast this with a different network shape, like a dendritic network. 
+
+```{r example results2, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Spatial recovery regime of metapopulation with dendritic topology.",fig.align="center"}
+dendriticSim <- metaPop(Npatches=16,networkType="dendritic",patchDistance=1,Nburnin=50,NyrsPost=50,omega=0.01,m=100,alpha=2,metaK=1600,cv=1e-6,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=TRUE)
+```
+<br>
+
+Now, let's add some stochasticity to recruitment and see how this affects the recovery regime.
+
+```{r example results3, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Spatial recovery regime of stochastic metapopulation.",fig.align="center"}
+dendriticSim2 <- metaPop(Npatches=16,networkType="dendritic",patchDistance=1,Nburnin=50,NyrsPost=50,omega=0.01,m=100,alpha=2,metaK=1600,cv=0.1,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=TRUE)
+```
+<br>
+
+Next, we can contrast with a disturbance regime where the disturbance is concentrated on local patches that can be completely extirpated (rather than the disturbance being applied proportionally across all patches).
+
+```{r example results4, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Spatial recovery regime of stochastic metapopulation.",fig.align="center"}
+dendriticSim3 <- metaPop(Npatches=16,networkType="dendritic",patchDistance=1,Nburnin=50,NyrsPost=50,omega=0.01,m=100,alpha=2,metaK=1600,cv=0.1,DistScenario="random_patch",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=TRUE)
+```
+<br>
+
+## Simulation test & bootstrap
+
+### General patterns
+We now show some general patterns in how variable patch demographic rates, network structure, dispersal, disturbance, recruitment stochasticity, and spatio-temporal correlations variation effects metapopulation *recovery rates*, *maximum sustainable yield* (i.e., analagous to the maximum rate of loss the system can sustain), and *coefficient of variation* across patches.
+
+First, lets show recovery rates for a scenario where (1) patches have the same local productivities, (2) patches have the same local carrying capacities, (3) recruitment is deterministic, (4) there is no spatial correlation in recruitment, and (5) there is no temporal correlations in recruitment.
+
+Below, we can see three main effects on recovery rates (number of generations to reach recovery). First, recovery exponentially slows with increased  dispersal. Most of the action here takes place at low rates of dispersal indicating most spatial topologies don't need much dispersal to quicken their recovery. Second, more localized disturbances regimes lead to slower recovery. Third, linearized networks have slower recovery times than interconnected, complex networks suggesting that rescue effects take some time to cascade through the entire network of patches.
+
+```{r general results, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Recovery rates along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients without stochasticity.",fig.align="center"}
+results <- readRDS("Simulations/results2019-05-19_fixed.rds")
+scenarios <- readRDS("Simulations/scenarios2019-05-19.rds")
+
+Nboots <- 50
+Nlevels <- 11
+model <- "Beverton-Holt"
+# simulation parameters
+Npatches <- 16
+patchDist <- 1
+Nburnin <- 50
+NyrsPost <- 50
+Nyears <- Nburnin+NyrsPost
+compLag <- 25 # how many years to lag estimates of compensation
+dataWeighting <- 0.1 # penalty to past years for data weighting
+m <- 100 # distance decay function: penalty of 1 says about 60% of dispersing recruits move to neighbor patches. penalty of 2 says about 90% of dispersing recruits move to neighbor patches
+# adult stock-juvenile recruitment traits
+alpha <- 2
+metaK <- 1600
+# how big is the disturbance after Nburnin years?
+magnitude_of_decline <- 0.9
+# what is the lag time between recruits and spawners
+lagTime <- 1
+
+matLayout <- matrix(0,nrow=16,ncol=16)
+matLayout[1:8,1:8] <- 1
+matLayout[1:8,9:16] <- 2
+matLayout[9:16,1:8] <- 3
+matLayout[9:16,9:16] <- 4
+matLayout[1:3,6:8] <- 5
+matLayout[1:3,14:16] <- 6
+matLayout[9:11,6:8] <- 7
+matLayout[9:11,14:16] <- 8
+
+layout(matLayout)
+par(mar=c(5,4,1,1))
+dist_colours <- c("blue","dodgerblue","orange")
+for(i in 1:length(scenarios$network))
+{
+  subResults <- results[results$network==scenarios$network[i] & 
+                          results$stochastic==scenarios$stochastic[1] & 
+                          results$temporal==scenarios$temporal[1] & 
+                          results$spatial==scenarios$spatial[1] & 
+                          results$alpha==scenarios$alpha[1] & 
+                          results$beta==scenarios$beta[1],]
+  plot(subResults$dispersal,subResults$recovery,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovery (generations)",xlab="Dispersal rate",ylim=1.5*range(c(0,results$recovery)))
+  for(j in 1:length(scenarios$disturbance)){
+    distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
+    lines(distResults$dispersal,distResults$recovery,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
+  }
+}
+
+par(xpd=TRUE,usr=c(-1.572561,1.572561,-1.080000,1.080000),mar=c(1,1,1.5,1.5))
+nodeScalar <- 30
+network <- makeNetworks("linear",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=cbind(seq(-1,1,length.out = gorder(network$landscape)),seq(1,-1,length.out = gorder(network$landscape))),vertex.size=network$node.size*nodeScalar,xlim=c(-1,1),ylim=c(-1,1),rescale=FALSE,vertex.label=NA)
+
+nodeScalar <- 30
+network <- makeNetworks("dendritic",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=layout_as_tree(network$landscape,root=V(network$landscape)[1]),vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+network <- makeNetworks("star",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=layout.reingold.tilford(network$landscape,circular=T),vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+network <- makeNetworks("complex",Npatches=Npatches,patchDist=patchDist)
+spatialLayout <- matrix(MORELETTERS(1:Npatches),nrow=sqrt(Npatches),ncol=sqrt(Npatches),byrow=TRUE)
+spatialLayout <- t(sapply(1:Npatches,function(x){which(spatialLayout==LETTERS[x],arr.ind=TRUE)}))
+spatialLayout <- spatialLayout[rank(attr(V(network$landscape),"names")),]
+plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+```
+<br>
+Now, lets show recovery rates for the same scenario with deterministic recruitment but allowing for patches to vary in productivity and carrying capacity. In addition to the same three main effects of dispersal, network, and disturbance noted above, we also see variable patch productivities substantially slows recovery times across all scenarios. 
+
+```{r results for variables patches, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Recovery rates along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable local productivity and carrying capacities.",fig.align="center"}
+layout(matLayout)
+par(mar=c(5,4,1,1))
+dist_colours <- c("blue","dodgerblue","orange")
+for(i in 1:length(scenarios$network))
+{
+  subResults <- results[results$network==scenarios$network[i] & 
+                          results$stochastic==scenarios$stochastic[1] & 
+                          results$temporal==scenarios$temporal[1] & 
+                          results$spatial==scenarios$spatial[1] & 
+                          results$alpha==scenarios$alpha[2] & 
+                          results$beta==scenarios$beta[2],]
+  plot(subResults$dispersal,subResults$recovery,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovery (generations)",xlab="Dispersal rate",ylim=1.5*range(c(0,results$recovery)))
+  for(j in 1:length(scenarios$disturbance)){
+    distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
+    lines(distResults$dispersal,distResults$recovery,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
+  }
+}
+
+par(xpd=TRUE,usr=c(-1.572561,1.572561,-1.080000,1.080000),mar=c(1,1,1.5,1.5))
+nodeScalar <- 30
+network <- makeNetworks("linear",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=cbind(seq(-1,1,length.out = gorder(network$landscape)),seq(1,-1,length.out = gorder(network$landscape))),vertex.size=network$node.size*nodeScalar,xlim=c(-1,1),ylim=c(-1,1),rescale=FALSE,vertex.label=NA)
+
+nodeScalar <- 30
+network <- makeNetworks("dendritic",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=layout_as_tree(network$landscape,root=V(network$landscape)[1]),vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+network <- makeNetworks("star",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=layout.reingold.tilford(network$landscape,circular=T),vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+network <- makeNetworks("complex",Npatches=Npatches,patchDist=patchDist)
+spatialLayout <- matrix(MORELETTERS(1:Npatches),nrow=sqrt(Npatches),ncol=sqrt(Npatches),byrow=TRUE)
+spatialLayout <- t(sapply(1:Npatches,function(x){which(spatialLayout==LETTERS[x],arr.ind=TRUE)}))
+spatialLayout <- spatialLayout[rank(attr(V(network$landscape),"names")),]
+plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+```
+<br>
+Now, lets show recovery rates for the same scenario but allowing for recruitment to be stochastic (but patches are the same in demography). We see the same three main effects of dispersal, network, and disturbance noted above. We also see a few subtle changes: (1) stochasticity slows recovery for uniform and local disturbance, but (2) quickens recovery for extreme local disturbance.
+
+```{r stochastic recruitment, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Recovery rates along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with stochasticity.",fig.align="center"}
+layout(matLayout)
+par(mar=c(5,4,1,1))
+dist_colours <- c("blue","dodgerblue","orange")
+for(i in 1:length(scenarios$network))
+{
+  subResults <- results[results$network==scenarios$network[i] & 
+                          results$stochastic==scenarios$stochastic[2] & 
+                          results$temporal==scenarios$temporal[1] & 
+                          results$spatial==scenarios$spatial[1] & 
+                          results$alpha==scenarios$alpha[1] & 
+                          results$beta==scenarios$beta[1],]
+  plot(subResults$dispersal,subResults$recovery,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovery (generations)",xlab="Dispersal rate",ylim=1.5*range(c(0,results$recovery)))
+  for(j in 1:length(scenarios$disturbance)){
+    distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
+    lines(distResults$dispersal,distResults$recovery,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
+  }
+}
+
+par(xpd=TRUE,usr=c(-1.572561,1.572561,-1.080000,1.080000),mar=c(1,1,1.5,1.5))
+nodeScalar <- 30
+network <- makeNetworks("linear",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=cbind(seq(-1,1,length.out = gorder(network$landscape)),seq(1,-1,length.out = gorder(network$landscape))),vertex.size=network$node.size*nodeScalar,xlim=c(-1,1),ylim=c(-1,1),rescale=FALSE,vertex.label=NA)
+
+nodeScalar <- 30
+network <- makeNetworks("dendritic",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=layout_as_tree(network$landscape,root=V(network$landscape)[1]),vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+network <- makeNetworks("star",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=layout.reingold.tilford(network$landscape,circular=T),vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+network <- makeNetworks("complex",Npatches=Npatches,patchDist=patchDist)
+spatialLayout <- matrix(MORELETTERS(1:Npatches),nrow=sqrt(Npatches),ncol=sqrt(Npatches),byrow=TRUE)
+spatialLayout <- t(sapply(1:Npatches,function(x){which(spatialLayout==LETTERS[x],arr.ind=TRUE)}))
+spatialLayout <- spatialLayout[rank(attr(V(network$landscape),"names")),]
+plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+```
+<br>
+Now, lets show recovery rates for the same scenarios but with spatial and temporal correlations in recruitment stochasticity. In addition to the same effects of stochasticity, we also generally see a small effect of slower recovery times for uniform and local disturbance, but faster recovery times for extreme localized disturbance.
+
+```{r spatiotemporal correlation, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Recovery rates along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment variation.",fig.align="center"}
+layout(matLayout)
+par(mar=c(5,4,1,1))
+dist_colours <- c("blue","dodgerblue","orange")
+for(i in 1:length(scenarios$network))
+{
+  subResults <- results[results$network==scenarios$network[i] & 
+                          results$stochastic==scenarios$stochastic[2] & 
+                          results$temporal==scenarios$temporal[3] & 
+                          results$spatial==scenarios$spatial[3] & 
+                          results$alpha==scenarios$alpha[1] & 
+                          results$beta==scenarios$beta[1],]
+  plot(subResults$dispersal,subResults$recovery,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovery (generations)",xlab="Dispersal rate",ylim=1.5*range(c(0,results$recovery)))
+  for(j in 1:length(scenarios$disturbance)){
+    distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
+    lines(distResults$dispersal,distResults$recovery,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
+  }
+}
+
+par(xpd=TRUE,usr=c(-1.572561,1.572561,-1.080000,1.080000),mar=c(1,1,1.5,1.5))
+nodeScalar <- 30
+network <- makeNetworks("linear",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=cbind(seq(-1,1,length.out = gorder(network$landscape)),seq(1,-1,length.out = gorder(network$landscape))),vertex.size=network$node.size*nodeScalar,xlim=c(-1,1),ylim=c(-1,1),rescale=FALSE,vertex.label=NA)
+
+nodeScalar <- 30
+network <- makeNetworks("dendritic",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=layout_as_tree(network$landscape,root=V(network$landscape)[1]),vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+network <- makeNetworks("star",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=layout.reingold.tilford(network$landscape,circular=T),vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+network <- makeNetworks("complex",Npatches=Npatches,patchDist=patchDist)
+spatialLayout <- matrix(MORELETTERS(1:Npatches),nrow=sqrt(Npatches),ncol=sqrt(Npatches),byrow=TRUE)
+spatialLayout <- t(sapply(1:Npatches,function(x){which(spatialLayout==LETTERS[x],arr.ind=TRUE)}))
+spatialLayout <- spatialLayout[rank(attr(V(network$landscape),"names")),]
+plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+```
+<br>
+
+#### General patterns in MSY
+
+##### MSY with deterministic recruitment where patches are the same
+
+We now show similar patterns in how maximum sustainable yield (MSY) of the whole metapopulation shifts in the first 10 years post-disturbance compared to the sum of MSY for each patch. A value of 1.0 would indicate that the disturbed metapopulation can sustain itselfs against the same disturbance regime as the sum of each patch independently. In other words, is the metapopulation more, less, or equal to the sum of its parts.
+
+```{r MSY, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Maximum sustainable yield along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment variation.",fig.align="center"}
+layout(matLayout)
+par(mar=c(5,4,1,1))
+dist_colours <- c("blue","dodgerblue","orange")
+for(i in 1:length(scenarios$network))
+{
+  subResults <- results[results$network==scenarios$network[i] & 
+                          results$stochastic==scenarios$stochastic[1] & 
+                          results$temporal==scenarios$temporal[1] & 
+                          results$spatial==scenarios$spatial[1] & 
+                          results$alpha==scenarios$alpha[1] & 
+                          results$beta==scenarios$beta[1],]
+  plot(subResults$dispersal,subResults$medMSY,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Maximum sustainable yield",xlab="Dispersal rate",ylim=1.5*range(c(0,results$medMSY)))
+  for(j in 1:length(scenarios$disturbance)){
+    distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
+    lines(distResults$dispersal,distResults$medMSY,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
+  }
+}
+
+par(xpd=TRUE,usr=c(-1.572561,1.572561,-1.080000,1.080000),mar=c(1,1,1.5,1.5))
+nodeScalar <- 30
+network <- makeNetworks("linear",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=cbind(seq(-1,1,length.out = gorder(network$landscape)),seq(1,-1,length.out = gorder(network$landscape))),vertex.size=network$node.size*nodeScalar,xlim=c(-1,1),ylim=c(-1,1),rescale=FALSE,vertex.label=NA)
+
+nodeScalar <- 30
+network <- makeNetworks("dendritic",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=layout_as_tree(network$landscape,root=V(network$landscape)[1]),vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+network <- makeNetworks("star",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=layout.reingold.tilford(network$landscape,circular=T),vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+network <- makeNetworks("complex",Npatches=Npatches,patchDist=patchDist)
+spatialLayout <- matrix(MORELETTERS(1:Npatches),nrow=sqrt(Npatches),ncol=sqrt(Npatches),byrow=TRUE)
+spatialLayout <- t(sapply(1:Npatches,function(x){which(spatialLayout==LETTERS[x],arr.ind=TRUE)}))
+spatialLayout <- spatialLayout[rank(attr(V(network$landscape),"names")),]
+plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+```
+
+##### MSY with variable patches
+
+Now, we illustrate how variable patch demography affects the 10-year average MSY.
+
+```{r MSY with variable patches, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Maximum sustainable yield along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.",fig.align="center"}
+layout(matLayout)
+par(mar=c(5,4,1,1))
+dist_colours <- c("blue","dodgerblue","orange")
+for(i in 1:length(scenarios$network))
+{
+  subResults <- results[results$network==scenarios$network[i] & 
+                          results$stochastic==scenarios$stochastic[1] & 
+                          results$temporal==scenarios$temporal[1] & 
+                          results$spatial==scenarios$spatial[1] & 
+                          results$alpha==scenarios$alpha[2] & 
+                          results$beta==scenarios$beta[2],]
+  plot(subResults$dispersal,subResults$medMSY,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Maximum sustainable yield",xlab="Dispersal rate",ylim=1.5*range(c(0,results$medMSY)))
+  for(j in 1:length(scenarios$disturbance)){
+    distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
+    lines(distResults$dispersal,distResults$medMSY,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
+  }
+}
+
+par(xpd=TRUE,usr=c(-1.572561,1.572561,-1.080000,1.080000),mar=c(1,1,1.5,1.5))
+nodeScalar <- 30
+network <- makeNetworks("linear",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=cbind(seq(-1,1,length.out = gorder(network$landscape)),seq(1,-1,length.out = gorder(network$landscape))),vertex.size=network$node.size*nodeScalar,xlim=c(-1,1),ylim=c(-1,1),rescale=FALSE,vertex.label=NA)
+
+network <- makeNetworks("dendritic",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=layout_as_tree(network$landscape,root=V(network$landscape)[1]),vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+network <- makeNetworks("star",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=layout.reingold.tilford(network$landscape,circular=T),vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+network <- makeNetworks("complex",Npatches=Npatches,patchDist=patchDist)
+spatialLayout <- matrix(MORELETTERS(1:Npatches),nrow=sqrt(Npatches),ncol=sqrt(Npatches),byrow=TRUE)
+spatialLayout <- t(sapply(1:Npatches,function(x){which(spatialLayout==LETTERS[x],arr.ind=TRUE)}))
+spatialLayout <- spatialLayout[rank(attr(V(network$landscape),"names")),]
+plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+```
+
+##### MSY with variable patches and stochasticity
+
+Now, we illustrate how variable patch demography affects the 10-year average MSY.
+
+```{r MSY with variable patches and stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Maximum sustainable yield along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.",fig.align="center"}
+layout(matLayout)
+par(mar=c(5,4,1,1))
+dist_colours <- c("blue","dodgerblue","orange")
+for(i in 1:length(scenarios$network))
+{
+  subResults <- results[results$network==scenarios$network[i] & 
+                          results$stochastic==scenarios$stochastic[2] & 
+                          results$temporal==scenarios$temporal[1] & 
+                          results$spatial==scenarios$spatial[1] & 
+                          results$alpha==scenarios$alpha[2] & 
+                          results$beta==scenarios$beta[2],]
+  plot(subResults$dispersal,subResults$medMSY,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Maximum sustainable yield",xlab="Dispersal rate",ylim=1.5*range(c(0,results$medMSY)))
+  for(j in 1:length(scenarios$disturbance)){
+    distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
+    lines(distResults$dispersal,distResults$medMSY,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
+  }
+}
+
+par(xpd=TRUE,usr=c(-1.572561,1.572561,-1.080000,1.080000),mar=c(1,1,1.5,1.5))
+nodeScalar <- 30
+network <- makeNetworks("linear",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=cbind(seq(-1,1,length.out = gorder(network$landscape)),seq(1,-1,length.out = gorder(network$landscape))),vertex.size=network$node.size*nodeScalar,xlim=c(-1,1),ylim=c(-1,1),rescale=FALSE,vertex.label=NA)
+
+network <- makeNetworks("dendritic",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=layout_as_tree(network$landscape,root=V(network$landscape)[1]),vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+network <- makeNetworks("star",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=layout.reingold.tilford(network$landscape,circular=T),vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+network <- makeNetworks("complex",Npatches=Npatches,patchDist=patchDist)
+spatialLayout <- matrix(MORELETTERS(1:Npatches),nrow=sqrt(Npatches),ncol=sqrt(Npatches),byrow=TRUE)
+spatialLayout <- t(sapply(1:Npatches,function(x){which(spatialLayout==LETTERS[x],arr.ind=TRUE)}))
+spatialLayout <- spatialLayout[rank(attr(V(network$landscape),"names")),]
+plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+```
+
+##### MSY with variable patches, and spatio-temporally correlated stochasticity
+
+Now, we illustrate how variable patch demography and high spatial-temporal correlations in stochastic recrtuitment affects the 10-year average MSY.
+
+```{r MSY with variable patches and space-time stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Maximum sustainable yield along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.",fig.align="center"}
+layout(matLayout)
+par(mar=c(5,4,1,1))
+dist_colours <- c("blue","dodgerblue","orange")
+for(i in 1:length(scenarios$network))
+{
+  subResults <- results[results$network==scenarios$network[i] & 
+                          results$stochastic==scenarios$stochastic[2] & 
+                          results$temporal==scenarios$temporal[3] & 
+                          results$spatial==scenarios$spatial[3] & 
+                          results$alpha==scenarios$alpha[2] & 
+                          results$beta==scenarios$beta[2],]
+  plot(subResults$dispersal,subResults$medMSY,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Maximum sustainable yield",xlab="Dispersal rate",ylim=1.5*range(c(0,results$medMSY)))
+  for(j in 1:length(scenarios$disturbance)){
+    distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
+    lines(distResults$dispersal,distResults$medMSY,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
+  }
+}
+
+par(xpd=TRUE,usr=c(-1.572561,1.572561,-1.080000,1.080000),mar=c(1,1,1.5,1.5))
+nodeScalar <- 30
+network <- makeNetworks("linear",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=cbind(seq(-1,1,length.out = gorder(network$landscape)),seq(1,-1,length.out = gorder(network$landscape))),vertex.size=network$node.size*nodeScalar,xlim=c(-1,1),ylim=c(-1,1),rescale=FALSE,vertex.label=NA)
+
+network <- makeNetworks("dendritic",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=layout_as_tree(network$landscape,root=V(network$landscape)[1]),vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+network <- makeNetworks("star",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=layout.reingold.tilford(network$landscape,circular=T),vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+network <- makeNetworks("complex",Npatches=Npatches,patchDist=patchDist)
+spatialLayout <- matrix(MORELETTERS(1:Npatches),nrow=sqrt(Npatches),ncol=sqrt(Npatches),byrow=TRUE)
+spatialLayout <- t(sapply(1:Npatches,function(x){which(spatialLayout==LETTERS[x],arr.ind=TRUE)}))
+spatialLayout <- spatialLayout[rank(attr(V(network$landscape),"names")),]
+plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+```
+
+<br>
+
+#### General patterns in spatial variation across patches
+
+##### Spatial variation with deterministic recruitment where patches are the same
+
+We now show similar patterns in how the coefficient of variation (CV) across all patches within the metapopulation shifts in the first 10 years post-disturbance.
+
+```{r CV, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Maximum sustainable yield along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment variation.",fig.align="center"}
+layout(matLayout)
+par(mar=c(5,4,1,1))
+dist_colours <- c("blue","dodgerblue","orange")
+for(i in 1:length(scenarios$network))
+{
+  subResults <- results[results$network==scenarios$network[i] & 
+                          results$stochastic==scenarios$stochastic[1] & 
+                          results$temporal==scenarios$temporal[1] & 
+                          results$spatial==scenarios$spatial[1] & 
+                          results$alpha==scenarios$alpha[1] & 
+                          results$beta==scenarios$beta[1],]
+  plot(subResults$dispersal,subResults$medCV,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Spatial variation (CV)",xlab="Dispersal rate",ylim=1.5*range(c(0,results$medCV)))
+  for(j in 1:length(scenarios$disturbance)){
+    distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
+    lines(distResults$dispersal,distResults$medMSY,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
+  }
+}
+
+par(xpd=TRUE,usr=c(-1.572561,1.572561,-1.080000,1.080000),mar=c(1,1,1.5,1.5))
+nodeScalar <- 30
+network <- makeNetworks("linear",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=cbind(seq(-1,1,length.out = gorder(network$landscape)),seq(1,-1,length.out = gorder(network$landscape))),vertex.size=network$node.size*nodeScalar,xlim=c(-1,1),ylim=c(-1,1),rescale=FALSE,vertex.label=NA)
+
+nodeScalar <- 30
+network <- makeNetworks("dendritic",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=layout_as_tree(network$landscape,root=V(network$landscape)[1]),vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+network <- makeNetworks("star",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=layout.reingold.tilford(network$landscape,circular=T),vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+network <- makeNetworks("complex",Npatches=Npatches,patchDist=patchDist)
+spatialLayout <- matrix(MORELETTERS(1:Npatches),nrow=sqrt(Npatches),ncol=sqrt(Npatches),byrow=TRUE)
+spatialLayout <- t(sapply(1:Npatches,function(x){which(spatialLayout==LETTERS[x],arr.ind=TRUE)}))
+spatialLayout <- spatialLayout[rank(attr(V(network$landscape),"names")),]
+plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+```
+
+##### Spatial variation with variable patches
+
+Now, we illustrate how variable patch demography affects the 10-year average CV.
+
+```{r CV with variable patches, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Spatial variation along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.",fig.align="center"}
+layout(matLayout)
+par(mar=c(5,4,1,1))
+dist_colours <- c("blue","dodgerblue","orange")
+for(i in 1:length(scenarios$network))
+{
+  subResults <- results[results$network==scenarios$network[i] & 
+                          results$stochastic==scenarios$stochastic[1] & 
+                          results$temporal==scenarios$temporal[1] & 
+                          results$spatial==scenarios$spatial[1] & 
+                          results$alpha==scenarios$alpha[2] & 
+                          results$beta==scenarios$beta[2],]
+  plot(subResults$dispersal,subResults$medCV,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Spatial variation (CV)",xlab="Dispersal rate",ylim=1.5*range(c(0,results$medCV)))
+  for(j in 1:length(scenarios$disturbance)){
+    distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
+    lines(distResults$dispersal,distResults$medCV,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
+  }
+}
+
+par(xpd=TRUE,usr=c(-1.572561,1.572561,-1.080000,1.080000),mar=c(1,1,1.5,1.5))
+nodeScalar <- 30
+network <- makeNetworks("linear",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=cbind(seq(-1,1,length.out = gorder(network$landscape)),seq(1,-1,length.out = gorder(network$landscape))),vertex.size=network$node.size*nodeScalar,xlim=c(-1,1),ylim=c(-1,1),rescale=FALSE,vertex.label=NA)
+
+network <- makeNetworks("dendritic",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=layout_as_tree(network$landscape,root=V(network$landscape)[1]),vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+network <- makeNetworks("star",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=layout.reingold.tilford(network$landscape,circular=T),vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+network <- makeNetworks("complex",Npatches=Npatches,patchDist=patchDist)
+spatialLayout <- matrix(MORELETTERS(1:Npatches),nrow=sqrt(Npatches),ncol=sqrt(Npatches),byrow=TRUE)
+spatialLayout <- t(sapply(1:Npatches,function(x){which(spatialLayout==LETTERS[x],arr.ind=TRUE)}))
+spatialLayout <- spatialLayout[rank(attr(V(network$landscape),"names")),]
+plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+```
+
+##### Spatial variation with variable patches and stochasticity
+
+Now, we illustrate how variable patch demography affects the 10-year average CV.
+
+```{r CV with variable patches and stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Spatial variation along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches and stochastic recruitment.",fig.align="center"}
+layout(matLayout)
+par(mar=c(5,4,1,1))
+dist_colours <- c("blue","dodgerblue","orange")
+for(i in 1:length(scenarios$network))
+{
+  subResults <- results[results$network==scenarios$network[i] & 
+                          results$stochastic==scenarios$stochastic[2] & 
+                          results$temporal==scenarios$temporal[1] & 
+                          results$spatial==scenarios$spatial[1] & 
+                          results$alpha==scenarios$alpha[2] & 
+                          results$beta==scenarios$beta[2],]
+  plot(subResults$dispersal,subResults$medCV,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Spatial variation (CV)",xlab="Dispersal rate",ylim=1.5*range(c(0,results$medCV)))
+  for(j in 1:length(scenarios$disturbance)){
+    distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
+    lines(distResults$dispersal,distResults$medCV,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
+  }
+}
+
+par(xpd=TRUE,usr=c(-1.572561,1.572561,-1.080000,1.080000),mar=c(1,1,1.5,1.5))
+nodeScalar <- 30
+network <- makeNetworks("linear",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=cbind(seq(-1,1,length.out = gorder(network$landscape)),seq(1,-1,length.out = gorder(network$landscape))),vertex.size=network$node.size*nodeScalar,xlim=c(-1,1),ylim=c(-1,1),rescale=FALSE,vertex.label=NA)
+
+network <- makeNetworks("dendritic",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=layout_as_tree(network$landscape,root=V(network$landscape)[1]),vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+network <- makeNetworks("star",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=layout.reingold.tilford(network$landscape,circular=T),vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+network <- makeNetworks("complex",Npatches=Npatches,patchDist=patchDist)
+spatialLayout <- matrix(MORELETTERS(1:Npatches),nrow=sqrt(Npatches),ncol=sqrt(Npatches),byrow=TRUE)
+spatialLayout <- t(sapply(1:Npatches,function(x){which(spatialLayout==LETTERS[x],arr.ind=TRUE)}))
+spatialLayout <- spatialLayout[rank(attr(V(network$landscape),"names")),]
+plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+```
+
+##### Spatial variation with variable patches, and spatio-temporally correlated stochasticity
+
+Now, we illustrate how variable patch demography and high spatial-temporal correlations in stochastic recrtuitment affects the 10-year average CV.
+
+```{r CV with variable patches and space-time stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Spatial variation along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches, and spatial-temporal correlations in stochastic recruitment.",fig.align="center"}
+layout(matLayout)
+par(mar=c(5,4,1,1))
+dist_colours <- c("blue","dodgerblue","orange")
+for(i in 1:length(scenarios$network))
+{
+  subResults <- results[results$network==scenarios$network[i] & 
+                          results$stochastic==scenarios$stochastic[2] & 
+                          results$temporal==scenarios$temporal[3] & 
+                          results$spatial==scenarios$spatial[3] & 
+                          results$alpha==scenarios$alpha[2] & 
+                          results$beta==scenarios$beta[2],]
+  plot(subResults$dispersal,subResults$medCV,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Spatial variation (CV)",xlab="Dispersal rate",ylim=1.5*range(c(0,results$medCV)))
+  for(j in 1:length(scenarios$disturbance)){
+    distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
+    lines(distResults$dispersal,distResults$medCV,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
+  }
+}
+
+par(xpd=TRUE,usr=c(-1.572561,1.572561,-1.080000,1.080000),mar=c(1,1,1.5,1.5))
+nodeScalar <- 30
+network <- makeNetworks("linear",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=cbind(seq(-1,1,length.out = gorder(network$landscape)),seq(1,-1,length.out = gorder(network$landscape))),vertex.size=network$node.size*nodeScalar,xlim=c(-1,1),ylim=c(-1,1),rescale=FALSE,vertex.label=NA)
+
+network <- makeNetworks("dendritic",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=layout_as_tree(network$landscape,root=V(network$landscape)[1]),vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+network <- makeNetworks("star",Npatches=Npatches,patchDist=patchDist)
+plot(network$landscape,vertex.color="grey",layout=layout.reingold.tilford(network$landscape,circular=T),vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+network <- makeNetworks("complex",Npatches=Npatches,patchDist=patchDist)
+spatialLayout <- matrix(MORELETTERS(1:Npatches),nrow=sqrt(Npatches),ncol=sqrt(Npatches),byrow=TRUE)
+spatialLayout <- t(sapply(1:Npatches,function(x){which(spatialLayout==LETTERS[x],arr.ind=TRUE)}))
+spatialLayout <- spatialLayout[rank(attr(V(network$landscape),"names")),]
+plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=network$node.size*nodeScalar,vertex.label=NA)
+
+```

@@ -27,13 +27,13 @@ lagTime <- 1
 
 library(mvtnorm)
 
-source("Linear network.R")
-source("Dispersal function.R")
-source("patch_variance.R")
-source("local disturbance.R")
-source("some functions.R")
+source("Functions/Linear network.R")
+source("Functions/Dispersal function.R")
+source("Functions/patch_variance.R")
+source("Functions/local disturbance.R")
+source("Functions/some functions.R")
 source("Metapop function.R")
-source("popDynFn.R")
+source("Functions/popDynFn.R")
 
 matLayout <- matrix(1:4,nrow=2,ncol=2)
 layout(matLayout)
@@ -55,8 +55,6 @@ for(i in 1:length(scenarios$network))
 }
 legend("right",scenarios$disturbance,col=dist_colours,lty=1,lwd=2,bty="n")
 
-matLayout <- matrix(1:4,nrow=2,ncol=2)
-layout(matLayout)
 dist_colours <- c("grey50","dodgerblue","orange")
 for(i in 1:length(scenarios$network))
 {
@@ -75,8 +73,6 @@ for(i in 1:length(scenarios$network))
 }
 legend("right",scenarios$disturbance,col=dist_colours,lty=1,lwd=2,bty="n")
 
-matLayout <- matrix(1:4,nrow=2,ncol=2)
-layout(matLayout)
 dist_colours <- c("grey50","dodgerblue","orange")
 for(i in 1:length(scenarios$network))
 {
@@ -95,8 +91,6 @@ for(i in 1:length(scenarios$network))
 }
 legend("right",scenarios$disturbance,col=dist_colours,lty=1,lwd=2,bty="n")
 
-matLayout <- matrix(1:4,nrow=2,ncol=2)
-layout(matLayout)
 dist_colours <- c("grey50","dodgerblue","orange")
 for(i in 1:length(scenarios$network))
 {

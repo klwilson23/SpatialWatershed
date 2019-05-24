@@ -1,9 +1,9 @@
-source("make networks.R")
-source("Dispersal function.R")
-source("patch_variance.R")
-source("local disturbance.R")
-source("some functions.R")
-source("popDynFn.R")
+source("Functions/make networks.R")
+source("Functions/Dispersal function.R")
+source("Functions/patch_variance.R")
+source("Functions/local disturbance.R")
+source("Functions/some functions.R")
+source("Functions/popDynFn.R")
 
 ######################
 ## Differentiation ###
