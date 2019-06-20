@@ -344,7 +344,7 @@ We now show some general patterns in how variable patch demographic rates, netwo
 
 First, lets show recovery rates for a scenario where (1) patches have the same local productivities, (2) patches have the same local carrying capacities, (3) recruitment is deterministic, (4) there is no spatial correlation in recruitment, and (5) there is no temporal correlations in recruitment.
 
-Below, we can see three main effects on recovery rates (number of generations to reach recovery). First, recovery exponentially slows with increased  dispersal. Most of the action here takes place at low rates of dispersal indicating most spatial topologies don't need much dispersal to quicken their recovery. Second, more localized disturbances regimes lead to slower recovery. Third, linearized networks have slower recovery times than interconnected, complex networks suggesting that rescue effects take some time to cascade through the entire network of patches.
+Below, we can see three main effects on recovery rates (number of generations to reach recovery). First, recovery exponentially slows with increased dispersal. Most of the action here takes place at low rates of dispersal indicating most spatial topologies don't need much dispersal to quicken their recovery. Second, more localized disturbances regimes lead to slower recovery. Third, linearized networks have slower recovery times than interconnected, complex networks suggesting that rescue effects take some time to cascade through the entire network of patches.
 
 ```{r general results, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Recovery rates along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients without stochasticity.",fig.align="center"}
 results <- readRDS("Simulations/results2019-05-19_fixed.rds")
@@ -673,7 +673,7 @@ plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=netw
 
 ##### MSY with variable patches, and spatio-temporally correlated stochasticity
 
-Now, we illustrate how variable patch demography and high spatial-temporal correlations in stochastic recrtuitment affects the 10-year average MSY.
+Now, we illustrate how variable patch demography and high spatial-temporal correlations in stochastic recruitment affects the 10-year average MSY.
 
 ```{r MSY with variable patches and space-time stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Maximum sustainable yield along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.",fig.align="center"}
 layout(matLayout)

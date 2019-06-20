@@ -13,14 +13,14 @@ library(mvtnorm)
 #library(marima)
 require(mvtnorm)
 
-source("Linear network.R")
-source("Dispersal function.R")
-source("patch_variance.R")
-source("local disturbance.R")
-source("some functions.R")
-source("Metapop function.R")
-source("popDynFn.R")
-source("Functions/finding MSY.R")
+source("Functions/Linear network.R")
+source("Functions/Dispersal function.R")
+source("Functions/patch_variance.R")
+source("Functions/local disturbance.R")
+source("Functions/some functions.R")
+source("Functions/Metapop function.R")
+source("Functions/popDynFn.R")
+source("Functions/Add landscapes plot.R")
 
 Nboots <- 50
 Nlevels <- 11

@@ -123,7 +123,6 @@ for(i in 1:length(scenarios$network))
 add2plot()
 
 # MSY patterns
-
 # MSY
 layout(matLayout)
 par(mar=c(5,4,1,1))
@@ -271,12 +270,12 @@ dist_colours <- c("blue","dodgerblue","orange")
 for(i in 1:length(scenarios$network))
 {
   subResults <- results[results$network==scenarios$network[i] & 
-                          results$stochastic==scenarios$stochastic[1] & 
-                          results$temporal==scenarios$temporal[1] & 
-                          results$spatial==scenarios$spatial[1] & 
-                          results$alpha==scenarios$alpha[1] & 
-                          results$beta==scenarios$beta[1],]
-  plot(subResults$dispersal,subResults$medOcc,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Patch occupancy",xlab="Dispersal rate",ylim=1.5*range(c(0,results$medOcc)))
+                          results$stochastic==scenarios$stochastic[2] & 
+                          results$temporal==scenarios$temporal[2] & 
+                          results$spatial==scenarios$spatial[2] & 
+                          results$alpha==scenarios$alpha[2] & 
+                          results$beta==scenarios$beta[2],]
+  plot(subResults$dispersal,subResults$medOcc,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Patch occupancy",xlab="Dispersal rate",ylim=1.70*range(c(0,results$medOcc)))
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
     lines(distResults$dispersal,distResults$medOcc,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)

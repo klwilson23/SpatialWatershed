@@ -139,4 +139,28 @@ spatialRecoveryPlot <- function(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recover
 }
 
 
+spatialRecoveryPlotv2 <- function(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recovery,Nburnin,Nyears,nodeScalar=35,network,networkType=networkType,Npatches=Npatches)
+{
+  colfunc <- colorRampPalette(c("royalblue4","dodgerblue","lightblue","darkorange1","firebrick"))
+  par(mar=c(5,5,1,1))
+  levelFactors <- factor(pmax(0.0,pmin(1.0,round(popDyn[Nyears,,"Spawners"]/k_p*Nlevels)/Nlevels)),levels=((0:10)/Nlevels))
+  matplot(t(t(popDyn[,,"Spawners"])/k_p),type="l",xlab="Time",ylab="Relative abundance (N/K)",col=rev(colfunc(Nlevels+1))[levelFactors],ylim=c(0,1.1*max(t(popDyn[,,"Spawners"])/k_p,na.rm=TRUE)),cex.lab=textSize,xpd=TRUE)
+  lines(MetaPop[,"Spawners"]/metaK,lwd=3,col="black")
+  segments(y0=0,y1=1.05*max(t(popDyn[,,"Spawners"])/k_p),x0=(recovery+Nburnin),lwd=4,col="orange")
+  
+  recoverText <- ifelse((recovery+Nburnin)==Nyears,"Not recovered","Time to recovery")
+  text(x=(recovery+Nburnin)-30,y=1.1*max(t(popDyn[,,"Spawners"])/k_p,na.rm=TRUE),recoverText,cex=textSize*0.8)
+  curvedarrow(from=c((recovery+Nburnin)-30,1.08*max(t(popDyn[,,"Spawners"])/k_p,na.rm=TRUE)),to=c((recovery+Nburnin),1.0*max(t(popDyn[,,"Spawners"])/k_p,na.rm=TRUE)),lwd=2,lty=1,lcol="grey50",arr.col="grey50",curve=0.002,endhead=TRUE,arr.pos=0.65)
+  
+  text(x=(Nburnin)-25,y=0.05,"Time at ~90% loss",cex=textSize*0.8)
+  curvedarrow(from=c(Nburnin-30,0.1),to=c(Nburnin+3,0.15),lwd=2,lty=1,lcol="grey50",arr.col="grey50",curve=-0.002,endhead=TRUE,arr.pos=0.65)
+  
+  for(i in c(Nburnin,Nburnin+3,Nburnin+6,Nburnin+9,Nburnin+12,Nburnin+15))
+  {
+    levelFactors <- factor(pmax(0.0,pmin(1.0,round(popDyn[i,,"Spawners"]/k_p*Nlevels)/Nlevels)),levels=((0:10)/Nlevels))
+    V(network$landscape)$color <- rev(colfunc(Nlevels+1))[levelFactors]
+    plottingFunc(network,networkType,nodeScalar,Npatches)
+    title(main=paste("Year",i),line=0,font.main=1,cex.main=textSize)
+  }
+}
 
