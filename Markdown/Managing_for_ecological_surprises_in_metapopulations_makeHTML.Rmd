@@ -107,8 +107,8 @@ Management often monitors metapopulation resources as the aggregate of all local
 curve((alpha[1]*x)/(1+((alpha[1]-1)/beta[1])*x),from=0,to=beta[1],lwd=2,col="orange",xlab="Adults (t-1)",ylab="Recruits (t)",ylim=c(0,sum(beta)),xlim=c(0,sum(beta)))
 curve((alpha[2]*x)/(1+((alpha[2]-1)/beta[2])*x),from=0,to=beta[2],lwd=2,col="dodgerblue",add=TRUE)
 curve((mean(alpha)*x)/(1+((mean(alpha)-1)/sum(beta))*x),from=0,to=sum(beta),lwd=2,col="black",add=TRUE)
-legend("bottomright",c("Patch 1","Patch 2","Metapopulation"),bty="n",lwd=2,col=c("orange","dodgerblue","black"))
-
+abline(b=1,a=0,lty=2,lwd=2,col="grey50")
+legend("bottomright",c("Patch 1","Patch 2","Metapopulation","Replacement"),bty="n",lwd=2,lty=c(1,1,1,2),col=c("orange","dodgerblue","black","grey50"))
 ```
 <br>
 
@@ -166,11 +166,11 @@ Dispersal from patch *i* into patch *j* depends on constant dispersal rate $\ome
 
 $E_{ij(t)}=\omega R_{it}p_{ij}$
 
-where $E_{ij}$ is the total dispersing animals from patch *i* into patch *j* and probability of dispersal between patches $p_{ij}$:
+where $E_{ij}$ is the total dispersing animals from patch *i* into patch *j* resulting from dispersal rate $\omega$, total number of local recruits $R_{it}$, and probability of dispersal between patches $p_{ij}$:
 
 $p_{ij}=\dfrac{e^{-md_{ij}}}{\sum\limits_{\substack{j=1 \\ j\neq i}}^{N_p} e^{-md_{ij}}}$
 
-where $d_{ij}$ is the pairwise distance between patches. The summation term in the denominator normalizes the probability of moving to any patch to between 0 and 1. With $\bar{d}= 1$, $m=0.5$, $\omega=0.1$, $R_{it}=100$ in a linear network:
+where $d_{ij}$ is the pairwise distance between patches, $m$ is the distance cost to dispersal. The summation term in the denominator normalizes the probability of moving to any patch to between 0 and 1 with the constraint that dispersers cannot move back into their home patch (i.e., $j\neq i$. With $\bar{d}= 1$, $m=0.5$, $\omega=0.1$, $R_{it}=100$ in a linear network:
 
 <br>
 
@@ -194,18 +194,120 @@ plot(network$landscape,col="dodgerblue",layout=cbind(1,seq(1,-1,length.out = gor
 ```
 <br>
 
-### Recruitment stochasticity
-Enter some text here
-
-#### Spatio-temporal correlations
-Enter some more text here
-
 ### Disturbance regimes
 
-In all scenarios, disturbance was applied after `50` years of equilibrating the metapopulaton at pristine conditions. At year `50+1`, we applied the disturbance regime (the regime varied from *uniform*, *localized, random*, and *localized, extirpation* - see *Scenarios* below). Disturbance immediately removes a set proportion of the metapopulation adults at that time (i.e., `0.9` of $MN_{t=51}$). Once applied, the metapopulation is no longer disturbed and spatio-temporal dynamics emerge naturally from these new conditions.
+In all scenarios, disturbance was applied after `50` years of equilibrating the metapopulaton at pristine conditions. At year `51`, we applied the disturbance regime (the regime varied from *uniform*, *localized, random*, and *localized, extirpation* - see *Scenarios* below). Disturbance immediately removes a set proportion of the metapopulation adults at that time (i.e., `0.9` of $MN_{t=51}$). Once applied, the metapopulation was no longer disturbed and spatio-temporal recovery dynamics emerged naturally from these new conditions.
 
-## Emergent outcomes
-We measured the following ecological outcomes that have direction application for conservation metrics.
+```{r example disturbance regime, echo=FALSE,warning=FALSE,message=FALSE,fig.height=4,fig.width=7,fig.cap="Recovery regime of metapopulation with linear topology through time (left) and space (right).",fig.align="center"}
+
+source("Functions/Linear network.R")
+source("Functions/Dispersal function.R")
+source("Functions/patch_variance.R")
+source("Functions/local disturbance.R")
+source("Functions/some functions.R")
+source("Functions/Metapop function.R")
+source("Functions/popDynFn.R")
+source("Functions/Add landscapes plot.R")
+Nyears <- 100
+Nburnin <- 50
+metaK <- 1600
+matLayout <- matrix(0,ncol=18,nrow=12,byrow=T)
+matLayout[1:12,1:9] <- 1
+matLayout[1:4,10:12] <- 2
+matLayout[1:4,13:15] <- 3
+matLayout[5:8,10:12] <- 4
+matLayout[5:8,13:15] <- 5
+matLayout[9:12,10:12] <- 6
+matLayout[9:12,13:15] <- 7
+matLayout[4:9,16:17] <- 8
+layout(matLayout)
+linearSim <- metaPop(Npatches=16,networkType="linear",patchDistance=1,Nburnin=50,NyrsPost=50,omega=0.01,m=100,alpha=2,metaK=1600,cv=1e-6,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=FALSE,kVariable=FALSE,spatialPlots=FALSE)
+spatialRecoveryPlotv2(textSize=1,linearSim$popDyn,linearSim$MetaPop,linearSim$k_p,Nlevels=10,linearSim$recovery,Nburnin,Nyears,nodeScalar=35,linearSim$network,networkType="linear",Npatches=Npatches)
+Nlevels <- 10
+textSize <- 1
+par(mar=c(1,1,1,1))
+plot(NA,xlim=c(-1,1),ylim=c(-1,1),xaxt="n",yaxt="n",xlab="",ylab="",frame.plot=FALSE,xpd=NA)
+colorlegend(rev(colfunc(Nlevels)),zlevels=Nlevels,zlim=c(0,1),dz=0.1,posx=c(0.35,0.5),posy=c(0.1,0.95),digit=2)
+title(main=expression('N'[t]*'/K'),line=0.5,font.main=1,cex.main=1.5*textSize,xpd=NA)
+
+```
+
+### Recruitment stochasticity
+Our model allowed for stochastic recruitment that followed a lognormal distribution with average variation in recruitment of $\sigma_R$. In cases of stochastic recruitment, the expected recruitment:
+
+$R_{it}=\cfrac{\alpha_iN_{it-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{it-1}}$
+
+becomes:
+
+$R_{it}=\cfrac{\alpha_iN_{it-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{it-1}}e^{(\epsilon_{it}-\cfrac{log(\sigma_{R}^2+1)}{2})}$
+
+where lognormal deviates for each patch *i* at time *t* are drawn from a multivariate normal deviation. If $\sigma_R$ is low, then metapopulation dynamics approach the deterministic case.  In some scenarios, we evaluate the role of spatially and/or temporally correlated deviates across the metapopulations to model potential common drivers affecting metapopulation dynamics (i.e., Moran effects). Expected recruitment deviates followed a first-order autoregression model such that:
+
+$\epsilon_{it}=\rho_T\epsilon_{t-1}+MVN(\mu=0,\Sigma=\sigma_R(1-\rho_T^2)e^{(-\rho_SD_{ij})})$
+
+where $\rho_T$ is temporal correlation (bounded $0-1$) $\rho_S$ is rate of distance-decay in spatial correlation (bounded $0-\infty$ with higher values leading to independent patches). If $rho_T$ is 0 and $rho_S$ is high, then annual recruitment deviates are independent. We illustrate the effects of four kinds of recruitment deviates below using the same random number generator seed:
+
+```{r independent stochasticity, echo=FALSE,warning=FALSE,message=FALSE,fig.height=6,fig.width=7,fig.cap="Metapopulation dynamics with independent (a), spatially correlated (b), temporally correlated (c), and spatio-temporally correlated (d) recruitment deviates.",fig.align="center"}
+seed <- 20190620
+set.seed(seed)
+trial <- metaPop(Npatches=16,networkType="complex",patchDistance=1,Nburnin=50,NyrsPost=50,omega=0.01,m=100,alpha=2,metaK=1600,cv=0.12,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=FALSE)
+layout(matrix(1:4,nrow=2,ncol=2,byrow=TRUE))
+par(mar=c(5,4,1,1))
+textSize <- 1
+Nyears <- 100
+Nlevels <- 10
+popDyn <- trial$popDyn
+k_p <- trial$k_p
+MetaPop <- trial$MetaPop
+metaK <- 1600
+recovery <- trial$recovery
+Nburnin <- 50
+levelFactors <- factor(pmax(0.0,pmin(1.0,round(popDyn[Nyears,,"Spawners"]/k_p*Nlevels)/Nlevels)),levels=((0:10)/Nlevels))
+colfunc <- colorRampPalette(c("royalblue4","dodgerblue","lightblue","darkorange1","firebrick"))
+matplot(t(t(popDyn[,,"Spawners"])/k_p),type="l",xlab="Time",ylab="Relative abundance (N/K)",col=rev(colfunc(Nlevels+1))[levelFactors],ylim=c(0,1.1*max(t(popDyn[,,"Spawners"])/k_p,na.rm=TRUE)),cex.lab=textSize,xpd=TRUE)
+lines(MetaPop[,"Spawners"]/metaK,lwd=3,col="black")
+Corner_text("a) - independent","topleft")
+
+set.seed(seed)
+trial <- metaPop(Npatches=16,networkType="complex",patchDistance=1,Nburnin=50,NyrsPost=50,omega=0.01,m=100,alpha=2,metaK=1600,cv=0.12,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=0.5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=FALSE)
+popDyn <- trial$popDyn
+k_p <- trial$k_p
+MetaPop <- trial$MetaPop
+recovery <- trial$recovery
+levelFactors <- factor(pmax(0.0,pmin(1.0,round(popDyn[Nyears,,"Spawners"]/k_p*Nlevels)/Nlevels)),levels=((0:10)/Nlevels))
+colfunc <- colorRampPalette(c("royalblue4","dodgerblue","lightblue","darkorange1","firebrick"))
+matplot(t(t(popDyn[,,"Spawners"])/k_p),type="l",xlab="Time",ylab="Relative abundance (N/K)",col=rev(colfunc(Nlevels+1))[levelFactors],ylim=c(0,1.1*max(t(popDyn[,,"Spawners"])/k_p,na.rm=TRUE)),cex.lab=textSize,xpd=TRUE)
+lines(MetaPop[,"Spawners"]/metaK,lwd=3,col="black")
+Corner_text("b) - spatial","topleft")
+
+set.seed(seed)
+trial <- metaPop(Npatches=16,networkType="complex",patchDistance=1,Nburnin=50,NyrsPost=50,omega=0.01,m=100,alpha=2,metaK=1600,cv=0.12,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=0.75,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=FALSE)
+popDyn <- trial$popDyn
+k_p <- trial$k_p
+MetaPop <- trial$MetaPop
+recovery <- trial$recovery
+levelFactors <- factor(pmax(0.0,pmin(1.0,round(popDyn[Nyears,,"Spawners"]/k_p*Nlevels)/Nlevels)),levels=((0:10)/Nlevels))
+colfunc <- colorRampPalette(c("royalblue4","dodgerblue","lightblue","darkorange1","firebrick"))
+matplot(t(t(popDyn[,,"Spawners"])/k_p),type="l",xlab="Time",ylab="Relative abundance (N/K)",col=rev(colfunc(Nlevels+1))[levelFactors],ylim=c(0,1.1*max(t(popDyn[,,"Spawners"])/k_p,na.rm=TRUE)),cex.lab=textSize,xpd=TRUE)
+lines(MetaPop[,"Spawners"]/metaK,lwd=3,col="black")
+Corner_text("c) - temporal","topleft")
+
+set.seed(seed)
+trial <- metaPop(Npatches=16,networkType="complex",patchDistance=1,Nburnin=50,NyrsPost=50,omega=0.01,m=100,alpha=2,metaK=1600,cv=0.12,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=0.75,rho.dist=0.5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=FALSE)
+popDyn <- trial$popDyn
+k_p <- trial$k_p
+MetaPop <- trial$MetaPop
+recovery <- trial$recovery
+levelFactors <- factor(pmax(0.0,pmin(1.0,round(popDyn[Nyears,,"Spawners"]/k_p*Nlevels)/Nlevels)),levels=((0:10)/Nlevels))
+colfunc <- colorRampPalette(c("royalblue4","dodgerblue","lightblue","darkorange1","firebrick"))
+matplot(t(t(popDyn[,,"Spawners"])/k_p),type="l",xlab="Time",ylab="Relative abundance (N/K)",col=rev(colfunc(Nlevels+1))[levelFactors],ylim=c(0,1.1*max(t(popDyn[,,"Spawners"])/k_p,na.rm=TRUE)),cex.lab=textSize,xpd=TRUE)
+lines(MetaPop[,"Spawners"]/metaK,lwd=3,col="black")
+Corner_text("d) - spatial-temporal","topleft")
+
+```
+
+## Post-disturbance outcomes
+We measured the following post-disturbance outcomes that have direction application for conservation metrics.
 
 1. Recovered & recovery rate after disturbance - the number of simulations where metapopulation abundance averaged `1.0` carrying capacity for `5` consecutive years post-disturbance and the number of years it took to get there.
 
@@ -215,7 +317,7 @@ We measured the following ecological outcomes that have direction application fo
 
 5. Spatial variance
 
-6. Temporal variation in source, sink, pseudo-sink defined as:
+6. Number of populations defined as source, sink, pseudo-sink such that:
     a. Sources provide surplus recruits and net emigrants such that: $(R_{it}>N_{it})$ & $(E_{it}>I_{it})$
     b. Sinks consume recruits and net immigrants such that: $(R_{it} < N_{it})$ & $(E_{it} < I_{it})$
     c. Pseudo-sinks would provide surplus recruits in the absence of dispersal such that $(R_{it}>N_{it})$ but $(R_{it}+E_{it}) < (R_{it-1}+I_{it-1}-E_{it-1})$
@@ -280,9 +382,57 @@ SRfn <- function(theta){
 
 This above function allows us to assess the bias in $\hat{\alpha_t}$, $\hat{\beta_t}$, and $\hat{MR_t}$ compared to true $\bar{\alpha}$, $\bar{\beta}$, and ${MR}_t$ across the metapopulation. This then allows us to see how much information management & monitoring programs are missing when they assess metapopulations at the aggregate (rather than local) scales.
 
-### Finding maximum sustainable yield (MSY)
+### Finding maximum sustainable yield
 
-Enter some more text here.
+Resource managers measure productivity with a variety of performance reference points. One of the most widely used metrics, commonly called *Maximum Sustainable Yield* in fisheries and other harvest literature ($MSY$), relates to the largest loss the population can sustain over an indefinite period of time while maximizing its ability to replenish itself. Under density-dependent growth, individuals' growth, survival, and reproduction at low population densities are not constrained by limited resources, but overall production is low because there are few individuals. At high densities, limited resources increasingly constrain individual's reproductive success until the populations reach carrying capacity, and overall production drops to zero because per-capita success is low. However, at some intermediate densities, both per-capita and overall production is high, and population growth is at its maximum point due to the large number of reproducing individuals. At this point, there is the maximum surplus of individuals produced above replacement that can help to withstand disturbance or harvest regimes and contribute to future recovery, either through increasing local patch densities or by emigrating neighboring patches providing "rescue effects".
+
+Under Beverton-Holt or Ricker density-dependent recuitment, however, there exists no analytical solution for calculating $MSY$. Therefore, we used numerical methods and a one dimensional root finder to iteratively search for the population mortality that maximized surplus production in the metapopulation. We term this mortality $F_{MSY}$ and can use this mortality value to calculate maximum surplus production $MSY$, the adult densities that produce $MSY$ (termed $N_{MSY}$), and the recruits that result from this (termed $R_{MSY}$).
+
+```{r maximum sustainable yield}
+# uniroot numerical search
+
+yieldRoot<-function(alpha,beta,Fcur,model)
+{
+  Ucur <- 1-exp(-Fcur)
+  if(model=="Beverton-Holt")
+  {
+    # population model is R ~ (CR * S)/(1+(CR-1)/K * S): reparameterized Beverton-Holt
+    adults <- beta*exp(-Fcur)
+    recruits <- (alpha*adults)/(1+((alpha-1)/beta)*adults)
+    yield <- recruits-adults
+  }
+  if(model=="Ricker")
+  {
+    # population model is R ~ CR * S * e(-log(CR)/K * S): reparameterized Ricker
+    adults <- beta*exp(-Fcur)
+    recruits <- alpha*adults*exp((-log(alpha)/beta)*adults)
+    yield <- recruits-adults
+  }
+  return(list(recruits=recruits,adults=adults,yield=yield))
+}
+
+# Return approximate gradient for integral
+
+fun_yield <- function(Fcur,alpha,beta,delta,model)
+{
+  y1 <- yieldRoot(alpha=alpha,beta=beta,Fcur=Fcur-delta/2,model=model)$yield
+  y2 <- yieldRoot(alpha=alpha,beta=beta,Fcur=Fcur+delta/2,model=model)$yield
+  approx.gradient <- (y2-y1)/delta
+  return(approx.gradient)
+}
+
+# uniroot search for optimal yield and Fmsy
+findMSY <- function(alpha,beta,Npatches,model){
+  F_msy <- NULL
+  for(i in 1:Npatches){
+    a_p <- alpha[i]
+    b_p <- beta[i]
+    F_msy[i] <- uniroot(fun_yield, interval=c(0,1),extendInt="yes",alpha=a_p,beta=b_p, delta=0.0001,model=model)$root 
+  }
+  MSY <- sapply(1:Npatches,function(x){yieldRoot(alpha=alpha[x],beta=beta[x],Fcur=F_msy[[x]][1],model=model)})
+  return(list("F_msy"=F_msy,"MSY"=MSY))
+}
+```
 
 ## Scenarios
 
@@ -715,13 +865,13 @@ plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=netw
 
 <br>
 
-#### General patterns in spatial variation across patches
+#### General patterns in the risk of hysteresis & state shifts
 
-##### Spatial variation with deterministic recruitment where patches are the same
+##### Proportion of simulations of unrecovered metapopulation for scenario with deterministic recruitment where patches are the same
 
-We now show similar patterns in how the coefficient of variation (CV) across all patches within the metapopulation shifts in the first 10 years post-disturbance.
+We now show similar patterns in the lack of recovery across the metapopulation after $50$ generations post-disturbance.
 
-```{r CV, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Maximum sustainable yield along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment variation.",fig.align="center"}
+```{r Recovery, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Risk of unrecovered metapopulation after 50 generations along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment variation.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 dist_colours <- c("blue","dodgerblue","orange")
@@ -733,10 +883,10 @@ for(i in 1:length(scenarios$network))
                           results$spatial==scenarios$spatial[1] & 
                           results$alpha==scenarios$alpha[1] & 
                           results$beta==scenarios$beta[1],]
-  plot(subResults$dispersal,subResults$medCV,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Spatial variation (CV)",xlab="Dispersal rate",ylim=1.5*range(c(0,results$medCV)))
+  plot(subResults$dispersal,1-subResults$recovered,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Risk of unrecovered metapopulation",xlab="Dispersal rate",ylim=1.7*range(c(0,1-results$recovered)))
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
-    lines(distResults$dispersal,distResults$medMSY,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
+    lines(distResults$dispersal,1-distResults$recovered,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
   }
 }
 
@@ -760,11 +910,11 @@ plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=netw
 
 ```
 
-##### Spatial variation with variable patches
+##### Lack of recovery with variable patches
 
-Now, we illustrate how variable patch demography affects the 10-year average CV.
+Now, we illustrate how variable patch demography affects the risk of state shift.
 
-```{r CV with variable patches, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Spatial variation along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.",fig.align="center"}
+```{r unrecovered with variable patches, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Risk of unrecovered metapopulation after 50 generations along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 dist_colours <- c("blue","dodgerblue","orange")
@@ -776,10 +926,10 @@ for(i in 1:length(scenarios$network))
                           results$spatial==scenarios$spatial[1] & 
                           results$alpha==scenarios$alpha[2] & 
                           results$beta==scenarios$beta[2],]
-  plot(subResults$dispersal,subResults$medCV,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Spatial variation (CV)",xlab="Dispersal rate",ylim=1.5*range(c(0,results$medCV)))
+  plot(subResults$dispersal,1-subResults$recovered,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Risk of unrecovered metapopulation",xlab="Dispersal rate",ylim=1.7*range(c(0,1-results$recovered)))
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
-    lines(distResults$dispersal,distResults$medCV,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
+    lines(distResults$dispersal,1-distResults$recovered,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
   }
 }
 
@@ -802,11 +952,11 @@ plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=netw
 
 ```
 
-##### Spatial variation with variable patches and stochasticity
+##### State shifts with variable patches and stochasticity
 
-Now, we illustrate how variable patch demography affects the 10-year average CV.
+Now, we illustrate how variable patch demography and stochastic recruitment affects the risk of state shift.
 
-```{r CV with variable patches and stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Spatial variation along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches and stochastic recruitment.",fig.align="center"}
+```{r state shift with variable patches and stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Risk of unrecovered metapopulation after 50 generations along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches and stochastic recruitment.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 dist_colours <- c("blue","dodgerblue","orange")
@@ -818,10 +968,10 @@ for(i in 1:length(scenarios$network))
                           results$spatial==scenarios$spatial[1] & 
                           results$alpha==scenarios$alpha[2] & 
                           results$beta==scenarios$beta[2],]
-  plot(subResults$dispersal,subResults$medCV,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Spatial variation (CV)",xlab="Dispersal rate",ylim=1.5*range(c(0,results$medCV)))
+  plot(subResults$dispersal,1-subResults$recovered,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Risk of unrecovered metapopulation",xlab="Dispersal rate",ylim=1.7*range(c(0,1-results$recovered)))
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
-    lines(distResults$dispersal,distResults$medCV,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
+    lines(distResults$dispersal,1-distResults$recovered,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
   }
 }
 
@@ -844,11 +994,11 @@ plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=netw
 
 ```
 
-##### Spatial variation with variable patches, and spatio-temporally correlated stochasticity
+##### State shifts with variable patches, and spatio-temporally correlated stochasticity
 
-Now, we illustrate how variable patch demography and high spatial-temporal correlations in stochastic recrtuitment affects the 10-year average CV.
+Now, we illustrate how variable patch demography and high spatial-temporal correlations in stochastic recrtuitment affects the risk of a state shift.
 
-```{r CV with variable patches and space-time stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Spatial variation along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches, and spatial-temporal correlations in stochastic recruitment.",fig.align="center"}
+```{r state shifts with variable patches and space-time stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Risk of unrecovered metapopulation after 50 generations along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches, and spatial-temporal correlations in stochastic recruitment.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 dist_colours <- c("blue","dodgerblue","orange")
@@ -860,10 +1010,10 @@ for(i in 1:length(scenarios$network))
                           results$spatial==scenarios$spatial[3] & 
                           results$alpha==scenarios$alpha[2] & 
                           results$beta==scenarios$beta[2],]
-  plot(subResults$dispersal,subResults$medCV,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Spatial variation (CV)",xlab="Dispersal rate",ylim=1.5*range(c(0,results$medCV)))
+  plot(subResults$dispersal,1-subResults$recovered,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Risk of unrecovered metapopulation",xlab="Dispersal rate",ylim=1.7*range(c(0,1-results$recovered)))
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
-    lines(distResults$dispersal,distResults$medCV,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
+    lines(distResults$dispersal,1-distResults$recovered,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
   }
 }
 

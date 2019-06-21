@@ -22,14 +22,14 @@ source("Functions/Metapop function.R")
 source("Functions/popDynFn.R")
 source("Functions/finding MSY.R")
 
-Nboots <- 50
+Nboots <- 100
 Nlevels <- 11
 model <- "Beverton-Holt"
 # simulation parameters
 Npatches <- 16
 patchDist <- 1
 Nburnin <- 50
-NyrsPost <- 50
+NyrsPost <- 100
 Nyears <- Nburnin+NyrsPost
 compLag <- 25 # how many years to lag estimates of compensation
 dataWeighting <- 0.1 # penalty to past years for data weighting
@@ -44,7 +44,7 @@ lagTime <- 1
 
 network_levels <- c("linear","dendritic","star","complex")
 disturbance_levels <- c("uniform","random","random_patch")
-dispersal_levels <- c(0,10^(seq(log10(1e-4),log10(0.1),length.out=Nlevels-1)))
+dispersal_levels <- c(0,10^(seq(log10(1e-4),log10(0.05),length.out=Nlevels-1)))
 alpha_levels <- c("same","variable")
 beta_levels <- c("same","variable")
 spatial_levels <- c(1e4,5,1e-1) # from low spatial dependency to high

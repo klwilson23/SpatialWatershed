@@ -105,7 +105,7 @@
 \usepackage{titling}
 
 % Create subtitle command for use in maketitle
-\newcommand{\subtitle}[1]{
+\providecommand{\subtitle}[1]{
   \posttitle{
     \begin{center}\large#1\end{center}
     }
@@ -126,7 +126,7 @@ Doug Braun\(^2\)\\
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{30 May 2019}
+    \date{20 June 2019}
 
 \usepackage{wrapfig}
 \usepackage{lipsum}
@@ -267,14 +267,17 @@ following:
 \(E_{ij(t)}=\omega R_{it}p_{ij}\)
 
 where \(E_{ij}\) is the total dispersing animals from patch \emph{i}
-into patch \emph{j} and probability of dispersal between patches
-\(p_{ij}\):
+into patch \emph{j} resulting from dispersal rate \(\omega\), total
+number of local recruits \(R_{it}\), and probability of dispersal
+between patches \(p_{ij}\):
 
 \(p_{ij}=\dfrac{e^{-md_{ij}}}{\sum\limits_{\substack{j=1 \\ j\neq i}}^{N_p} e^{-md_{ij}}}\)
 
-where \(d_{ij}\) is the pairwise distance between patches. The summation
-term in the denominator normalizes the probability of moving to any
-patch to between 0 and 1. With \(\bar{d}= 1\), \(m=0.5\),
+where \(d_{ij}\) is the pairwise distance between patches, \(m\) is the
+distance cost to dispersal. The summation term in the denominator
+normalizes the probability of moving to any patch to between 0 and 1
+with the constraint that dispersers cannot move back into their home
+patch (i.e., \(j\neq i\). With \(\bar{d}= 1\), \(m=0.5\),
 \(\omega=0.1\), \(R_{it}=100\) in a linear network:
 
 \begin{figure}[H]
@@ -286,35 +289,73 @@ patch to between 0 and 1. With \(\bar{d}= 1\), \(m=0.5\),
 \caption{Example dispersal patterns across linear network.}\label{fig:dispersal}
 \end{figure}
 
-\hypertarget{recruitment-stochasticity}{%
-\subsubsection{Recruitment
-stochasticity}\label{recruitment-stochasticity}}
-
-Enter some text here
-
-\hypertarget{spatio-temporal-correlations}{%
-\paragraph{Spatio-temporal
-correlations}\label{spatio-temporal-correlations}}
-
-Enter some more text here
-
 \hypertarget{disturbance-regimes}{%
 \subsubsection{Disturbance regimes}\label{disturbance-regimes}}
 
 In all scenarios, disturbance was applied after \texttt{50} years of
 equilibrating the metapopulaton at pristine conditions. At year
-\texttt{50+1}, we applied the disturbance regime (the regime varied from
+\texttt{51}, we applied the disturbance regime (the regime varied from
 \emph{uniform}, \emph{localized, random}, and \emph{localized,
 extirpation} - see \emph{Scenarios} below). Disturbance immediately
 removes a set proportion of the metapopulation adults at that time
 (i.e., \texttt{0.9} of \(MN_{t=51}\)). Once applied, the metapopulation
-is no longer disturbed and spatio-temporal dynamics emerge naturally
-from these new conditions.
+was no longer disturbed and spatio-temporal recovery dynamics emerged
+naturally from these new conditions.
 
-\hypertarget{emergent-outcomes}{%
-\subsection{Emergent outcomes}\label{emergent-outcomes}}
+\begin{figure}[H]
 
-We measured the following ecological outcomes that have direction
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_makeHTML_files/figure-latex/example disturbance regime-1} 
+
+}
+
+\caption{Recovery regime of metapopulation with linear topology through time (left) and space (right).}\label{fig:example disturbance regime}
+\end{figure}
+
+\hypertarget{recruitment-stochasticity}{%
+\subsubsection{Recruitment
+stochasticity}\label{recruitment-stochasticity}}
+
+Our model allowed for stochastic recruitment that followed a lognormal
+distribution with average variation in recruitment of \(\sigma_R\). In
+cases of stochastic recruitment, the expected recruitment:
+
+\(R_{it}=\cfrac{\alpha_iN_{it-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{it-1}}\)
+
+becomes:
+
+\(R_{it}=\cfrac{\alpha_iN_{it-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{it-1}}e^{(\epsilon_{it}-\cfrac{log(\sigma_{R}^2+1)}{2})}\)
+
+where lognormal deviates for each patch \emph{i} at time \emph{t} are
+drawn from a multivariate normal deviation. If \(\sigma_R\) is low, then
+metapopulation dynamics approach the deterministic case. In some
+scenarios, we evaluate the role of spatially and/or temporally
+correlated deviates across the metapopulations to model potential common
+drivers affecting metapopulation dynamics (i.e., Moran effects).
+Expected recruitment deviates followed a first-order autoregression
+model such that:
+
+\(\epsilon_{it}=\rho_T\epsilon_{t-1}+MVN(\mu=0,\Sigma=\sigma_R(1-\rho_T^2)e^{(-\rho_SD_{ij})})\)
+
+where \(\rho_T\) is temporal correlation (bounded \(0-1\)) \(\rho_S\) is
+rate of distance-decay in spatial correlation (bounded \(0-\infty\) with
+higher values leading to independent patches). If \(rho_T\) is 0 and
+\(rho_S\) is high, then annual recruitment deviates are independent. We
+illustrate the effects of four kinds of recruitment deviates below using
+the same random number generator seed:
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_makeHTML_files/figure-latex/independent stochasticity-1} 
+
+}
+
+\caption{Metapopulation dynamics with independent (a), spatially correlated (b), temporally correlated (c), and spatio-temporally correlated (d) recruitment deviates.}\label{fig:independent stochasticity}
+\end{figure}
+
+\hypertarget{post-disturbance-outcomes}{%
+\subsection{Post-disturbance outcomes}\label{post-disturbance-outcomes}}
+
+We measured the following post-disturbance outcomes that have direction
 application for conservation metrics.
 
 \begin{enumerate}
@@ -334,7 +375,7 @@ application for conservation metrics.
 \item
   Spatial variance
 \item
-  Temporal variation in source, sink, pseudo-sink defined as:
+  Number of populations defined as source, sink, pseudo-sink such that:
 
   \begin{enumerate}
   \def\labelenumii{\alph{enumii}.}
@@ -463,11 +504,86 @@ allows us to see how much information management \& monitoring programs
 are missing when they assess metapopulations at the aggregate (rather
 than local) scales.
 
-\hypertarget{finding-maximum-sustainable-yield-msy}{%
-\subsubsection{Finding maximum sustainable yield
-(MSY)}\label{finding-maximum-sustainable-yield-msy}}
+\hypertarget{finding-maximum-sustainable-yield}{%
+\subsubsection{Finding maximum sustainable
+yield}\label{finding-maximum-sustainable-yield}}
 
-Enter some more text here.
+Resource managers measure productivity with a variety of performance
+reference points. One of the most widely used metrics, commonly called
+\emph{Maximum Sustainable Yield} in fisheries and other harvest
+literature (\(MSY\)), relates to the largest loss the population can
+sustain over an indefinite period of time while maximizing its ability
+to replenish itself. Under density-dependent growth, individuals'
+growth, survival, and reproduction at low population densities are not
+constrained by limited resources, but overall production is low because
+there are few individuals. At high densities, limited resources
+increasingly constrain individual's reproductive success until the
+populations reach carrying capacity, and overall production drops to
+zero because per-capita success is low. However, at some intermediate
+densities, both per-capita and overall production is high, and
+population growth is at its maximum point due to the large number of
+reproducing individuals. At this point, there is the maximum surplus of
+individuals produced above replacement that can help to withstand
+disturbance or harvest regimes and contribute to future recovery, either
+through increasing local patch densities or by emigrating neighboring
+patches providing ``rescue effects''.
+
+Under Beverton-Holt or Ricker density-dependent recuitment, however,
+there exists no analytical solution for calculating \(MSY\). Therefore,
+we used numerical methods and a one dimensional root finder to
+iteratively search for the population mortality that maximized surplus
+production in the metapopulation. We term this mortality \(F_{MSY}\) and
+can use this mortality value to calculate maximum surplus production
+\(MSY\), the adult densities that produce \(MSY\) (termed \(N_{MSY}\)),
+and the recruits that result from this (termed \(R_{MSY}\)).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# uniroot numerical search}
+
+\NormalTok{yieldRoot <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(alpha, beta, Fcur, model) \{}
+\NormalTok{    Ucur <-}\StringTok{ }\DecValTok{1} \OperatorTok{-}\StringTok{ }\KeywordTok{exp}\NormalTok{(}\OperatorTok{-}\NormalTok{Fcur)}
+    \ControlFlowTok{if}\NormalTok{ (model }\OperatorTok{==}\StringTok{ "Beverton-Holt"}\NormalTok{) \{}
+        \CommentTok{# population model is R ~ (CR * S)/(1+(CR-1)/K * S): reparameterized}
+        \CommentTok{# Beverton-Holt}
+\NormalTok{        adults <-}\StringTok{ }\NormalTok{beta }\OperatorTok{*}\StringTok{ }\KeywordTok{exp}\NormalTok{(}\OperatorTok{-}\NormalTok{Fcur)}
+\NormalTok{        recruits <-}\StringTok{ }\NormalTok{(alpha }\OperatorTok{*}\StringTok{ }\NormalTok{adults)}\OperatorTok{/}\NormalTok{(}\DecValTok{1} \OperatorTok{+}\StringTok{ }\NormalTok{((alpha }\OperatorTok{-}\StringTok{ }\DecValTok{1}\NormalTok{)}\OperatorTok{/}\NormalTok{beta) }\OperatorTok{*}\StringTok{ }\NormalTok{adults)}
+\NormalTok{        yield <-}\StringTok{ }\NormalTok{recruits }\OperatorTok{-}\StringTok{ }\NormalTok{adults}
+\NormalTok{    \}}
+    \ControlFlowTok{if}\NormalTok{ (model }\OperatorTok{==}\StringTok{ "Ricker"}\NormalTok{) \{}
+        \CommentTok{# population model is R ~ CR * S * e(-log(CR)/K * S): reparameterized Ricker}
+\NormalTok{        adults <-}\StringTok{ }\NormalTok{beta }\OperatorTok{*}\StringTok{ }\KeywordTok{exp}\NormalTok{(}\OperatorTok{-}\NormalTok{Fcur)}
+\NormalTok{        recruits <-}\StringTok{ }\NormalTok{alpha }\OperatorTok{*}\StringTok{ }\NormalTok{adults }\OperatorTok{*}\StringTok{ }\KeywordTok{exp}\NormalTok{((}\OperatorTok{-}\KeywordTok{log}\NormalTok{(alpha)}\OperatorTok{/}\NormalTok{beta) }\OperatorTok{*}\StringTok{ }\NormalTok{adults)}
+\NormalTok{        yield <-}\StringTok{ }\NormalTok{recruits }\OperatorTok{-}\StringTok{ }\NormalTok{adults}
+\NormalTok{    \}}
+    \KeywordTok{return}\NormalTok{(}\KeywordTok{list}\NormalTok{(}\DataTypeTok{recruits =}\NormalTok{ recruits, }\DataTypeTok{adults =}\NormalTok{ adults, }\DataTypeTok{yield =}\NormalTok{ yield))}
+\NormalTok{\}}
+
+\CommentTok{# Return approximate gradient for integral}
+
+\NormalTok{fun_yield <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(Fcur, alpha, beta, delta, model) \{}
+\NormalTok{    y1 <-}\StringTok{ }\KeywordTok{yieldRoot}\NormalTok{(}\DataTypeTok{alpha =}\NormalTok{ alpha, }\DataTypeTok{beta =}\NormalTok{ beta, }\DataTypeTok{Fcur =}\NormalTok{ Fcur }\OperatorTok{-}\StringTok{ }\NormalTok{delta}\OperatorTok{/}\DecValTok{2}\NormalTok{, }\DataTypeTok{model =}\NormalTok{ model)}\OperatorTok{$}\NormalTok{yield}
+\NormalTok{    y2 <-}\StringTok{ }\KeywordTok{yieldRoot}\NormalTok{(}\DataTypeTok{alpha =}\NormalTok{ alpha, }\DataTypeTok{beta =}\NormalTok{ beta, }\DataTypeTok{Fcur =}\NormalTok{ Fcur }\OperatorTok{+}\StringTok{ }\NormalTok{delta}\OperatorTok{/}\DecValTok{2}\NormalTok{, }\DataTypeTok{model =}\NormalTok{ model)}\OperatorTok{$}\NormalTok{yield}
+\NormalTok{    approx.gradient <-}\StringTok{ }\NormalTok{(y2 }\OperatorTok{-}\StringTok{ }\NormalTok{y1)}\OperatorTok{/}\NormalTok{delta}
+    \KeywordTok{return}\NormalTok{(approx.gradient)}
+\NormalTok{\}}
+
+\CommentTok{# uniroot search for optimal yield and Fmsy}
+\NormalTok{findMSY <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(alpha, beta, Npatches, model) \{}
+\NormalTok{    F_msy <-}\StringTok{ }\OtherTok{NULL}
+    \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{Npatches) \{}
+\NormalTok{        a_p <-}\StringTok{ }\NormalTok{alpha[i]}
+\NormalTok{        b_p <-}\StringTok{ }\NormalTok{beta[i]}
+\NormalTok{        F_msy[i] <-}\StringTok{ }\KeywordTok{uniroot}\NormalTok{(fun_yield, }\DataTypeTok{interval =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{), }\DataTypeTok{extendInt =} \StringTok{"yes"}\NormalTok{, }
+            \DataTypeTok{alpha =}\NormalTok{ a_p, }\DataTypeTok{beta =}\NormalTok{ b_p, }\DataTypeTok{delta =} \FloatTok{1e-04}\NormalTok{, }\DataTypeTok{model =}\NormalTok{ model)}\OperatorTok{$}\NormalTok{root}
+\NormalTok{    \}}
+\NormalTok{    MSY <-}\StringTok{ }\KeywordTok{sapply}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\NormalTok{Npatches, }\ControlFlowTok{function}\NormalTok{(x) \{}
+        \KeywordTok{yieldRoot}\NormalTok{(}\DataTypeTok{alpha =}\NormalTok{ alpha[x], }\DataTypeTok{beta =}\NormalTok{ beta[x], }\DataTypeTok{Fcur =}\NormalTok{ F_msy[[x]][}\DecValTok{1}\NormalTok{], }\DataTypeTok{model =}\NormalTok{ model)}
+\NormalTok{    \})}
+    \KeywordTok{return}\NormalTok{(}\KeywordTok{list}\NormalTok{(}\DataTypeTok{F_msy =}\NormalTok{ F_msy, }\DataTypeTok{MSY =}\NormalTok{ MSY))}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
 
 \hypertarget{scenarios}{%
 \subsection{Scenarios}\label{scenarios}}
@@ -730,7 +846,7 @@ correlated
 stochasticity}\label{msy-with-variable-patches-and-spatio-temporally-correlated-stochasticity}}
 
 Now, we illustrate how variable patch demography and high
-spatial-temporal correlations in stochastic recrtuitment affects the
+spatial-temporal correlations in stochastic recruitment affects the
 10-year average MSY.
 
 \begin{figure}[H]
@@ -742,76 +858,75 @@ spatial-temporal correlations in stochastic recrtuitment affects the
 \caption{Maximum sustainable yield along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.}\label{fig:MSY with variable patches and space-time stochasticity}
 \end{figure}
 
-\hypertarget{general-patterns-in-spatial-variation-across-patches}{%
-\paragraph{General patterns in spatial variation across
-patches}\label{general-patterns-in-spatial-variation-across-patches}}
+\hypertarget{general-patterns-in-the-risk-of-hysteresis-state-shifts}{%
+\paragraph{General patterns in the risk of hysteresis \& state
+shifts}\label{general-patterns-in-the-risk-of-hysteresis-state-shifts}}
 
-\hypertarget{spatial-variation-with-deterministic-recruitment-where-patches-are-the-same}{%
-\subparagraph{Spatial variation with deterministic recruitment where
-patches are the
-same}\label{spatial-variation-with-deterministic-recruitment-where-patches-are-the-same}}
+\hypertarget{proportion-of-simulations-of-unrecovered-metapopulation-for-scenario-with-deterministic-recruitment-where-patches-are-the-same}{%
+\subparagraph{Proportion of simulations of unrecovered metapopulation
+for scenario with deterministic recruitment where patches are the
+same}\label{proportion-of-simulations-of-unrecovered-metapopulation-for-scenario-with-deterministic-recruitment-where-patches-are-the-same}}
 
-We now show similar patterns in how the coefficient of variation (CV)
-across all patches within the metapopulation shifts in the first 10
-years post-disturbance.
-
-\begin{figure}[H]
-
-{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_makeHTML_files/figure-latex/CV-1} 
-
-}
-
-\caption{Maximum sustainable yield along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment variation.}\label{fig:CV}
-\end{figure}
-
-\hypertarget{spatial-variation-with-variable-patches}{%
-\subparagraph{Spatial variation with variable
-patches}\label{spatial-variation-with-variable-patches}}
-
-Now, we illustrate how variable patch demography affects the 10-year
-average CV.
+We now show similar patterns in the lack of recovery across the
+metapopulation after \(50\) generations post-disturbance.
 
 \begin{figure}[H]
 
-{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_makeHTML_files/figure-latex/CV with variable patches-1} 
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_makeHTML_files/figure-latex/Recovery-1} 
 
 }
 
-\caption{Spatial variation along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.}\label{fig:CV with variable patches}
+\caption{Risk of unrecovered metapopulation after 50 generations along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment variation.}\label{fig:Recovery}
 \end{figure}
 
-\hypertarget{spatial-variation-with-variable-patches-and-stochasticity}{%
-\subparagraph{Spatial variation with variable patches and
-stochasticity}\label{spatial-variation-with-variable-patches-and-stochasticity}}
+\hypertarget{lack-of-recovery-with-variable-patches}{%
+\subparagraph{Lack of recovery with variable
+patches}\label{lack-of-recovery-with-variable-patches}}
 
-Now, we illustrate how variable patch demography affects the 10-year
-average CV.
+Now, we illustrate how variable patch demography affects the risk of
+state shift.
 
 \begin{figure}[H]
 
-{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_makeHTML_files/figure-latex/CV with variable patches and stochasticity-1} 
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_makeHTML_files/figure-latex/unrecovered with variable patches-1} 
 
 }
 
-\caption{Spatial variation along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches and stochastic recruitment.}\label{fig:CV with variable patches and stochasticity}
+\caption{Risk of unrecovered metapopulation after 50 generations along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.}\label{fig:unrecovered with variable patches}
 \end{figure}
 
-\hypertarget{spatial-variation-with-variable-patches-and-spatio-temporally-correlated-stochasticity}{%
-\subparagraph{Spatial variation with variable patches, and
-spatio-temporally correlated
-stochasticity}\label{spatial-variation-with-variable-patches-and-spatio-temporally-correlated-stochasticity}}
+\hypertarget{state-shifts-with-variable-patches-and-stochasticity}{%
+\subparagraph{State shifts with variable patches and
+stochasticity}\label{state-shifts-with-variable-patches-and-stochasticity}}
+
+Now, we illustrate how variable patch demography and stochastic
+recruitment affects the risk of state shift.
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_makeHTML_files/figure-latex/state shift with variable patches and stochasticity-1} 
+
+}
+
+\caption{Risk of unrecovered metapopulation after 50 generations along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches and stochastic recruitment.}\label{fig:state shift with variable patches and stochasticity}
+\end{figure}
+
+\hypertarget{state-shifts-with-variable-patches-and-spatio-temporally-correlated-stochasticity}{%
+\subparagraph{State shifts with variable patches, and spatio-temporally
+correlated
+stochasticity}\label{state-shifts-with-variable-patches-and-spatio-temporally-correlated-stochasticity}}
 
 Now, we illustrate how variable patch demography and high
 spatial-temporal correlations in stochastic recrtuitment affects the
-10-year average CV.
+risk of a state shift.
 
 \begin{figure}[H]
 
-{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_makeHTML_files/figure-latex/CV with variable patches and space-time stochasticity-1} 
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_makeHTML_files/figure-latex/state shifts with variable patches and space-time stochasticity-1} 
 
 }
 
-\caption{Spatial variation along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches, and spatial-temporal correlations in stochastic recruitment.}\label{fig:CV with variable patches and space-time stochasticity}
+\caption{Risk of unrecovered metapopulation after 50 generations along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches, and spatial-temporal correlations in stochastic recruitment.}\label{fig:state shifts with variable patches and space-time stochasticity}
 \end{figure}
 
 
