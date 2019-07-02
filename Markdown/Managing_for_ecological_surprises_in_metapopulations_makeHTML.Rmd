@@ -208,7 +208,7 @@ source("Functions/some functions.R")
 source("Functions/Metapop function.R")
 source("Functions/popDynFn.R")
 source("Functions/Add landscapes plot.R")
-Nyears <- 100
+Nyears <- 150
 Nburnin <- 50
 metaK <- 1600
 matLayout <- matrix(0,ncol=18,nrow=12,byrow=T)
@@ -221,7 +221,7 @@ matLayout[9:12,10:12] <- 6
 matLayout[9:12,13:15] <- 7
 matLayout[4:9,16:17] <- 8
 layout(matLayout)
-linearSim <- metaPop(Npatches=16,networkType="linear",patchDistance=1,Nburnin=50,NyrsPost=50,omega=0.01,m=100,alpha=2,metaK=1600,cv=1e-6,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=FALSE,kVariable=FALSE,spatialPlots=FALSE)
+linearSim <- metaPop(Npatches=16,networkType="linear",patchDistance=1,Nburnin=50,NyrsPost=100,omega=0.01,m=100,alpha=2,metaK=1600,cv=1e-6,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=FALSE,kVariable=FALSE,spatialPlots=FALSE)
 spatialRecoveryPlotv2(textSize=1,linearSim$popDyn,linearSim$MetaPop,linearSim$k_p,Nlevels=10,linearSim$recovery,Nburnin,Nyears,nodeScalar=35,linearSim$network,networkType="linear",Npatches=Npatches)
 Nlevels <- 10
 textSize <- 1
@@ -250,11 +250,11 @@ where $\rho_T$ is temporal correlation (bounded $0-1$) $\rho_S$ is rate of dista
 ```{r independent stochasticity, echo=FALSE,warning=FALSE,message=FALSE,fig.height=6,fig.width=7,fig.cap="Metapopulation dynamics with independent (a), spatially correlated (b), temporally correlated (c), and spatio-temporally correlated (d) recruitment deviates.",fig.align="center"}
 seed <- 20190620
 set.seed(seed)
-trial <- metaPop(Npatches=16,networkType="complex",patchDistance=1,Nburnin=50,NyrsPost=50,omega=0.01,m=100,alpha=2,metaK=1600,cv=0.12,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=FALSE)
+trial <- metaPop(Npatches=16,networkType="complex",patchDistance=1,Nburnin=50,NyrsPost=100,omega=0.01,m=100,alpha=2,metaK=1600,cv=0.12,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=FALSE)
 layout(matrix(1:4,nrow=2,ncol=2,byrow=TRUE))
 par(mar=c(5,4,1,1))
 textSize <- 1
-Nyears <- 100
+Nyears <- 150
 Nlevels <- 10
 popDyn <- trial$popDyn
 k_p <- trial$k_p
@@ -269,7 +269,7 @@ lines(MetaPop[,"Spawners"]/metaK,lwd=3,col="black")
 Corner_text("a) - independent","topleft")
 
 set.seed(seed)
-trial <- metaPop(Npatches=16,networkType="complex",patchDistance=1,Nburnin=50,NyrsPost=50,omega=0.01,m=100,alpha=2,metaK=1600,cv=0.12,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=0.5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=FALSE)
+trial <- metaPop(Npatches=16,networkType="complex",patchDistance=1,Nburnin=50,NyrsPost=100,omega=0.01,m=100,alpha=2,metaK=1600,cv=0.12,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=0.5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=FALSE)
 popDyn <- trial$popDyn
 k_p <- trial$k_p
 MetaPop <- trial$MetaPop
@@ -281,7 +281,7 @@ lines(MetaPop[,"Spawners"]/metaK,lwd=3,col="black")
 Corner_text("b) - spatial","topleft")
 
 set.seed(seed)
-trial <- metaPop(Npatches=16,networkType="complex",patchDistance=1,Nburnin=50,NyrsPost=50,omega=0.01,m=100,alpha=2,metaK=1600,cv=0.12,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=0.75,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=FALSE)
+trial <- metaPop(Npatches=16,networkType="complex",patchDistance=1,Nburnin=50,NyrsPost=100,omega=0.01,m=100,alpha=2,metaK=1600,cv=0.12,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=0.75,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=FALSE)
 popDyn <- trial$popDyn
 k_p <- trial$k_p
 MetaPop <- trial$MetaPop
@@ -293,7 +293,7 @@ lines(MetaPop[,"Spawners"]/metaK,lwd=3,col="black")
 Corner_text("c) - temporal","topleft")
 
 set.seed(seed)
-trial <- metaPop(Npatches=16,networkType="complex",patchDistance=1,Nburnin=50,NyrsPost=50,omega=0.01,m=100,alpha=2,metaK=1600,cv=0.12,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=0.75,rho.dist=0.5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=FALSE)
+trial <- metaPop(Npatches=16,networkType="complex",patchDistance=1,Nburnin=50,NyrsPost=100,omega=0.01,m=100,alpha=2,metaK=1600,cv=0.12,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=0.75,rho.dist=0.5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=FALSE)
 popDyn <- trial$popDyn
 k_p <- trial$k_p
 MetaPop <- trial$MetaPop
@@ -465,28 +465,28 @@ We tested all combinations of the following eight processes (below) and ran a `1
 We demonstrate our metapopulation model with an example outcome for a linear network composed of `16` patches, a dispersal rate of `0.01` and a high enough dispersal cost such that individuals are only willing to move to their closest neighboring patches. This limits the strength of potential rescue effects. For this example, patches varied in their productivity and carrying capacity but will have deterministic population dynamics.
 
 ```{r example results1, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Spatial recovery regime of metapopulation with linear topology through time (top left) and space (top right). Recruitment dynamics before and 10 years after disturbance (bottom left). Relative bias in aggregate-scale estimates of carrying capacity, compensation ratio, and recruitment production in recovery phase (bottom right).",fig.align="center"}
-linearSim <- metaPop(Npatches=16,networkType="linear",patchDistance=1,Nburnin=50,NyrsPost=50,omega=0.01,m=100,alpha=2,metaK=1600,cv=1e-6,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=TRUE)
+linearSim <- metaPop(Npatches=16,networkType="linear",patchDistance=1,Nburnin=50,NyrsPost=100,omega=0.01,m=100,alpha=2,metaK=1600,cv=1e-6,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=TRUE)
 ```
 <br>
 
 We can then contrast this with a different network shape, like a dendritic network. 
 
 ```{r example results2, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Spatial recovery regime of metapopulation with dendritic topology.",fig.align="center"}
-dendriticSim <- metaPop(Npatches=16,networkType="dendritic",patchDistance=1,Nburnin=50,NyrsPost=50,omega=0.01,m=100,alpha=2,metaK=1600,cv=1e-6,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=TRUE)
+dendriticSim <- metaPop(Npatches=16,networkType="dendritic",patchDistance=1,Nburnin=50,NyrsPost=100,omega=0.01,m=100,alpha=2,metaK=1600,cv=1e-6,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=TRUE)
 ```
 <br>
 
 Now, let's add some stochasticity to recruitment and see how this affects the recovery regime.
 
 ```{r example results3, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Spatial recovery regime of stochastic metapopulation.",fig.align="center"}
-dendriticSim2 <- metaPop(Npatches=16,networkType="dendritic",patchDistance=1,Nburnin=50,NyrsPost=50,omega=0.01,m=100,alpha=2,metaK=1600,cv=0.1,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=TRUE)
+dendriticSim2 <- metaPop(Npatches=16,networkType="dendritic",patchDistance=1,Nburnin=50,NyrsPost=100,omega=0.01,m=100,alpha=2,metaK=1600,cv=0.1,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=TRUE)
 ```
 <br>
 
 Next, we can contrast with a disturbance regime where the disturbance is concentrated on local patches that can be completely extirpated (rather than the disturbance being applied proportionally across all patches e.g., a mixed-stock fishery).
 
 ```{r example results4, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Spatial recovery regime of stochastic metapopulation.",fig.align="center"}
-dendriticSim3 <- metaPop(Npatches=16,networkType="dendritic",patchDistance=1,Nburnin=50,NyrsPost=50,omega=0.01,m=100,alpha=2,metaK=1600,cv=0.1,DistScenario="random_patch",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=TRUE)
+dendriticSim3 <- metaPop(Npatches=16,networkType="dendritic",patchDistance=1,Nburnin=50,NyrsPost=100,omega=0.01,m=100,alpha=2,metaK=1600,cv=0.1,DistScenario="random_patch",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=TRUE)
 ```
 <br>
 
@@ -500,17 +500,19 @@ First, lets show recovery rates for a scenario where (1) patches have the same l
 Below, we can see three main effects on recovery rates (number of generations to reach recovery). First, recovery exponentially slows with increased dispersal. Most of the action here takes place at low rates of dispersal indicating most spatial topologies don't need much dispersal to quicken their recovery. Second, more localized disturbances regimes lead to slower recovery. Third, linearized networks have slower recovery times than interconnected, complex networks suggesting that rescue effects take some time to cascade through the entire network of patches.
 
 ```{r general results, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Recovery rates along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients without stochasticity.",fig.align="center"}
-results <- readRDS("Simulations/results2019-05-19_fixed.rds")
-scenarios <- readRDS("Simulations/scenarios2019-05-19.rds")
+results <- readRDS("Simulations/results2019-06-30.rds")
+scenarios <- readRDS("Simulations/scenarios2019-06-30.rds")
 
-Nboots <- 50
+results$StateShift <- ((1-results$recovered)+(1-results$longOcc))/2
+
+Nboots <- 100
 Nlevels <- 11
 model <- "Beverton-Holt"
 # simulation parameters
 Npatches <- 16
 patchDist <- 1
 Nburnin <- 50
-NyrsPost <- 50
+NyrsPost <- 100
 Nyears <- Nburnin+NyrsPost
 compLag <- 25 # how many years to lag estimates of compensation
 dataWeighting <- 0.1 # penalty to past years for data weighting
@@ -870,11 +872,11 @@ plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=netw
 
 #### General patterns in the risk of hysteresis & state shifts
 
-##### Proportion of simulations of unrecovered metapopulation for scenario with deterministic recruitment where patches are the same
+##### Proportion of simulations where the metapopulation either failed to recover or experienced spatial contraction for scenario with deterministic recruitment where patches are the same
 
-We now show similar patterns in the lack of recovery across the metapopulation after $50$ generations post-disturbance.
+We now show similar patterns in the lack of recovery across the metapopulation after $100$ generations post-disturbance.
 
-```{r Recovery, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Risk of unrecovered metapopulation after 50 generations along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment variation.",fig.align="center"}
+```{r Recovery, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Risk of state shift after 100 generations along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment variation.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 dist_colours <- c("blue","dodgerblue","orange")
@@ -886,10 +888,10 @@ for(i in 1:length(scenarios$network))
                           results$spatial==scenarios$spatial[1] & 
                           results$alpha==scenarios$alpha[1] & 
                           results$beta==scenarios$beta[1],]
-  plot(subResults$dispersal,1-subResults$recovered,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Risk of unrecovered metapopulation",xlab="Dispersal rate",ylim=1.7*range(c(0,1-results$recovered)))
+  plot(subResults$dispersal,subResults$StateShift,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Risk of state shift",xlab="Dispersal rate",ylim=1.7*range(c(0,results$StateShift)))
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
-    lines(distResults$dispersal,1-distResults$recovered,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
+    lines(distResults$dispersal,distResults$StateShift,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
   }
 }
 
@@ -917,7 +919,7 @@ plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=netw
 
 Now, we illustrate how variable patch demography affects the risk of state shift.
 
-```{r unrecovered with variable patches, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Risk of unrecovered metapopulation after 50 generations along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.",fig.align="center"}
+```{r unrecovered with variable patches, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Risk of state shift after 100 generations along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 dist_colours <- c("blue","dodgerblue","orange")
@@ -929,10 +931,10 @@ for(i in 1:length(scenarios$network))
                           results$spatial==scenarios$spatial[1] & 
                           results$alpha==scenarios$alpha[2] & 
                           results$beta==scenarios$beta[2],]
-  plot(subResults$dispersal,1-subResults$recovered,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Risk of unrecovered metapopulation",xlab="Dispersal rate",ylim=1.7*range(c(0,1-results$recovered)))
+  plot(subResults$dispersal,subResults$StateShift,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Risk of state shift",xlab="Dispersal rate",ylim=1.7*range(c(0,results$StateShift)))
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
-    lines(distResults$dispersal,1-distResults$recovered,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
+    lines(distResults$dispersal,distResults$StateShift,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
   }
 }
 
@@ -959,7 +961,7 @@ plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=netw
 
 Now, we illustrate how variable patch demography and stochastic recruitment affects the risk of state shift.
 
-```{r state shift with variable patches and stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Risk of unrecovered metapopulation after 50 generations along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches and stochastic recruitment.",fig.align="center"}
+```{r state shift with variable patches and stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Risk of state shift after 100 generations along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches and stochastic recruitment.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 dist_colours <- c("blue","dodgerblue","orange")
@@ -971,10 +973,10 @@ for(i in 1:length(scenarios$network))
                           results$spatial==scenarios$spatial[1] & 
                           results$alpha==scenarios$alpha[2] & 
                           results$beta==scenarios$beta[2],]
-  plot(subResults$dispersal,1-subResults$recovered,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Risk of unrecovered metapopulation",xlab="Dispersal rate",ylim=1.7*range(c(0,1-results$recovered)))
+  plot(subResults$dispersal,subResults$StateShift,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Risk of state shift",xlab="Dispersal rate",ylim=1.7*range(c(0,results$StateShift)))
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
-    lines(distResults$dispersal,1-distResults$recovered,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
+    lines(distResults$dispersal,distResults$StateShift,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
   }
 }
 
@@ -1001,7 +1003,7 @@ plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=netw
 
 Now, we illustrate how variable patch demography and high spatial-temporal correlations in stochastic recrtuitment affects the risk of a state shift.
 
-```{r state shifts with variable patches and space-time stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Risk of unrecovered metapopulation after 50 generations along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches, and spatial-temporal correlations in stochastic recruitment.",fig.align="center"}
+```{r state shifts with variable patches and space-time stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Risk of state shift (lack of recovery or spatial contraction) after 100 generations along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches, and spatial-temporal correlations in stochastic recruitment.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 dist_colours <- c("blue","dodgerblue","orange")
@@ -1013,10 +1015,10 @@ for(i in 1:length(scenarios$network))
                           results$spatial==scenarios$spatial[3] & 
                           results$alpha==scenarios$alpha[2] & 
                           results$beta==scenarios$beta[2],]
-  plot(subResults$dispersal,1-subResults$recovered,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Risk of unrecovered metapopulation",xlab="Dispersal rate",ylim=1.7*range(c(0,1-results$recovered)))
+  plot(subResults$dispersal,subResults$StateShift,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Risk of state shift",xlab="Dispersal rate",ylim=1.7*range(c(0,results$StateShift)))
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
-    lines(distResults$dispersal,1-distResults$recovered,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
+    lines(distResults$dispersal,distResults$StateShift,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
   }
 }
 
