@@ -7,8 +7,7 @@ author: |
   | $^2$Fisheries & Oceans Canada
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
-  pdf_document:
-    keep_tex: yes
+  html_document:
     pandoc_args:
     - --biblio
     - Metapop_references.bib
@@ -17,7 +16,8 @@ output:
   fig_caption: yes
   fontsize: 12pt
   highlight: tango
-  html_document:
+  pdf_document:
+    keep_tex: yes
     pandoc_args:
     - --biblio
     - Metapop_references.bib
@@ -30,6 +30,10 @@ header-includes:
 - \usepackage{wrapfig}
 - \usepackage{lipsum}
 - \usepackage{float}
+- \usepackage{lineno}
+- \linenumbers
+- \renewcommand{\thefigure}{S\arabic{figure}}
+- \renewcommand{\thetable}{S\arabic{table}}
 ---
 
 ```{r setup, include=FALSE}
@@ -701,9 +705,9 @@ plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=netw
 
 ##### MSY with deterministic recruitment where patches are the same
 
-We now show similar patterns in how maximum sustainable yield (MSY) of the whole metapopulation shifts in the first 10 years post-disturbance compared to the sum of MSY for each patch. A value of 1.0 would indicate that the disturbed metapopulation can sustain itselfs against the same disturbance regime as the sum of each patch independently. In other words, is the metapopulation more, less, or equal to the sum of its parts.
+We now show similar patterns in how the maximum surplus production of the whole metapopulation (i.e., MSY) shifts in the first 10 years post-disturbance compared to the sum of MSY for each patch. A value of 1.0 would indicate that the disturbed metapopulation can sustain itselfs against the same disturbance regime as the sum of each patch independently. In other words, is the metapopulation more, less, or equal to the sum of its parts.
 
-```{r MSY, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Maximum sustainable yield along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment variation.",fig.align="center"}
+```{r MSY, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Maximum surplus production along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with deterministic recruitment and the same patches.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 dist_colours <- c("blue","dodgerblue","orange")
@@ -715,7 +719,7 @@ for(i in 1:length(scenarios$network))
                           results$spatial==scenarios$spatial[1] & 
                           results$alpha==scenarios$alpha[1] & 
                           results$beta==scenarios$beta[1],]
-  plot(subResults$dispersal,subResults$medMSY,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Maximum sustainable yield",xlab="Dispersal rate",ylim=1.5*range(c(0,results$medMSY)))
+  plot(subResults$dispersal,subResults$medMSY,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Maximum surplus production",xlab="Dispersal rate",ylim=1.5*range(c(0,results$medMSY)))
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
     lines(distResults$dispersal,distResults$medMSY,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
@@ -746,7 +750,7 @@ plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=netw
 
 Now, we illustrate how variable patch demography affects the 10-year average MSY.
 
-```{r MSY with variable patches, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Maximum sustainable yield along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.",fig.align="center"}
+```{r MSY with variable patches, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Maximum surplus production along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 dist_colours <- c("blue","dodgerblue","orange")
@@ -758,7 +762,7 @@ for(i in 1:length(scenarios$network))
                           results$spatial==scenarios$spatial[1] & 
                           results$alpha==scenarios$alpha[2] & 
                           results$beta==scenarios$beta[2],]
-  plot(subResults$dispersal,subResults$medMSY,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Maximum sustainable yield",xlab="Dispersal rate",ylim=1.5*range(c(0,results$medMSY)))
+  plot(subResults$dispersal,subResults$medMSY,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Maximum surplus production",xlab="Dispersal rate",ylim=1.5*range(c(0,results$medMSY)))
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
     lines(distResults$dispersal,distResults$medMSY,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
@@ -788,7 +792,7 @@ plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=netw
 
 Now, we illustrate how variable patch demography affects the 10-year average MSY.
 
-```{r MSY with variable patches and stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Maximum sustainable yield along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.",fig.align="center"}
+```{r MSY with variable patches and stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Maximum surplus production along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches and stochasticity.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 dist_colours <- c("blue","dodgerblue","orange")
@@ -800,7 +804,7 @@ for(i in 1:length(scenarios$network))
                           results$spatial==scenarios$spatial[1] & 
                           results$alpha==scenarios$alpha[2] & 
                           results$beta==scenarios$beta[2],]
-  plot(subResults$dispersal,subResults$medMSY,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Maximum sustainable yield",xlab="Dispersal rate",ylim=1.5*range(c(0,results$medMSY)))
+  plot(subResults$dispersal,subResults$medMSY,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Maximum surplus production",xlab="Dispersal rate",ylim=1.5*range(c(0,results$medMSY)))
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
     lines(distResults$dispersal,distResults$medMSY,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
@@ -830,7 +834,7 @@ plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=netw
 
 Now, we illustrate how variable patch demography and high spatial-temporal correlations in stochastic recruitment affects the 10-year average MSY.
 
-```{r MSY with variable patches and space-time stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Maximum sustainable yield along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.",fig.align="center"}
+```{r MSY with variable patches and space-time stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Maximum surplus production along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment stochasticity and variable patches.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 dist_colours <- c("blue","dodgerblue","orange")
@@ -842,7 +846,7 @@ for(i in 1:length(scenarios$network))
                           results$spatial==scenarios$spatial[3] & 
                           results$alpha==scenarios$alpha[2] & 
                           results$beta==scenarios$beta[2],]
-  plot(subResults$dispersal,subResults$medMSY,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Maximum sustainable yield",xlab="Dispersal rate",ylim=1.5*range(c(0,results$medMSY)))
+  plot(subResults$dispersal,subResults$medMSY,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Maximum surplus production",xlab="Dispersal rate",ylim=1.5*range(c(0,results$medMSY)))
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
     lines(distResults$dispersal,distResults$medMSY,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)

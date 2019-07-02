@@ -126,15 +126,15 @@ Doug Braun\(^2\)\\
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-<<<<<<< HEAD
-    \date{21 June 2019}
-=======
     \date{02 July 2019}
->>>>>>> 8feb035fdd048b6af6768a3438617015b794e87e
 
 \usepackage{wrapfig}
 \usepackage{lipsum}
 \usepackage{float}
+\usepackage{lineno}
+\linenumbers
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thetable}{S\arabic{table}}
 
 \begin{document}
 \maketitle
@@ -808,13 +808,13 @@ recovery times for extreme localized disturbance.
 \subparagraph{MSY with deterministic recruitment where patches are the
 same}\label{msy-with-deterministic-recruitment-where-patches-are-the-same}}
 
-We now show similar patterns in how maximum sustainable yield (MSY) of
-the whole metapopulation shifts in the first 10 years post-disturbance
-compared to the sum of MSY for each patch. A value of 1.0 would indicate
-that the disturbed metapopulation can sustain itselfs against the same
-disturbance regime as the sum of each patch independently. In other
-words, is the metapopulation more, less, or equal to the sum of its
-parts.
+We now show similar patterns in how the maximum surplus production of
+the whole metapopulation (i.e., MSY) shifts in the first 10 years
+post-disturbance compared to the sum of MSY for each patch. A value of
+1.0 would indicate that the disturbed metapopulation can sustain itselfs
+against the same disturbance regime as the sum of each patch
+independently. In other words, is the metapopulation more, less, or
+equal to the sum of its parts.
 
 \begin{figure}[H]
 
@@ -822,7 +822,7 @@ parts.
 
 }
 
-\caption{Maximum sustainable yield along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment variation.}\label{fig:MSY}
+\caption{Maximum surplus production along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with deterministic recruitment and the same patches.}\label{fig:MSY}
 \end{figure}
 
 \hypertarget{msy-with-variable-patches}{%
@@ -838,7 +838,7 @@ average MSY.
 
 }
 
-\caption{Maximum sustainable yield along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.}\label{fig:MSY with variable patches}
+\caption{Maximum surplus production along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.}\label{fig:MSY with variable patches}
 \end{figure}
 
 \hypertarget{msy-with-variable-patches-and-stochasticity}{%
@@ -854,7 +854,7 @@ average MSY.
 
 }
 
-\caption{Maximum sustainable yield along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.}\label{fig:MSY with variable patches and stochasticity}
+\caption{Maximum surplus production along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches and stochasticity.}\label{fig:MSY with variable patches and stochasticity}
 \end{figure}
 
 \hypertarget{msy-with-variable-patches-and-spatio-temporally-correlated-stochasticity}{%
@@ -872,7 +872,7 @@ spatial-temporal correlations in stochastic recruitment affects the
 
 }
 
-\caption{Maximum sustainable yield along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.}\label{fig:MSY with variable patches and space-time stochasticity}
+\caption{Maximum surplus production along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment stochasticity and variable patches.}\label{fig:MSY with variable patches and space-time stochasticity}
 \end{figure}
 
 \hypertarget{general-patterns-in-the-risk-of-hysteresis-state-shifts}{%
