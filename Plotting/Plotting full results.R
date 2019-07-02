@@ -1,18 +1,18 @@
-results <- readRDS("Simulations/results2019-05-19_fixed.rds")
-scenarios <- readRDS("Simulations/scenarios2019-05-19.rds")
+results <- readRDS("Simulations/results2019-06-30.rds")
+scenarios <- readRDS("Simulations/scenarios2019-06-30.rds")
 
 NaNsims <- which(apply(apply(results[,-(1:8)],2,is.nan),1,any))
 
 results[NaNsims,]
 
-Nboots <- 50
+Nboots <- 100
 Nlevels <- 11
 model <- "Beverton-Holt"
 # simulation parameters
 Npatches <- 16
 patchDist <- 1
 Nburnin <- 50
-NyrsPost <- 50
+NyrsPost <- 100
 Nyears <- Nburnin+NyrsPost
 compLag <- 25 # how many years to lag estimates of compensation
 dataWeighting <- 0.1 # penalty to past years for data weighting
@@ -263,7 +263,7 @@ for(i in 1:length(scenarios$network))
 }
 add2plot()
 
-# Production
+# Occupancy
 layout(matLayout)
 par(mar=c(5,4,1,1))
 dist_colours <- c("blue","dodgerblue","orange")

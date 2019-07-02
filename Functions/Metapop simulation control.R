@@ -128,7 +128,7 @@ for(Isim in 1:nrow(results))
                                           dataWeighting=dataWeighting,
                                           alphaVariable=alphaVariable,
                                           kVariable=kVariable,
-                                          spatialPlots = TRUE))
+                                          spatialPlots = FALSE))
   
   results$recovery[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="recovery"),]))
   
