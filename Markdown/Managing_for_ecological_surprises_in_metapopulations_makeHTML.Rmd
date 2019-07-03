@@ -500,18 +500,12 @@ dendriticSim3 <- metaPop(Npatches=16,networkType="dendritic",patchDistance=1,Nbu
 ## Simulation test & bootstrap
 
 ### General patterns
-We now show some general patterns in how variable patch demographic rates, network structure, dispersal, disturbance, recruitment stochasticity, and spatio-temporal correlations variation affects metapopulation *recovery rates*, *maximum sustainable yield* (i.e., analagous to the maximum rate of loss the system can sustain), and *coefficient of variation* across patches.
 
-First, lets show recovery rates for a scenario where (1) patches have the same local productivities and carrying capacities, (2) patches have different productivities and carrying capacities, (3) recruitment is deterministic and patches are different, (4) there spatial-temporal correlation in stochastic recruitment.
+#### Effects of disturbance regime
 
-Below, we can see three main effects on recovery rates (number of generations to reach recovery). First, recovery gets faster with increased dispersal. Most of the action here takes place at low rates of dispersal indicating most spatial topologies don't need much dispersal to quicken their recovery. In preliminary runs, dispersal rates of `0.05-0.2` provided similar recovery patterns. Second, more localized disturbances regimes lead to slower recovery. Third, linearized networks have slower recovery times than interconnected, complex networks suggesting that rescue effects take some time to cascade through the entire network of patches.
-
-```{r general results, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Recovery rates along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients without stochasticity.",fig.align="center"}
+```{r disturbance regime, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Spatial and temporal recovery patterns along disturbance regimes.",fig.align="center"}
 results <- readRDS("Simulations/results2019-06-30.rds")
 scenarios <- readRDS("Simulations/scenarios2019-06-30.rds")
-
-results$StateShift <- ((1-results$recovered)+(1-results$longOcc))/2
-
 Nboots <- 100
 Nlevels <- 11
 model <- "Beverton-Holt"
@@ -531,6 +525,27 @@ metaK <- 1600
 magnitude_of_decline <- 0.9
 # what is the lag time between recruits and spawners
 lagTime <- 1
+
+results$StateShift <- ((1-results$recovered)+(1-results$longOcc))/2
+results$RecoveryRate <- exp(-results$recovery/NyrsPost)
+
+dist_colours <- c("blue","dodgerblue","orange")
+layout(matrix(1:4,nrow=2,ncol=2,byrow=TRUE))
+par(mar=c(5,4,1,1))
+plot(results$RecoveryRate,results$longOcc,pch=21,bg=dist_colours[results$disturbance],xlab="Temporal recovery (% yr-1)",ylab="Spatial recovery (patch occupancy after 25 years)")
+plot(results$RecoveryRate,results$longMSY,pch=21,bg=dist_colours[results$disturbance],xlab="Recovery rate (yr-1)",ylab="Maximum surplus production (25 years)")
+plot(results$RecoveryRate,results$longCV,pch=21,bg=dist_colours[results$disturbance],xlab="Recovery rate (yr-1)",ylab="Spatial variation (25 years)")
+plot(results$RecoveryRate,results$recovered,pch=21,bg=dist_colours[results$disturbance],xlab="Recovery rate (yr-1)",ylab="Recovered")
+legend("bottomright",c("Uniform","Local, random","Local, extirpation"),lwd=2,lty=1,col=dist_colours,bty="n")
+```
+
+We now show some general patterns in how variable patch demographic rates, network structure, dispersal, disturbance, recruitment stochasticity, and spatio-temporal correlations variation affects metapopulation *recovery rates*, *maximum sustainable yield* (i.e., analagous to the maximum rate of loss the system can sustain), and *coefficient of variation* across patches.
+
+First, lets show recovery rates for a scenario where (1) patches have the same local productivities and carrying capacities, (2) patches have different productivities and carrying capacities, (3) recruitment is deterministic and patches are different, and (4) spatial-temporal correlation in stochastic recruitment.
+
+Below, we can see three main effects on recovery rates (number of generations to reach recovery). First, recovery gets faster with increased dispersal. Most of the action here takes place at low rates of dispersal indicating most spatial topologies don't need much dispersal to quicken their recovery. In preliminary runs, dispersal rates of `0.05-0.2` provided similar recovery patterns. Second, more localized disturbances regimes lead to slower recovery. Third, linearized networks have slower recovery times than interconnected, complex networks suggesting that rescue effects take some time to cascade through the entire network of patches.
+
+```{r general results, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Recovery rates along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients without stochasticity.",fig.align="center"}
 
 matLayout <- matrix(0,nrow=16,ncol=16)
 matLayout[1:8,1:8] <- 1
@@ -709,7 +724,7 @@ plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=netw
 
 We now show similar patterns in how the maximum surplus production of the whole metapopulation (i.e., MSY) shifts in the first 10 years post-disturbance compared to the sum of MSY for each patch. A value of 1.0 would indicate that the disturbed metapopulation can sustain itselfs against the same disturbance regime as the sum of each patch independently. In other words, is the metapopulation more, less, or equal to the sum of its parts.
 
-We will show 10-year MSY patterns for a scenario where (1) patches have the same local productivities and carrying capacities, (2) patches have different productivities and carrying capacities, (3) recruitment is deterministic and patches are different, (4) there spatial-temporal correlation in stochastic recruitment.
+We will show 10-year MSY patterns for a scenario where (1) patches have the same local productivities and carrying capacities, (2) patches have different productivities and carrying capacities, (3) recruitment is deterministic and patches are different, (4) spatial-temporal correlation in stochastic recruitment.
 
 Below, we can see three main effects on recovery rates (number of generations to reach recovery). First, recovery gets faster with increased dispersal. Most of the action here takes place at low rates of dispersal indicating most spatial topologies don't need much dispersal to quicken their recovery. In preliminary runs, dispersal rates of `0.05-0.2` provided similar recovery patterns. Second, more localized disturbances regimes lead to slower recovery. Third, linearized networks have slower recovery times than interconnected, complex networks suggesting that rescue effects take some time to cascade through the entire network of patches.
 

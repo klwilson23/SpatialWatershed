@@ -105,7 +105,7 @@
 \usepackage{titling}
 
 % Create subtitle command for use in maketitle
-\providecommand{\subtitle}[1]{
+\newcommand{\subtitle}[1]{
   \posttitle{
     \begin{center}\large#1\end{center}
     }
@@ -724,6 +724,19 @@ bootstrap}\label{simulation-test-bootstrap}}
 \hypertarget{general-patterns}{%
 \subsubsection{General patterns}\label{general-patterns}}
 
+\hypertarget{effects-of-disturbance-regime}{%
+\paragraph{Effects of disturbance
+regime}\label{effects-of-disturbance-regime}}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_makeHTML_files/figure-latex/disturbance regime-1} 
+
+}
+
+\caption{Spatial and temporal recovery patterns along disturbance regimes.}\label{fig:disturbance regime}
+\end{figure}
+
 We now show some general patterns in how variable patch demographic
 rates, network structure, dispersal, disturbance, recruitment
 stochasticity, and spatio-temporal correlations variation affects
@@ -734,7 +747,7 @@ and \emph{coefficient of variation} across patches.
 First, lets show recovery rates for a scenario where (1) patches have
 the same local productivities and carrying capacities, (2) patches have
 different productivities and carrying capacities, (3) recruitment is
-deterministic and patches are different, (4) there spatial-temporal
+deterministic and patches are different, and (4) spatial-temporal
 correlation in stochastic recruitment.
 
 Below, we can see three main effects on recovery rates (number of
@@ -825,7 +838,7 @@ equal to the sum of its parts.
 We will show 10-year MSY patterns for a scenario where (1) patches have
 the same local productivities and carrying capacities, (2) patches have
 different productivities and carrying capacities, (3) recruitment is
-deterministic and patches are different, (4) there spatial-temporal
+deterministic and patches are different, (4) spatial-temporal
 correlation in stochastic recruitment.
 
 Below, we can see three main effects on recovery rates (number of
