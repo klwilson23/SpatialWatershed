@@ -105,7 +105,7 @@
 \usepackage{titling}
 
 % Create subtitle command for use in maketitle
-\providecommand{\subtitle}[1]{
+\newcommand{\subtitle}[1]{
   \posttitle{
     \begin{center}\large#1\end{center}
     }
@@ -131,6 +131,10 @@ Doug Braun\(^2\)\\
 \usepackage{wrapfig}
 \usepackage{lipsum}
 \usepackage{float}
+\usepackage{lineno}
+\linenumbers
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thetable}{S\arabic{table}}
 
 \begin{document}
 \maketitle
@@ -184,8 +188,8 @@ For example, in a two patch model that varies \(\alpha_i\) and
 
 Management often monitors metapopulation resources as the aggregate of
 all local populations. In this way, recruitment compensation from local
-patches \(\alpha_i\) gets averaged across the metapopulation leading
-mean compensation \(\bar{\alpha}\) of 3. Likewise, the total carrying
+patches \(\alpha_i\) gets averaged across the metapopulation leading to
+a mean compensation \(\bar{\alpha}\) of 3. Likewise, the total carrying
 capacity of the metapopulation \(\bar{\beta}\) becomes the summation of
 local patch carrying capacities \(\sum\beta_i\), which is 300. This
 scale of monitoring generates the following local patch and
@@ -323,16 +327,16 @@ cases of stochastic recruitment, the expected recruitment:
 
 becomes:
 
-\(R_{it}=\cfrac{\alpha_iN_{it-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{it-1}}e^{(\epsilon_{it}-\cfrac{log(\sigma_{R}^2+1)}{2})}\)
+\(R_{it}=\cfrac{\alpha_iN_{it-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{it-1}}e^{(\epsilon_{it}-\cfrac{ln(\sigma_{R}^2+1)}{2})}\)
 
 where lognormal deviates for each patch \emph{i} at time \emph{t} are
-drawn from a multivariate normal deviation. If \(\sigma_R\) is low, then
-metapopulation dynamics approach the deterministic case. In some
-scenarios, we evaluate the role of spatially and/or temporally
-correlated deviates across the metapopulations to model potential common
-drivers affecting metapopulation dynamics (i.e., Moran effects).
-Expected recruitment deviates followed a first-order autoregression
-model such that:
+drawn from a multivariate normal distribution (\emph{MVN}) If
+\(\sigma_R\) is low, then metapopulation dynamics approach the
+deterministic case. In some scenarios, we evaluate the role of spatially
+and/or temporally correlated deviates across the metapopulations to
+model potential common drivers affecting metapopulation dynamics (e.g.,
+Moran effects). Expected recruitment deviates followed a first-order
+autoregression model such that:
 
 \(\epsilon_{it}=\rho_T\epsilon_{t-1}+MVN(\mu=0,\Sigma=\sigma_R(1-\rho_T^2)e^{(-\rho_SD_{ij})})\)
 
@@ -355,25 +359,37 @@ the same random number generator seed:
 \hypertarget{post-disturbance-outcomes}{%
 \subsection{Post-disturbance outcomes}\label{post-disturbance-outcomes}}
 
-We measured the following post-disturbance outcomes that have direction
-application for conservation metrics.
+We measured the following post-disturbance outcomes that measure various
+conservation and recovery processes.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
-  Recovered \& recovery rate after disturbance - the number of
-  simulations where metapopulation abundance averaged \texttt{1.0}
-  carrying capacity for \texttt{5} consecutive years post-disturbance
-  and the number of years it took to get there.
+  Recovered (a) \& recovery rate (b) after disturbance - (a) the number
+  of simulations where metapopulation abundance averaged \texttt{1.0} of
+  the average pre-disturbance abundance for \texttt{5} consecutive years
+  post-disturbance, and (b) the number of years it took to get there.
 \item
-  Extinction \& extinction rate - the number of simulations where
-  metapopulation abundance was \texttt{\textless{}0.05} carrying
-  capacity and the mean number of years it took to get there.
+  Extinction (a) \& extinction rate (b) - (a) the number of simulations
+  where metapopulation abundance was \texttt{\textless{}0.05} carrying
+  capacity, and (b) the mean number of years it took to get there.
 \item
   Patch occupancy - the mean number of patches with
   \texttt{\textgreater{}0.1} local carrying capacity.
 \item
-  Spatial variance
+  Spatial variance - the variation in patch abundance across patches
+  within a given window of time.
+
+  \begin{enumerate}
+  \def\labelenumii{\alph{enumii}.}
+  \tightlist
+  \item
+    Within 5 years post-disturbance
+  \item
+    Within 10 years post-disturbance
+  \item
+    Within 25 years post-disturbance
+  \end{enumerate}
 \item
   Number of populations defined as source, sink, pseudo-sink such that:
 
@@ -408,8 +424,8 @@ application for conservation metrics.
     Expected recruitment production to true recruitment production
     across all patches
   \item
-    Expected maximum sustainable yield \emph{MSY} to true maximum
-    sustainable yield across all patches
+    Expected maximum surplus production (we term \emph{MSY}) to true
+    maximum surplus production across all patches
   \end{enumerate}
 \end{enumerate}
 
@@ -518,7 +534,7 @@ growth, survival, and reproduction at low population densities are not
 constrained by limited resources, but overall production is low because
 there are few individuals. At high densities, limited resources
 increasingly constrain individual's reproductive success until the
-populations reach carrying capacity, and overall production drops to
+population reaches carrying capacity, and overall production drops to
 zero because per-capita success is low. However, at some intermediate
 densities, both per-capita and overall production is high, and
 population growth is at its maximum point due to the large number of
@@ -588,7 +604,7 @@ and the recruits that result from this (termed \(R_{MSY}\)).
 \hypertarget{scenarios}{%
 \subsection{Scenarios}\label{scenarios}}
 
-We tested all combinations of the following eight proccesses (below) and
+We tested all combinations of the following eight processes (below) and
 ran a \texttt{100} bootstraps per scenario to estimate the mean for each
 of the above outcomes.
 
@@ -645,13 +661,13 @@ of the above outcomes.
 \hypertarget{example-results}{%
 \subsubsection{Example results}\label{example-results}}
 
-We can demonstrate our concepts with a model on a linear network
-composed of \texttt{16} patches, a dispersal rate of \texttt{0.01} and a
-high enough dispersal cost such that individuals are willing to move
-only to their closest neighboring patches. This limits the strength of
-potential rescue effects. For this example, patches varied in their
-productivity and carrying capacity but will have deterministic
-population dynamics.
+We demonstrate our metapopulation model with an example outcome for a
+linear network composed of \texttt{16} patches, a dispersal rate of
+\texttt{0.01} and a high enough dispersal cost such that individuals are
+only willing to move to their closest neighboring patches. This limits
+the strength of potential rescue effects. For this example, patches
+varied in their productivity and carrying capacity but will have
+deterministic population dynamics.
 
 \begin{figure}[H]
 
@@ -688,7 +704,8 @@ affects the recovery regime.
 
 Next, we can contrast with a disturbance regime where the disturbance is
 concentrated on local patches that can be completely extirpated (rather
-than the disturbance being applied proportionally across all patches).
+than the disturbance being applied proportionally across all patches
+e.g., a mixed-stock fishery).
 
 \begin{figure}[H]
 
@@ -791,13 +808,13 @@ recovery times for extreme localized disturbance.
 \subparagraph{MSY with deterministic recruitment where patches are the
 same}\label{msy-with-deterministic-recruitment-where-patches-are-the-same}}
 
-We now show similar patterns in how maximum sustainable yield (MSY) of
-the whole metapopulation shifts in the first 10 years post-disturbance
-compared to the sum of MSY for each patch. A value of 1.0 would indicate
-that the disturbed metapopulation can sustain itselfs against the same
-disturbance regime as the sum of each patch independently. In other
-words, is the metapopulation more, less, or equal to the sum of its
-parts.
+We now show similar patterns in how the maximum surplus production of
+the whole metapopulation (i.e., MSY) shifts in the first 10 years
+post-disturbance compared to the sum of MSY for each patch. A value of
+1.0 would indicate that the disturbed metapopulation can sustain itselfs
+against the same disturbance regime as the sum of each patch
+independently. In other words, is the metapopulation more, less, or
+equal to the sum of its parts.
 
 \begin{figure}[H]
 
@@ -805,7 +822,7 @@ parts.
 
 }
 
-\caption{Maximum sustainable yield along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment variation.}\label{fig:MSY}
+\caption{Maximum surplus production along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with deterministic recruitment and the same patches.}\label{fig:MSY}
 \end{figure}
 
 \hypertarget{msy-with-variable-patches}{%
@@ -821,7 +838,7 @@ average MSY.
 
 }
 
-\caption{Maximum sustainable yield along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.}\label{fig:MSY with variable patches}
+\caption{Maximum surplus production along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.}\label{fig:MSY with variable patches}
 \end{figure}
 
 \hypertarget{msy-with-variable-patches-and-stochasticity}{%
@@ -837,7 +854,7 @@ average MSY.
 
 }
 
-\caption{Maximum sustainable yield along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.}\label{fig:MSY with variable patches and stochasticity}
+\caption{Maximum surplus production along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches and stochasticity.}\label{fig:MSY with variable patches and stochasticity}
 \end{figure}
 
 \hypertarget{msy-with-variable-patches-and-spatio-temporally-correlated-stochasticity}{%
@@ -855,7 +872,7 @@ spatial-temporal correlations in stochastic recruitment affects the
 
 }
 
-\caption{Maximum sustainable yield along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.}\label{fig:MSY with variable patches and space-time stochasticity}
+\caption{Maximum surplus production along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment stochasticity and variable patches.}\label{fig:MSY with variable patches and space-time stochasticity}
 \end{figure}
 
 \hypertarget{general-patterns-in-the-risk-of-hysteresis-state-shifts}{%
