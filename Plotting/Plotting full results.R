@@ -1,6 +1,8 @@
 results <- readRDS("Simulations/results2019-06-30.rds")
 scenarios <- readRDS("Simulations/scenarios2019-06-30.rds")
 
+results$StateShift <- ((1-results$recovered)+(1-results$longOcc))/2
+results$RecoveryRate <- exp(-results$recovery/NyrsPost)
 NaNsims <- which(apply(apply(results[,-(1:8)],2,is.nan),1,any))
 
 results[NaNsims,]
@@ -35,6 +37,14 @@ source("Functions/some functions.R")
 source("Functions/Metapop function.R")
 source("Functions/popDynFn.R")
 source("Functions/Add landscapes plot.R")
+
+dist_colours <- c("blue","dodgerblue","orange")
+plot(results$RecoveryRate,results$longOcc,pch=21,bg=dist_colours[results$disturbance],xlab="Recovery rate (yr-1)",ylab="Patch occupancy (25 years)")
+plot(results$RecoveryRate,results$longMSY,pch=21,bg=dist_colours[results$disturbance],xlab="Recovery rate (yr-1)",ylab="Maximum surplus production (25 years)")
+plot(results$RecoveryRate,results$long_compensation,pch=21,bg=dist_colours[results$disturbance],xlab="Recovery rate (yr-1)",ylab="Compensation ratio (25 years)")
+plot(results$RecoveryRate,results$recovered,pch=21,bg=dist_colours[results$disturbance],xlab="Recovery rate (yr-1)",ylab="Recovered")
+
+boxplot(longCV~stochastic+disturbance,data=results[results$spatial==scenarios$spatial[1] & results$temporal==scenarios$temporal[1],],col=dist_colours[results$disturbance],xlab="Stochasticity",ylab="Recovery rate (yr-1)")
 
 matLayout <- matrix(0,nrow=16,ncol=16)
 matLayout[1:8,1:8] <- 1

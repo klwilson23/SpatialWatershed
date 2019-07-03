@@ -8,12 +8,6 @@ author: |
  | $^2$Fisheries & Oceans Canada
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
-  html_document:
-    pandoc_args:
-    - --biblio
-    - Metapop_references.bib
-    - --csl
-    - methods-in-ecology-and-evolution.csl
   pdf_document:
     pandoc_args:
     - --biblio
@@ -23,6 +17,12 @@ output:
     keep_tex: true
     includes:  
       in_header: preamble-latex.tex
+  html_document:
+    pandoc_args:
+    - --biblio
+    - Metapop_references.bib
+    - --csl
+    - methods-in-ecology-and-evolution.csl
   fig_caption: yes
   fontsize: 12pt
   highlight: tango

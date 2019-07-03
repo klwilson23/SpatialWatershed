@@ -105,7 +105,7 @@
 \usepackage{titling}
 
 % Create subtitle command for use in maketitle
-\newcommand{\subtitle}[1]{
+\providecommand{\subtitle}[1]{
   \posttitle{
     \begin{center}\large#1\end{center}
     }
@@ -126,7 +126,7 @@ Doug Braun\(^2\)\\
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{02 July 2019}
+    \date{03 July 2019}
 
 \usepackage{wrapfig}
 \usepackage{lipsum}
@@ -146,11 +146,12 @@ Doug Braun\(^2\)\\
 \subsubsection{Local \& metapopulation
 dynamics}\label{local-metapopulation-dynamics}}
 
-Our metapopulation is defined by a set of local populations \(N_p\) with
-time-dynamics that follows birth (i.e., recruitment \emph{R}),
-immigration, death, and emigration (BIDE) processes:
+Our metapopulation is defined by a set of local populations \(N_p\) for
+a species with a one year generation time with time-dynamics that
+follows birth (i.e., recruitment \emph{R}), immigration, death, and
+emigration (BIDE) processes:
 
-\(N_{it}= R_{it}\epsilon_{it}+I_{it}-D_{it}-E_{it}\)
+\(N_{i{t+1}}= R_{it}\epsilon_{it}+I_{it}-D_{it}-E_{it}\)
 
 where \(N_{it+1}\) is the number of adults in patch \emph{i} at time
 \emph{t}, \(R_{it}\) is number of recruits, \(I_{it}\) is number of
@@ -176,8 +177,9 @@ Local patch recruitment at time \emph{t} depended on adult densities at
 where \(\alpha_i\) is the recruitment compensation ratio and \(\beta_i\)
 is local patch carrying capacity.
 
-For example, in a two patch model that varies \(\alpha_i\) and
-\(\beta_i\) parameters such that
+Management often monitors metapopulation resources as the aggregate of
+all local populations. For example, take a two patch metapopulation
+model that varies \(\alpha_i\) and \(\beta_i\) parameters where:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -186,14 +188,13 @@ For example, in a two patch model that varies \(\alpha_i\) and
 \end{Highlighting}
 \end{Shaded}
 
-Management often monitors metapopulation resources as the aggregate of
-all local populations. In this way, recruitment compensation from local
-patches \(\alpha_i\) gets averaged across the metapopulation leading to
-a mean compensation \(\bar{\alpha}\) of 3. Likewise, the total carrying
-capacity of the metapopulation \(\bar{\beta}\) becomes the summation of
-local patch carrying capacities \(\sum\beta_i\), which is 300. This
-scale of monitoring generates the following local patch and
-metapopulation dynamics:
+Here, recruitment compensation from local patches \(\alpha_i\) gets
+averaged across the metapopulation leading to an average compensation
+ratio \(\bar{\alpha}\) of 3. Likewise, the total carrying capacity of
+the metapopulation \(\bar{\beta}\) becomes the summation of local patch
+carrying capacities \(\sum\beta_i\), which is 300. This scale of
+monitoring generates the following local patch and metapopulation
+dynamics:
 
 \begin{figure}[H]
 
@@ -215,15 +216,15 @@ another. We followed some classic metapopulation and source-sink
 arrangements to create four networks that generalize across a few
 real-world topologies: a linear habitat network (e.g., coastline), a
 dendritic or branching network (e.g., coastal rivers), a star network
-(e.g., mountain \& valley), and a complex network (e.g., terrestrial
-plants).
+(e.g., mountain \& valley, or lake with inlet tributaries), and a
+complex network (e.g., terrestrial plants).
 
 To make networks comparable, each spatial network type needs the same
-leading parameters (e.g., \(N_p\) and \(\bar{d}\)) . In this case for
-number of patches, we set \(N_p\) to \texttt{16} and \(\bar{d}\) to
-\texttt{1} unit (distance units are arbitrary). We used the
-\texttt{igraph} package and some custom code to arrange our spatial
-networks as the following:
+leading parameters (e.g., number of patches \(N_p\) and mean distance
+between neighboring patches \(\bar{d}\)). In this case, we set \(N_p\)
+to \texttt{16} and \(\bar{d}\) to \texttt{1} unit (distance units are
+arbitrary). We used the \texttt{igraph} package and some custom code to
+arrange our spatial networks as the following:
 
 \begin{figure}[H]
 
@@ -630,12 +631,12 @@ of the above outcomes.
     across all patches.
   \item
     \emph{localized, random} - random individuals removed from randomly
-    selected subset of patches (as long as target loss can be achieved
-    in subset)
+    selected subset of patches (as long as the target individuals lost
+    in the metapopulation can be achieved in that subset of patches)
   \item
     \emph{localized, extirpation} - total extirpation of randomly
-    selected subset of patches (as long as target loss can be achieved
-    in subset)
+    selected subset of patches (as long as the target individuals lost
+    in the metapopulation can be achieved in that subset of patches)
   \end{enumerate}
 \item
   Density-independent dispersal rates \(\omega\) from 0 to 20\% of
@@ -725,25 +726,27 @@ bootstrap}\label{simulation-test-bootstrap}}
 
 We now show some general patterns in how variable patch demographic
 rates, network structure, dispersal, disturbance, recruitment
-stochasticity, and spatio-temporal correlations variation effects
+stochasticity, and spatio-temporal correlations variation affects
 metapopulation \emph{recovery rates}, \emph{maximum sustainable yield}
 (i.e., analagous to the maximum rate of loss the system can sustain),
 and \emph{coefficient of variation} across patches.
 
 First, lets show recovery rates for a scenario where (1) patches have
-the same local productivities, (2) patches have the same local carrying
-capacities, (3) recruitment is deterministic, (4) there is no spatial
-correlation in recruitment, and (5) there is no temporal correlations in
-recruitment.
+the same local productivities and carrying capacities, (2) patches have
+different productivities and carrying capacities, (3) recruitment is
+deterministic and patches are different, (4) there spatial-temporal
+correlation in stochastic recruitment.
 
 Below, we can see three main effects on recovery rates (number of
-generations to reach recovery). First, recovery exponentially slows with
+generations to reach recovery). First, recovery gets faster with
 increased dispersal. Most of the action here takes place at low rates of
 dispersal indicating most spatial topologies don't need much dispersal
-to quicken their recovery. Second, more localized disturbances regimes
-lead to slower recovery. Third, linearized networks have slower recovery
-times than interconnected, complex networks suggesting that rescue
-effects take some time to cascade through the entire network of patches.
+to quicken their recovery. In preliminary runs, dispersal rates of
+\texttt{0.05-0.2} provided similar recovery patterns. Second, more
+localized disturbances regimes lead to slower recovery. Third,
+linearized networks have slower recovery times than interconnected,
+complex networks suggesting that rescue effects take some time to
+cascade through the entire network of patches.
 
 \begin{figure}[H]
 
@@ -753,13 +756,13 @@ effects take some time to cascade through the entire network of patches.
 
 \caption{Recovery rates along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients without stochasticity.}\label{fig:general results}
 \end{figure}
+\newpage
 
 Now, lets show recovery rates for the same scenario with deterministic
 recruitment but allowing for patches to vary in productivity and
 carrying capacity. In addition to the same three main effects of
 dispersal, network, and disturbance noted above, we also see variable
-patch productivities substantially slows recovery times across all
-scenarios.
+patch productivities slows recovery across all scenarios.
 
 \begin{figure}[H]
 
@@ -769,6 +772,7 @@ scenarios.
 
 \caption{Recovery rates along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable local productivity and carrying capacities.}\label{fig:results for variables patches}
 \end{figure}
+\newpage
 
 Now, lets show recovery rates for the same scenario but allowing for
 recruitment to be stochastic (but patches are the same in demography).
@@ -785,6 +789,7 @@ quickens recovery for extreme local disturbance.
 
 \caption{Recovery rates along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with stochasticity.}\label{fig:stochastic recruitment}
 \end{figure}
+\newpage
 
 Now, lets show recovery rates for the same scenarios but with spatial
 and temporal correlations in recruitment stochasticity. In addition to
@@ -800,6 +805,7 @@ recovery times for extreme localized disturbance.
 
 \caption{Recovery rates along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment variation.}\label{fig:spatiotemporal correlation}
 \end{figure}
+\newpage
 
 \hypertarget{general-patterns-in-msy}{%
 \paragraph{General patterns in MSY}\label{general-patterns-in-msy}}
@@ -816,6 +822,23 @@ against the same disturbance regime as the sum of each patch
 independently. In other words, is the metapopulation more, less, or
 equal to the sum of its parts.
 
+We will show 10-year MSY patterns for a scenario where (1) patches have
+the same local productivities and carrying capacities, (2) patches have
+different productivities and carrying capacities, (3) recruitment is
+deterministic and patches are different, (4) there spatial-temporal
+correlation in stochastic recruitment.
+
+Below, we can see three main effects on recovery rates (number of
+generations to reach recovery). First, recovery gets faster with
+increased dispersal. Most of the action here takes place at low rates of
+dispersal indicating most spatial topologies don't need much dispersal
+to quicken their recovery. In preliminary runs, dispersal rates of
+\texttt{0.05-0.2} provided similar recovery patterns. Second, more
+localized disturbances regimes lead to slower recovery. Third,
+linearized networks have slower recovery times than interconnected,
+complex networks suggesting that rescue effects take some time to
+cascade through the entire network of patches.
+
 \begin{figure}[H]
 
 {\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_makeHTML_files/figure-latex/MSY-1} 
@@ -824,6 +847,8 @@ equal to the sum of its parts.
 
 \caption{Maximum surplus production along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with deterministic recruitment and the same patches.}\label{fig:MSY}
 \end{figure}
+
+\newpage
 
 \hypertarget{msy-with-variable-patches}{%
 \subparagraph{MSY with variable
@@ -840,6 +865,7 @@ average MSY.
 
 \caption{Maximum surplus production along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.}\label{fig:MSY with variable patches}
 \end{figure}
+\newpage
 
 \hypertarget{msy-with-variable-patches-and-stochasticity}{%
 \subparagraph{MSY with variable patches and
@@ -856,6 +882,7 @@ average MSY.
 
 \caption{Maximum surplus production along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches and stochasticity.}\label{fig:MSY with variable patches and stochasticity}
 \end{figure}
+\newpage
 
 \hypertarget{msy-with-variable-patches-and-spatio-temporally-correlated-stochasticity}{%
 \subparagraph{MSY with variable patches, and spatio-temporally
@@ -874,6 +901,8 @@ spatial-temporal correlations in stochastic recruitment affects the
 
 \caption{Maximum surplus production along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment stochasticity and variable patches.}\label{fig:MSY with variable patches and space-time stochasticity}
 \end{figure}
+
+\newpage
 
 \hypertarget{general-patterns-in-the-risk-of-hysteresis-state-shifts}{%
 \paragraph{General patterns in the risk of hysteresis \& state
