@@ -75,11 +75,11 @@ source("Functions/finding MSY.R")
 
 ## Metapopulation model
 ### Local & metapopulation dynamics
-Our metapopulation is defined by a set of local populations $N_p$ with time-dynamics that follows birth (i.e., recruitment *R*), immigration, death, and emigration (BIDE) processes:
+Our metapopulation is defined by a set of local populations $N_p$ for a species with a one year generation time with time-dynamics that follows birth (i.e., recruitment *R*), immigration, death, and emigration (BIDE) processes:
 
-<center> $N_{it}= R_{it}\epsilon_{it}+I_{it}-D_{it}-E_{it}$ </center>
+<center> $N_{i{t+1}}= R_{it}\epsilon_{it}+I_{it}-D_{it}-E_{it}$ </center>
 
-where $N_{it+1}$ is the number of adults in patch *i* at time *t*, $R_{it}$ is number of recruits, $I_{it}$ is number of recruits immigrating into patch *i* from any other patch, $D_{it}$ is number of recruits that die due to disturbance regime, $E_{it}$ is the number of recruits emigrating from patch *i* into any other patch, and $\epsilon_{it}$ is stochasticity in recruitment.
+where $N_{it+1}$ is the number of adults in patch *i* at time *t*, $R_{it}$ is number of recruits, $I_{it}$ is number of recruits immigrating into patch *i* from any other patch, $D_{it}$ is number of recruits that die due to disturbance regime, $E_{it}$ is the number of recruits emigrating from patch *i* into any other patch, and $\epsilon_{it}$ is stochasticity in recruitment. 
 
 Resoure monitoring often occurs at the scale of the metapopulation, hence we define metapopulation adults as:
 
@@ -95,27 +95,29 @@ $R_{it}=\cfrac{\alpha_iN_{it-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{it-1}}$
 
 where $\alpha_i$ is the recruitment compensation ratio and $\beta_i$ is local patch carrying capacity.
 
-For example, in a two patch model that varies $\alpha_i$ and $\beta_i$ parameters such that
+Management often monitors metapopulation resources as the aggregate of all local populations. In this way, recruitment compensation from local patches $\alpha_i$ gets averaged across the metapopulation leading mean compensation $\bar{\alpha}$ of `r mean(alpha)`. Likewise, the total carrying capacity of the metapopulation $\bar{\beta}$ becomes the summation of local patch carrying capacities $\sum\beta_i$, which is `r sum(beta)`.
+For example, take a two patch model that varies $\alpha_i$ and $\beta_i$ parameters where:
 
 ```{r recruitment}
 alpha <- c(2,4)
 beta <- c(100,200)
 ```
-Management often monitors metapopulation resources as the aggregate of all local populations. In this way, recruitment compensation from local patches $\alpha_i$ gets averaged across the metapopulation leading mean compensation $\bar{\alpha}$ of `r mean(alpha)`. Likewise, the total carrying capacity of the metapopulation $\bar{\beta}$ becomes the summation of local patch carrying capacities $\sum\beta_i$, which is `r sum(beta)`. This scale of monitoring generates the following local patch and metapopulation dynamics:
+Here, the average compensation ratio would be 3 and the total carrying capacity of the population is 300. This scale of monitoring generates the following local
+patch and metapopulation dynamics:
 <br>
 ```{r recruit curves, echo=FALSE,warning = F, message = F,fig.hold=TRUE,fig.width=7, fig.height = 6,fig.cap="Metapopulation and local patch recruitment dynamics.",fig.align="center"}
-curve((alpha[1]*x)/(1+((alpha[1]-1)/beta[1])*x),from=0,to=beta[1],lwd=2,col="orange",xlab="Adults (t-1)",ylab="Recruits (t)",ylim=c(0,sum(beta)),xlim=c(0,sum(beta)))
-curve((alpha[2]*x)/(1+((alpha[2]-1)/beta[2])*x),from=0,to=beta[2],lwd=2,col="dodgerblue",add=TRUE)
-curve((mean(alpha)*x)/(1+((mean(alpha)-1)/sum(beta))*x),from=0,to=sum(beta),lwd=2,col="black",add=TRUE)
+curve((alpha[1]*x)/(1+((alpha[1]-1)/beta[1])*x),from=0,to=1.5*beta[1],lwd=2,col="orange",xlab="Adults (t-1)",ylab="Recruits (t)",ylim=c(0,sum(beta)),xlim=c(0,sum(beta)))
+curve((alpha[2]*x)/(1+((alpha[2]-1)/beta[2])*x),from=0,to=1.5*beta[2],lwd=2,col="dodgerblue",add=TRUE)
+curve((mean(alpha)*x)/(1+((mean(alpha)-1)/sum(beta))*x),from=0,to=1.5*sum(beta),lwd=2,col="black",add=TRUE)
 abline(b=1,a=0,lty=2,lwd=2,col="grey50")
 legend("bottomright",c("Patch 1","Patch 2","Metapopulation","Replacement"),bty="n",lwd=2,lty=c(1,1,1,2),col=c("orange","dodgerblue","black","grey50"))
 ```
 <br>
 
 ### Creating the spatial networks
-The next aspect to our metapopulation model is connecting the set of patches to one another. We need to specify the number of patches, their arrangements (i.e., connections), and how far apart they are from one another. We followed some classic metapopulation and source-sink arrangements to create four networks that generalize across a few real-world topologies: a linear habitat network (e.g., coastline), a dendritic or branching network (e.g., coastal rivers), a star network (e.g., mountain & valley), and a complex network (e.g., terrestrial plants). 
+The next aspect to our metapopulation model is connecting the set of patches to one another. We need to specify the number of patches, their arrangements (i.e., connections), and how far apart they are from one another. We followed some classic metapopulation and source-sink arrangements to create four networks that generalize across a few real-world topologies: a linear habitat network (e.g., coastline), a dendritic or branching network (e.g., coastal rivers), a star network (e.g., mountain & valley, or lake with inlet tributaries), and a complex network (e.g., terrestrial plants). 
   
-To make networks comparable, each spatial network type needs the same leading parameters (e.g., $N_p$ and $\bar{d}$) . In this case for number of patches, we set $N_p$ to `16` and $\bar{d}$ to `1` unit (distance units are arbitrary). We used the `igraph` package and some custom code to arrange our spatial networks as the following:
+To make networks comparable, each spatial network type needs the same leading parameters (e.g., number of patches $N_p$ and mean distance between neighboring patches $\bar{d}$). In this case, we set $N_p$ to `16` and $\bar{d}$ to `1` unit (distance units are arbitrary). We used the `igraph` package and some custom code to arrange our spatial networks as the following:
 
 <br>
 ```{r networks, echo=FALSE,fig.hold=TRUE,fig.width=5, fig.height = 5,fig.cap="Four spatial network topologies.",fig.align="center"}
@@ -444,8 +446,8 @@ We tested all combinations of the following eight proccesses (below) and ran a `
 
 3. Disturbances where a proportion of individuals removed from metapopulation (e.g., `0.90`) occurs.
     a. *uniform* - random individuals removed at equal vulnerability across all patches.
-    b. *localized, random* - random individuals removed from randomly selected subset of patches (as long as target loss can be achieved in subset)
-    c. *localized, extirpation* - total extirpation of randomly selected subset of patches (as long as target loss can be achieved in subset)
+    b. *localized, random* - random individuals removed from randomly selected subset of patches (as long as the target individuals lost in the metapopulation can be achieved in that subset of patches)
+    c. *localized, extirpation* - total extirpation of randomly selected subset of patches (as long as the target individuals lost in the metapopulation can be achieved in that subset of patches)
 
 4. Density-independent dispersal rates $\omega$ from 0 to 20% of individuals within a patch will disperse.
 
@@ -490,11 +492,11 @@ dendriticSim3 <- metaPop(Npatches=16,networkType="dendritic",patchDistance=1,Nbu
 ## Simulation test & bootstrap
 
 ### General patterns
-We now show some general patterns in how variable patch demographic rates, network structure, dispersal, disturbance, recruitment stochasticity, and spatio-temporal correlations variation effects metapopulation *recovery rates*, *maximum sustainable yield* (i.e., analagous to the maximum rate of loss the system can sustain), and *coefficient of variation* across patches.
+We now show some general patterns in how variable patch demographic rates, network structure, dispersal, disturbance, recruitment stochasticity, and spatio-temporal correlations variation affects metapopulation *recovery rates*, *maximum sustainable yield* (i.e., analagous to the maximum rate of loss the system can sustain), and *coefficient of variation* across patches.
 
 First, lets show recovery rates for a scenario where (1) patches have the same local productivities, (2) patches have the same local carrying capacities, (3) recruitment is deterministic, (4) there is no spatial correlation in recruitment, and (5) there is no temporal correlations in recruitment.
 
-Below, we can see three main effects on recovery rates (number of generations to reach recovery). First, recovery exponentially slows with increased dispersal. Most of the action here takes place at low rates of dispersal indicating most spatial topologies don't need much dispersal to quicken their recovery. Second, more localized disturbances regimes lead to slower recovery. Third, linearized networks have slower recovery times than interconnected, complex networks suggesting that rescue effects take some time to cascade through the entire network of patches.
+Below, we can see three main effects on recovery rates (number of generations to reach recovery). First, recovery gets faster with increased dispersal. Most of the action here takes place at low rates of dispersal indicating most spatial topologies don't need much dispersal to quicken their recovery. In preliminary runs, dispersal rates of `0.05-0.2` provided similar recovery patterns. Second, more localized disturbances regimes lead to slower recovery. Third, linearized networks have slower recovery times than interconnected, complex networks suggesting that rescue effects take some time to cascade through the entire network of patches.
 
 ```{r general results, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Recovery rates along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients without stochasticity.",fig.align="center"}
 results <- readRDS("Simulations/results2019-06-30.rds")
@@ -699,6 +701,10 @@ plot(network$landscape,vertex.color="grey",layout=spatialLayout,vertex.size=netw
 ##### MSY with deterministic recruitment where patches are the same
 
 We now show similar patterns in how maximum sustainable yield (MSY) of the whole metapopulation shifts in the first 10 years post-disturbance compared to the sum of MSY for each patch. A value of 1.0 would indicate that the disturbed metapopulation can sustain itselfs against the same disturbance regime as the sum of each patch independently. In other words, is the metapopulation more, less, or equal to the sum of its parts.
+
+We will show 10-year MSY patterns for a scenario where (1) patches have the same local productivities, (2) patches have the same local carrying capacities, (3) recruitment is deterministic, (4) there is no spatial correlation in recruitment, and (5) there is no temporal correlations in recruitment.
+
+Below, we can see three main effects on recovery rates (number of generations to reach recovery). First, recovery gets faster with increased dispersal. Most of the action here takes place at low rates of dispersal indicating most spatial topologies don't need much dispersal to quicken their recovery. In preliminary runs, dispersal rates of `0.05-0.2` provided similar recovery patterns. Second, more localized disturbances regimes lead to slower recovery. Third, linearized networks have slower recovery times than interconnected, complex networks suggesting that rescue effects take some time to cascade through the entire network of patches.
 
 ```{r MSY, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Maximum sustainable yield along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment variation.",fig.align="center"}
 layout(matLayout)
