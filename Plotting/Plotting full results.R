@@ -1,8 +1,6 @@
 results <- readRDS("Simulations/results2019-06-30.rds")
 scenarios <- readRDS("Simulations/scenarios2019-06-30.rds")
 
-results$StateShift <- ((1-results$recovered)+(1-results$longOcc))/2
-results$RecoveryRate <- exp(-results$recovery/NyrsPost)
 NaNsims <- which(apply(apply(results[,-(1:8)],2,is.nan),1,any))
 
 results[NaNsims,]
@@ -26,6 +24,8 @@ metaK <- 1600
 magnitude_of_decline <- 0.9
 # what is the lag time between recruits and spawners
 lagTime <- 1
+results$StateShift <- ((1-results$recovered)+(1-results$longOcc))/2
+results$RecoveryRate <- 1-results$recovery/NyrsPost
 
 library(mvtnorm)
 
@@ -38,12 +38,20 @@ source("Functions/Metapop function.R")
 source("Functions/popDynFn.R")
 source("Functions/Add landscapes plot.R")
 
-dist_colours <- c("blue","dodgerblue","orange")
-plot(results$RecoveryRate,results$longOcc,pch=21,bg=dist_colours[results$disturbance],xlab="Recovery rate (yr-1)",ylab="Patch occupancy (25 years)")
-plot(results$RecoveryRate,results$longMSY,pch=21,bg=dist_colours[results$disturbance],xlab="Recovery rate (yr-1)",ylab="Maximum surplus production (25 years)")
-plot(results$RecoveryRate,results$long_compensation,pch=21,bg=dist_colours[results$disturbance],xlab="Recovery rate (yr-1)",ylab="Compensation ratio (25 years)")
-plot(results$RecoveryRate,results$recovered,pch=21,bg=dist_colours[results$disturbance],xlab="Recovery rate (yr-1)",ylab="Recovered")
+dist_colours <- c("tomato","dodgerblue","orange")
 
+plotColours <- ifelse(results$dispersal==0,
+                           adjustcolor(dist_colours[results$disturbance],1,offset=c(-0.35,-0.35,-0.35,0)),
+                           adjustcolor(dist_colours[results$disturbance],1))
+tiff("Figures/Disturbance impacts on recovery regime.tiff",compression="lzw",units="in",height=8,width=8,res=800)
+layout(matrix(1:4,nrow=2,ncol=2,byrow=TRUE))
+par(mar=c(4,4,0.5,0.5))
+plot(results$RecoveryRate,results$longOcc,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Patch occupancy")
+plot(results$RecoveryRate,results$longMSY,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Surplus production")
+plot(results$longMSY,results$longOcc,pch=21,bg=plotColours,xlab="Surplus production",ylab="Patch occupancy")
+plot(results$RecoveryRate,results$recovered,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Recovered")
+legend("bottomright",c("Uniform","Local, random","Local, extirpation"),pch=21,pt.bg=dist_colours,bty="n",title="Disturbance regime")
+dev.off()
 boxplot(longCV~stochastic+disturbance,data=results[results$spatial==scenarios$spatial[1] & results$temporal==scenarios$temporal[1],],col=dist_colours[results$disturbance],xlab="Stochasticity",ylab="Recovery rate (yr-1)")
 
 matLayout <- matrix(0,nrow=16,ncol=16)
@@ -58,7 +66,6 @@ matLayout[9:11,14:16] <- 8
 
 layout(matLayout)
 par(mar=c(5,4,1,1))
-dist_colours <- c("blue","dodgerblue","orange")
 for(i in 1:length(scenarios$network))
 {
   subResults <- results[results$network==scenarios$network[i] & 
@@ -77,7 +84,6 @@ add2plot()
 
 layout(matLayout)
 par(mar=c(5,4,1,1))
-dist_colours <- c("blue","dodgerblue","orange")
 for(i in 1:length(scenarios$network))
 {
   subResults <- results[results$network==scenarios$network[i] & 
@@ -96,7 +102,6 @@ add2plot()
 
 layout(matLayout)
 par(mar=c(5,4,1,1))
-dist_colours <- c("blue","dodgerblue","orange")
 for(i in 1:length(scenarios$network))
 {
   subResults <- results[results$network==scenarios$network[i] & 
@@ -115,7 +120,6 @@ add2plot()
 
 layout(matLayout)
 par(mar=c(5,4,1,1))
-dist_colours <- c("blue","dodgerblue","orange")
 for(i in 1:length(scenarios$network))
 {
   subResults <- results[results$network==scenarios$network[i] & 
@@ -136,7 +140,6 @@ add2plot()
 # MSY
 layout(matLayout)
 par(mar=c(5,4,1,1))
-dist_colours <- c("blue","dodgerblue","orange")
 for(i in 1:length(scenarios$network))
 {
   subResults <- results[results$network==scenarios$network[i] & 
@@ -156,7 +159,6 @@ add2plot()
 # MSY
 layout(matLayout)
 par(mar=c(5,4,1,1))
-dist_colours <- c("blue","dodgerblue","orange")
 for(i in 1:length(scenarios$network))
 {
   subResults <- results[results$network==scenarios$network[i] & 
@@ -176,7 +178,6 @@ add2plot()
 # MSY
 layout(matLayout)
 par(mar=c(5,4,1,1))
-dist_colours <- c("blue","dodgerblue","orange")
 for(i in 1:length(scenarios$network))
 {
   subResults <- results[results$network==scenarios$network[i] & 
@@ -196,7 +197,6 @@ add2plot()
 # MSY
 layout(matLayout)
 par(mar=c(5,4,1,1))
-dist_colours <- c("blue","dodgerblue","orange")
 for(i in 1:length(scenarios$network))
 {
   subResults <- results[results$network==scenarios$network[i] & 
@@ -216,7 +216,6 @@ add2plot()
 # MSY
 layout(matLayout)
 par(mar=c(5,4,1,1))
-dist_colours <- c("blue","dodgerblue","orange")
 for(i in 1:length(scenarios$network))
 {
   subResults <- results[results$network==scenarios$network[i] & 
@@ -236,7 +235,6 @@ add2plot()
 # Capacity
 layout(matLayout)
 par(mar=c(5,4,1,1))
-dist_colours <- c("blue","dodgerblue","orange")
 for(i in 1:length(scenarios$network))
 {
   subResults <- results[results$network==scenarios$network[i] & 
@@ -256,7 +254,6 @@ add2plot()
 # Compensation
 layout(matLayout)
 par(mar=c(5,4,1,1))
-dist_colours <- c("blue","dodgerblue","orange")
 for(i in 1:length(scenarios$network))
 {
   subResults <- results[results$network==scenarios$network[i] & 
@@ -276,7 +273,6 @@ add2plot()
 # Occupancy
 layout(matLayout)
 par(mar=c(5,4,1,1))
-dist_colours <- c("blue","dodgerblue","orange")
 for(i in 1:length(scenarios$network))
 {
   subResults <- results[results$network==scenarios$network[i] & 

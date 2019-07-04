@@ -105,7 +105,7 @@
 \usepackage{titling}
 
 % Create subtitle command for use in maketitle
-\newcommand{\subtitle}[1]{
+\providecommand{\subtitle}[1]{
   \posttitle{
     \begin{center}\large#1\end{center}
     }
@@ -126,7 +126,7 @@ Doug Braun\(^2\)\\
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{03 July 2019}
+    \date{04 July 2019}
 
 \usepackage{wrapfig}
 \usepackage{lipsum}
@@ -767,7 +767,7 @@ cascade through the entire network of patches.
 
 }
 
-\caption{Recovery rates along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients without stochasticity.}\label{fig:general results}
+\caption{Recovery rates along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients without stochasticity.}\label{fig:general results}
 \end{figure}
 \newpage
 
@@ -783,7 +783,7 @@ patch productivities slows recovery across all scenarios.
 
 }
 
-\caption{Recovery rates along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable local productivity and carrying capacities.}\label{fig:results for variables patches}
+\caption{Recovery rates along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with variable local productivity and carrying capacities.}\label{fig:results for variables patches}
 \end{figure}
 \newpage
 
@@ -800,7 +800,7 @@ quickens recovery for extreme local disturbance.
 
 }
 
-\caption{Recovery rates along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with stochasticity.}\label{fig:stochastic recruitment}
+\caption{Recovery rates along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with stochasticity.}\label{fig:stochastic recruitment}
 \end{figure}
 \newpage
 
@@ -816,7 +816,7 @@ recovery times for extreme localized disturbance.
 
 }
 
-\caption{Recovery rates along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment variation.}\label{fig:spatiotemporal correlation}
+\caption{Recovery rates along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment variation.}\label{fig:spatiotemporal correlation}
 \end{figure}
 \newpage
 
@@ -858,7 +858,7 @@ cascade through the entire network of patches.
 
 }
 
-\caption{Maximum surplus production along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with deterministic recruitment and the same patches.}\label{fig:MSY}
+\caption{Maximum surplus production along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with deterministic recruitment and the same patches.}\label{fig:MSY}
 \end{figure}
 
 \newpage
@@ -876,7 +876,7 @@ average MSY.
 
 }
 
-\caption{Maximum surplus production along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.}\label{fig:MSY with variable patches}
+\caption{Maximum surplus production along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.}\label{fig:MSY with variable patches}
 \end{figure}
 \newpage
 
@@ -893,7 +893,7 @@ average MSY.
 
 }
 
-\caption{Maximum surplus production along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches and stochasticity.}\label{fig:MSY with variable patches and stochasticity}
+\caption{Maximum surplus production along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with variable patches and stochasticity.}\label{fig:MSY with variable patches and stochasticity}
 \end{figure}
 \newpage
 
@@ -912,7 +912,7 @@ spatial-temporal correlations in stochastic recruitment affects the
 
 }
 
-\caption{Maximum surplus production along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment stochasticity and variable patches.}\label{fig:MSY with variable patches and space-time stochasticity}
+\caption{Maximum surplus production along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment stochasticity and variable patches.}\label{fig:MSY with variable patches and space-time stochasticity}
 \end{figure}
 
 \newpage
@@ -936,14 +936,14 @@ metapopulation after \(100\) generations post-disturbance.
 
 }
 
-\caption{Risk of state shift after 100 generations along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment variation.}\label{fig:Recovery}
+\caption{Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment variation.}\label{fig:Recovery}
 \end{figure}
 
 \hypertarget{lack-of-recovery-with-variable-patches}{%
 \subparagraph{Lack of recovery with variable
 patches}\label{lack-of-recovery-with-variable-patches}}
 
-Now, we illustrate how variable patch demography affects the risk of
+Now, we illustrate how variable patch demography affects the risk of a
 state shift.
 
 \begin{figure}[H]
@@ -952,7 +952,7 @@ state shift.
 
 }
 
-\caption{Risk of state shift after 100 generations along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.}\label{fig:unrecovered with variable patches}
+\caption{Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.}\label{fig:unrecovered with variable patches}
 \end{figure}
 
 \hypertarget{state-shifts-with-variable-patches-and-stochasticity}{%
@@ -968,7 +968,7 @@ recruitment affects the risk of state shift.
 
 }
 
-\caption{Risk of state shift after 100 generations along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches and stochastic recruitment.}\label{fig:state shift with variable patches and stochasticity}
+\caption{Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with variable patches and stochastic recruitment.}\label{fig:state shift with variable patches and stochasticity}
 \end{figure}
 
 \hypertarget{state-shifts-with-variable-patches-and-spatio-temporally-correlated-stochasticity}{%
@@ -986,7 +986,7 @@ risk of a state shift.
 
 }
 
-\caption{Risk of state shift (lack of recovery or spatial contraction) after 100 generations along dispersal, disturbance (blue - uniform; light blue - localized, random; orange - localized, extirpation), and network gradients with variable patches, and spatial-temporal correlations in stochastic recruitment.}\label{fig:state shifts with variable patches and space-time stochasticity}
+\caption{Risk of state shift (lack of recovery or spatial contraction) after 100 generations along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with variable patches, and spatial-temporal correlations in stochastic recruitment.}\label{fig:state shifts with variable patches and space-time stochasticity}
 \end{figure}
 
 
