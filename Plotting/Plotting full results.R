@@ -1,5 +1,3 @@
-v_all.equal <- Vectorize(function(x, y) {isTRUE(all.equal(x, y))})
-
 results <- readRDS("Simulations/results2019-06-30.rds")
 scenarios <- readRDS("Simulations/scenarios2019-06-30.rds")
 
@@ -40,11 +38,6 @@ source("Functions/Metapop function.R")
 source("Functions/popDynFn.R")
 source("Functions/Add landscapes plot.R")
 
-findHull <- function(df,x,y)
-{
-  df[chull(df[,x],df[,y]),c(x,y)]
-}
-
 dist_colours <- c("tomato","dodgerblue","orange")
 transparency <- 0.6
 plotColours <- ifelse(results$dispersal==0,
@@ -54,16 +47,16 @@ plotColours <- ifelse(results$dispersal==0,
 tiff("Figures/Disturbance impacts on recovery regime polygon.tiff",compression="lzw",units="in",height=8,width=8,res=800)
 layout(matrix(1:4,nrow=2,ncol=2,byrow=TRUE))
 par(mar=c(4,4,0.5,0.5))
-plot(results$RecoveryRate,results$longOcc,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Patch occupancy")
+plot(results$RecoveryRate,results$longOcc,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Patch occupancy (25 years)")
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="longOcc"),col=adjustcolor(dist_colours[z],transparency))}))
 
-plot(results$RecoveryRate,results$longMSY,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Surplus production")
+plot(results$RecoveryRate,results$longMSY,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Surplus production (25 years)")
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="longMSY"),col=adjustcolor(dist_colours[z],transparency))}))
 
-plot(results$longMSY,results$longOcc,pch=21,bg=plotColours,xlab="Surplus production",ylab="Patch occupancy")
+plot(results$longMSY,results$longOcc,pch=21,bg=plotColours,xlab="Surplus production (25 years)",ylab="Patch occupancy (25 years)")
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="longMSY",y="longOcc"),col=adjustcolor(dist_colours[z],transparency))}))
 
-plot(results$RecoveryRate,results$recovered,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Recovered")
+plot(results$RecoveryRate,results$recovered,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Recovered (% of simulations)")
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="recovered"),col=adjustcolor(dist_colours[z],transparency))}))
 
 legend("bottomright",c("Uniform","Local, random","Local, extirpation"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime")
@@ -115,7 +108,7 @@ for(i in 1:length(scenarios$network))
 }
 add2plot()
 
-tiff("Figures/Recovery along variable local productivities.tiff",compression="lzw",units="in",height=6,width=6,res=800)
+tiff("Figures/Recovery along variable local productivities.tiff",compression="lzw",units="in",height=4,width=4,res=800)
 layout(1)
 par(mar=c(5,4,1,1))
 vioplot(recovery~alpha,data=results,ylim=range(c(0,results$recovery)),drawRect=FALSE,col=c("orange","dodgerblue"),xlab="Local productivity",ylab="Recovery (generations)")

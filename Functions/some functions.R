@@ -164,3 +164,9 @@ spatialRecoveryPlotv2 <- function(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recov
   }
 }
 
+v_all.equal <- Vectorize(function(x, y) {isTRUE(all.equal(x, y))})
+
+findHull <- function(df,x,y)
+{
+  df[chull(df[,x],df[,y]),c(x,y)]
+}

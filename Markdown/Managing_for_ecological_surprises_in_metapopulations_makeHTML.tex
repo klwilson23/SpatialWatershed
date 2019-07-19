@@ -105,7 +105,7 @@
 \usepackage{titling}
 
 % Create subtitle command for use in maketitle
-\providecommand{\subtitle}[1]{
+\newcommand{\subtitle}[1]{
   \posttitle{
     \begin{center}\large#1\end{center}
     }
@@ -126,12 +126,13 @@ Doug Braun\(^2\)\\
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{04 July 2019}
+    \date{18 July 2019}
 
 \usepackage{wrapfig}
 \usepackage{lipsum}
 \usepackage{float}
 \usepackage{lineno}
+\usepackage{amsmath}
 \linenumbers
 \renewcommand{\thefigure}{S\arabic{figure}}
 \renewcommand{\thetable}{S\arabic{table}}
@@ -149,9 +150,12 @@ dynamics}\label{local-metapopulation-dynamics}}
 Our metapopulation is defined by a set of local populations \(N_p\) for
 a species with a one year generation time with time-dynamics that
 follows birth (i.e., recruitment \emph{R}), immigration, death, and
-emigration (BIDE) processes:
+emigration (BIDE) processes typical to metapopulation theory (Hanski
+1998):
 
-\(N_{i{t+1}}= R_{it}\epsilon_{it}+I_{it}-D_{it}-E_{it}\)
+\begin{align}
+N_{i{t+1}}= R_{it}\epsilon_{it}+I_{it}-D_{it}-E_{it}
+\end{align}
 
 where \(N_{it+1}\) is the number of adults in patch \emph{i} at time
 \emph{t}, \(R_{it}\) is number of recruits, \(I_{it}\) is number of
@@ -160,19 +164,25 @@ recruits immigrating into patch \emph{i} from any other patch,
 \(E_{it}\) is the number of recruits emigrating from patch \emph{i} into
 any other patch, and \(\epsilon_{it}\) is stochasticity in recruitment.
 
-Resoure monitoring often occurs at the scale of the metapopulation,
-hence we define metapopulation adults as:
+Resoure monitoring often occurs at the scale of the metapopulation
+(Anderson \emph{et al.} 2015), hence we define metapopulation adults as:
 
-\({MN}_t = \sum_{i=1}^{N_p} N_{it}\)
+\begin{align}
+{MN}_t = \sum_{i=1}^{N_p} N_{it}
+\end{align}
 
 with metapopulation recruits:
 
-\(MR_t = \sum_{i=1}^{N_p} R_{it}\)
+\begin{align}
+MR_t = \sum_{i=1}^{N_p} R_{it}
+\end{align}
 
 Local patch recruitment at time \emph{t} depended on adult densities at
 \emph{t-1} and followed a reparameterized Beverton-Holt function:
 
-\(R_{it}=\cfrac{\alpha_iN_{it-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{it-1}}\)
+\begin{align}
+R_{it}=\cfrac{\alpha_iN_{it-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{it-1}}
+\end{align}
 
 where \(\alpha_i\) is the recruitment compensation ratio and \(\beta_i\)
 is local patch carrying capacity.
@@ -210,21 +220,21 @@ dynamics:
 networks}\label{creating-the-spatial-networks}}
 
 The next aspect to our metapopulation model is connecting the set of
-patches to one another. We need to specify the number of patches, their
-arrangements (i.e., connections), and how far apart they are from one
-another. We followed some classic metapopulation and source-sink
-arrangements to create four networks that generalize across a few
-real-world topologies: a linear habitat network (e.g., coastline), a
-dendritic or branching network (e.g., coastal rivers), a star network
-(e.g., mountain \& valley, or lake with inlet tributaries), and a
-complex network (e.g., terrestrial plants).
+patches to one another (Yeakel \emph{et al.} 2014). We need to specify
+the number of patches, their arrangements (i.e., connections), and how
+far apart they are from one another. We followed some classic
+metapopulation and source-sink arrangements to create four networks that
+generalize across a few real-world topologies: a linear habitat network
+(e.g., coastline), a dendritic or branching network (e.g., coastal
+rivers), a star network (e.g., mountain \& valley, or lake with inlet
+tributaries), and a complex network (e.g., terrestrial plants).
 
 To make networks comparable, each spatial network type needs the same
 leading parameters (e.g., number of patches \(N_p\) and mean distance
 between neighboring patches \(\bar{d}\)). In this case, we set \(N_p\)
 to \texttt{16} and \(\bar{d}\) to \texttt{1} unit (distance units are
-arbitrary). We used the \texttt{igraph} package and some custom code to
-arrange our spatial networks as the following:
+arbitrary). We used the \texttt{igraph} package (Csardi \& Nepusz 2006)
+and some custom code to arrange our spatial networks as the following:
 
 \begin{figure}[H]
 
@@ -237,6 +247,8 @@ arrange our spatial networks as the following:
 
 Note that distances between neighbor patches in the above networks are
 equal.
+
+\newpage
 
 An example dispersal matrix for the complex network:
 
@@ -267,16 +279,20 @@ Dispersal from patch \emph{i} into patch \emph{j} depends on constant
 dispersal rate \(\omega\) (defined as the proportion of total local
 recruits that will disperse) and an exponential distance-decay function
 between \emph{i} and \emph{j} with distance cost to dispersal \(m\)
-following:
+following Anderson \emph{et al.} (2015):
 
-\(E_{ij(t)}=\omega R_{it}p_{ij}\)
+\begin{align}
+E_{ij(t)}=\omega R_{it}p_{ij}
+\end{align}
 
 where \(E_{ij}\) is the total dispersing animals from patch \emph{i}
 into patch \emph{j} resulting from dispersal rate \(\omega\), total
 number of local recruits \(R_{it}\), and probability of dispersal
 between patches \(p_{ij}\):
 
-\(p_{ij}=\dfrac{e^{-md_{ij}}}{\sum\limits_{\substack{j=1 \\ j\neq i}}^{N_p} e^{-md_{ij}}}\)
+\begin{align}
+p_{ij}=\dfrac{e^{-md_{ij}}}{\sum\limits_{\substack{j=1 \\ j\neq i}}^{N_p} e^{-md_{ij}}}
+\end{align}
 
 where \(d_{ij}\) is the pairwise distance between patches, \(m\) is the
 distance cost to dispersal. The summation term in the denominator
@@ -324,11 +340,15 @@ Our model allowed for stochastic recruitment that followed a lognormal
 distribution with average variation in recruitment of \(\sigma_R\). In
 cases of stochastic recruitment, the expected recruitment:
 
-\(R_{it}=\cfrac{\alpha_iN_{it-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{it-1}}\)
+\begin{align}
+R_{it}=\cfrac{\alpha_iN_{it-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{it-1}}
+\end{align}
 
 becomes:
 
-\(R_{it}=\cfrac{\alpha_iN_{it-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{it-1}}e^{(\epsilon_{it}-\cfrac{ln(\sigma_{R}^2+1)}{2})}\)
+\begin{align}
+R_{it}=\cfrac{\alpha_iN_{it-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{it-1}}e^{(\epsilon_{it}-\cfrac{ln(\sigma_{R}^2+1)}{2})}
+\end{align}
 
 where lognormal deviates for each patch \emph{i} at time \emph{t} are
 drawn from a multivariate normal distribution (\emph{MVN}) If
@@ -339,7 +359,9 @@ model potential common drivers affecting metapopulation dynamics (e.g.,
 Moran effects). Expected recruitment deviates followed a first-order
 autoregression model such that:
 
-\(\epsilon_{it}=\rho_T\epsilon_{t-1}+MVN(\mu=0,\Sigma=\sigma_R(1-\rho_T^2)e^{(-\rho_SD_{ij})})\)
+\begin{align}
+\epsilon_{it}=\rho_T\epsilon_{t-1}+MVN(\mu=0,\Sigma=\sigma_R(1-\rho_T^2)e^{(-\rho_SD_{ij})})
+\end{align}
 
 where \(\rho_T\) is temporal correlation (bounded \(0-1\)) \(\rho_S\) is
 rate of distance-decay in spatial correlation (bounded \(0-\infty\) with
@@ -360,74 +382,55 @@ the same random number generator seed:
 \hypertarget{post-disturbance-outcomes}{%
 \subsection{Post-disturbance outcomes}\label{post-disturbance-outcomes}}
 
-We measured the following post-disturbance outcomes that measure various
-conservation and recovery processes.
+We measured the following post-disturbance outcomes to track the
+temporal and spatial recovery regime of the metapopulation.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
-  Recovered (a) \& recovery rate (b) after disturbance - (a) the number
-  of simulations where metapopulation abundance averaged \texttt{1.0} of
-  the average pre-disturbance abundance for \texttt{5} consecutive years
-  post-disturbance, and (b) the number of years it took to get there.
-\item
-  Extinction (a) \& extinction rate (b) - (a) the number of simulations
-  where metapopulation abundance was \texttt{\textless{}0.05} carrying
-  capacity, and (b) the mean number of years it took to get there.
+  Recovered (a) \& recovery rate (b) after disturbance:
+
+  \begin{enumerate}
+  \def\labelenumii{\alph{enumii}.}
+  \tightlist
+  \item
+    Recovered is defined as the number of simulations where
+    metapopulation abundance averaged \texttt{1.0} of the average
+    pre-disturbance abundance for \texttt{5} consecutive years
+    post-disturbance. This ``recovered rate'' reflects the risk of a
+    long-term state shift in metapopulation dynamics after disturbance
+    in the face of stochasticity.
+  \item
+    Recovery rate the number of years to average pre-disturbance
+    abundance for \texttt{5} consecutive years. The recovery rate
+    (either in the number of generations or in the rate of recovery per
+    year) captures how quickly the aggregate metapopulation recovers
+    from disturbance but doesn't take into account whether any given
+    local patches recover to their pre-disturbance capacity.
+  \end{enumerate}
 \item
   Patch occupancy - the mean number of patches with
-  \texttt{\textgreater{}0.1} local carrying capacity.
+  \texttt{\textgreater{}0.1} local carrying capacity after short-term (5
+  years), medium-term (10 years), and long-term (25 years) after
+  disturbance. This value characterizes the expected risk of spatial
+  contractions or local patch collapses, and reflects how interactions
+  between spatial structure, disturbance, and dispersal shape
+  source-sink dynamics to provide rescue effects and recover local
+  patches.
 \item
-  Spatial variance - the variation in patch abundance across patches
-  within a given window of time.
-
-  \begin{enumerate}
-  \def\labelenumii{\alph{enumii}.}
-  \tightlist
-  \item
-    Within 5 years post-disturbance
-  \item
-    Within 10 years post-disturbance
-  \item
-    Within 25 years post-disturbance
-  \end{enumerate}
-\item
-  Number of populations defined as source, sink, pseudo-sink such that:
-
-  \begin{enumerate}
-  \def\labelenumii{\alph{enumii}.}
-  \tightlist
-  \item
-    Sources provide surplus recruits and net emigrants such that:
-    \((R_{it}>N_{it})\) \& \((E_{it}>I_{it})\)
-  \item
-    Sinks consume recruits and net immigrants such that:
-    \((R_{it} < N_{it})\) \& \((E_{it} < I_{it})\)
-  \item
-    Pseudo-sinks would provide surplus recruits in the absence of
-    dispersal such that \((R_{it}>N_{it})\) but
-    \((R_{it}+E_{it}) < (R_{it-1}+I_{it-1}-E_{it-1})\)
-  \end{enumerate}
-\item
-  Fit stock-recruitment model to aggregate of metapopulation to
-  estimate:
-
-  \begin{enumerate}
-  \def\labelenumii{\alph{enumii}.}
-  \tightlist
-  \item
-    Recruitment compensaton ratio compared to true metapopulation
-    average
-  \item
-    Metapopulation carrying capacities compared to true sum of carrying
-    capacities across metapopulation
-  \item
-    Expected recruitment production to true recruitment production
-    across all patches
-  \item
-    Expected maximum surplus production (we term \emph{MSY}) to true
-    maximum surplus production across all patches
-  \end{enumerate}
+  The ratio of expected maximum surplus production (we term \emph{MSY})
+  to true maximum surplus production summed across all patches from
+  fitted stock-recruitment model to aggregate across metapopulation such
+  that:\\
+  \begin{align}
+  \Delta_{MSY}=\cfrac{\hat{MSY_M}}{\sum_{i=1}^{N_p} MSY_{i}}
+  \end{align}\\
+  A value of 1.0 would indicate that the disturbed metapopulation can
+  sustain itself against the same disturbance regime as the sum of each
+  patch independently. In other words, is the metapopulation more than
+  (\(\Delta_{MSY}\)\textgreater{}1.0), less than
+  (\(\Delta_{MSY}\)\textless{}1.0), or equal to the sum of its parts
+  (\(\Delta_{MSY}\)=1.0).
 \end{enumerate}
 
 \hypertarget{monitoring-management-at-aggregate-scale}{%
@@ -437,20 +440,30 @@ aggregate-scale}\label{monitoring-management-at-aggregate-scale}}
 While true metapopulation dynamics are controlled by local patch
 dynamics and dispersal such that:
 
-\(N_{it}= R_{it}\epsilon_{it}+I_{it}-D_{it}-E_{it}\)
+\begin{align}
+N_{it}= R_{it}\epsilon_{it}+I_{it}-D_{it}-E_{it}
+\end{align}
 
-\(R_{it}=\cfrac{\alpha_iN_{it-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{it-1}}\)
+\begin{align}
+R_{it}=\cfrac{\alpha_iN_{it-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{it-1}}
+\end{align}
 
-\({MN}_t = \sum_{i=1}^{N_p} N_{it}\)
+\begin{align}
+{MN}_t = \sum_{i=1}^{N_p} N_{it}
+\end{align}
 
-\({MR}_t = \sum_{i=1}^{N_p} R_{it}\)
+\begin{align}
+{MR}_t = \sum_{i=1}^{N_p} R_{it}
+\end{align}
 
-natural resoure managers often monitors and manages at the scale of the
+Natural resoure managers often monitors and manages at the scale of the
 metapopulation. Hence, management at this scale inherently defines the
 stock-recruitment dynamics of the aggregate complex of patches (i.e.,
 metapopulation) as:
 
-\({MR}_{t}=\cfrac{\hat{\alpha_t}{MN}_{t-1}}{1+\cfrac{\hat{\alpha_t}-1}{\hat{\beta_t}}{MN}_{it-1}}\)
+\begin{align}
+{MR}_{t}=\cfrac{\hat{\alpha_t}{MN}_{t-1}}{1+\cfrac{\hat{\alpha_t}-1}{\hat{\beta_t}}{MN}_{it-1}}
+\end{align}
 
 where \(\hat{\alpha_t}\) is the estimated compensation ratio averaged
 across the metapopulation at time \emph{t} and \(\hat{\beta_t}\) is the
@@ -477,11 +490,15 @@ distant years such that:
 Furthermore, we used penalized normal likelihoods on both
 \(\hat{\alpha_t}\) and \(\hat{\beta_t}\) such that:
 
-\(\hat{\alpha_t} \sim N(\mu=\hat{\alpha_{t-1}},\sigma=3\hat{\alpha_{t-1}})\)
+\begin{align}
+\hat{\alpha_t} \sim N(\mu=\hat{\alpha_{t-1}},\sigma=3\hat{\alpha_{t-1}})
+\end{align}
 
 and
 
-\(\hat{\beta_t} \sim N(\mu=\hat{\beta_{t-1}},\sigma=3\hat{\beta_{t-1}})\)
+\begin{align}
+\hat{\beta_t} \sim N(\mu=\hat{\beta_{t-1}},\sigma=3\hat{\beta_{t-1}})
+\end{align}
 
 where \(\mu=\hat{\alpha_{t-1}}\) and \(\mu=\hat{\beta_{t-1}}\)
 represents the best estimates from the previous assessment and the
@@ -526,24 +543,24 @@ than local) scales.
 yield}\label{finding-maximum-sustainable-yield}}
 
 Resource managers measure productivity with a variety of performance
-reference points. One of the most widely used metrics, commonly called
-\emph{Maximum Sustainable Yield} in fisheries and other harvest
-literature (\(MSY\)), relates to the largest loss the population can
-sustain over an indefinite period of time while maximizing its ability
-to replenish itself. Under density-dependent growth, individuals'
-growth, survival, and reproduction at low population densities are not
-constrained by limited resources, but overall production is low because
-there are few individuals. At high densities, limited resources
-increasingly constrain individual's reproductive success until the
-population reaches carrying capacity, and overall production drops to
-zero because per-capita success is low. However, at some intermediate
-densities, both per-capita and overall production is high, and
-population growth is at its maximum point due to the large number of
-reproducing individuals. At this point, there is the maximum surplus of
-individuals produced above replacement that can help to withstand
-disturbance or harvest regimes and contribute to future recovery, either
-through increasing local patch densities or by emigrating neighboring
-patches providing ``rescue effects''.
+reference points (Forrest \emph{et al.} 2010). One of the most widely
+used metrics, commonly called \emph{Maximum Sustainable Yield} in
+fisheries and other harvest literature (\(MSY\)), relates to the largest
+loss the population can sustain over an indefinite period of time while
+maximizing its ability to replenish itself. Under density-dependent
+growth, individuals' growth, survival, and reproduction at low
+population densities are not constrained by limited resources, but
+overall production is low because there are few individuals. At high
+densities, limited resources increasingly constrain individual's
+reproductive success until the population reaches carrying capacity, and
+overall production drops to zero because per-capita success is low.
+However, at some intermediate densities, both per-capita and overall
+production is high, and population growth is at its maximum point due to
+the large number of reproducing individuals. At this point, there is the
+maximum surplus of individuals produced above replacement that can help
+to withstand disturbance or harvest regimes and contribute to future
+recovery, either through increasing local patch densities or by
+emigrating neighboring patches providing ``rescue effects''.
 
 Under Beverton-Holt or Ricker density-dependent recuitment, however,
 there exists no analytical solution for calculating \(MSY\). Therefore,
@@ -678,6 +695,7 @@ deterministic population dynamics.
 
 \caption{Spatial recovery regime of metapopulation with linear topology through time (top left) and space (top right). Recruitment dynamics before and 10 years after disturbance (bottom left). Relative bias in aggregate-scale estimates of carrying capacity, compensation ratio, and recruitment production in recovery phase (bottom right).}\label{fig:example results1}
 \end{figure}
+\newpage
 
 We can then contrast this with a different network shape, like a
 dendritic network.
@@ -690,6 +708,7 @@ dendritic network.
 
 \caption{Spatial recovery regime of metapopulation with dendritic topology.}\label{fig:example results2}
 \end{figure}
+\newpage
 
 Now, let's add some stochasticity to recruitment and see how this
 affects the recovery regime.
@@ -702,6 +721,7 @@ affects the recovery regime.
 
 \caption{Spatial recovery regime of stochastic metapopulation.}\label{fig:example results3}
 \end{figure}
+\newpage
 
 Next, we can contrast with a disturbance regime where the disturbance is
 concentrated on local patches that can be completely extirpated (rather
@@ -716,16 +736,13 @@ e.g., a mixed-stock fishery).
 
 \caption{Spatial recovery regime of stochastic metapopulation.}\label{fig:example results4}
 \end{figure}
-
-\hypertarget{simulation-test-bootstrap}{%
-\subsection{Simulation test \&
-bootstrap}\label{simulation-test-bootstrap}}
+\newpage
 
 \hypertarget{general-patterns}{%
-\subsubsection{General patterns}\label{general-patterns}}
+\subsection{General patterns}\label{general-patterns}}
 
 \hypertarget{effects-of-disturbance-regime}{%
-\paragraph{Effects of disturbance
+\subsubsection{Effects of disturbance
 regime}\label{effects-of-disturbance-regime}}
 
 \begin{figure}[H]
@@ -737,12 +754,18 @@ regime}\label{effects-of-disturbance-regime}}
 \caption{Spatial and temporal recovery patterns along disturbance regimes.}\label{fig:disturbance regime}
 \end{figure}
 
+\hypertarget{role-of-network-structure-dispersal}{%
+\subsubsection{Role of network structure \&
+dispersal}\label{role-of-network-structure-dispersal}}
+
 We now show some general patterns in how variable patch demographic
 rates, network structure, dispersal, disturbance, recruitment
 stochasticity, and spatio-temporal correlations variation affects
 metapopulation \emph{recovery rates}, \emph{maximum sustainable yield}
-(i.e., analagous to the maximum rate of loss the system can sustain),
-and \emph{coefficient of variation} across patches.
+(analagous to the maximum rate of loss the system can sustain), and
+\emph{recovered} (i.e, the number of simulations where the
+metapopulation fails to recover), and \emph{patch occupancy} (i.e.,
+number of patches with local abundance above some baseline).
 
 First, lets show recovery rates for a scenario where (1) patches have
 the same local productivities and carrying capacities, (2) patches have
@@ -821,21 +844,21 @@ recovery times for extreme localized disturbance.
 \newpage
 
 \hypertarget{general-patterns-in-msy}{%
-\paragraph{General patterns in MSY}\label{general-patterns-in-msy}}
+\subsubsection{General patterns in MSY}\label{general-patterns-in-msy}}
 
 \hypertarget{msy-with-deterministic-recruitment-where-patches-are-the-same}{%
-\subparagraph{MSY with deterministic recruitment where patches are the
+\paragraph{MSY with deterministic recruitment where patches are the
 same}\label{msy-with-deterministic-recruitment-where-patches-are-the-same}}
 
 We now show similar patterns in how the maximum surplus production of
-the whole metapopulation (i.e., MSY) shifts in the first 10 years
+the whole metapopulation (i.e., MSY) shifts in the first 25 years
 post-disturbance compared to the sum of MSY for each patch. A value of
-1.0 would indicate that the disturbed metapopulation can sustain itselfs
+1.0 would indicate that the disturbed metapopulation can sustain itself
 against the same disturbance regime as the sum of each patch
 independently. In other words, is the metapopulation more, less, or
 equal to the sum of its parts.
 
-We will show 10-year MSY patterns for a scenario where (1) patches have
+We will show 25-year MSY patterns for a scenario where (1) patches have
 the same local productivities and carrying capacities, (2) patches have
 different productivities and carrying capacities, (3) recruitment is
 deterministic and patches are different, (4) spatial-temporal
@@ -864,10 +887,9 @@ cascade through the entire network of patches.
 \newpage
 
 \hypertarget{msy-with-variable-patches}{%
-\subparagraph{MSY with variable
-patches}\label{msy-with-variable-patches}}
+\paragraph{MSY with variable patches}\label{msy-with-variable-patches}}
 
-Now, we illustrate how variable patch demography affects the 10-year
+Now, we illustrate how variable patch demography affects the 25-year
 average MSY.
 
 \begin{figure}[H]
@@ -881,10 +903,10 @@ average MSY.
 \newpage
 
 \hypertarget{msy-with-variable-patches-and-stochasticity}{%
-\subparagraph{MSY with variable patches and
+\paragraph{MSY with variable patches and
 stochasticity}\label{msy-with-variable-patches-and-stochasticity}}
 
-Now, we illustrate how variable patch demography affects the 10-year
+Now, we illustrate how variable patch demography affects the 25-year
 average MSY.
 
 \begin{figure}[H]
@@ -898,13 +920,12 @@ average MSY.
 \newpage
 
 \hypertarget{msy-with-variable-patches-and-spatio-temporally-correlated-stochasticity}{%
-\subparagraph{MSY with variable patches, and spatio-temporally
-correlated
+\paragraph{MSY with variable patches, and spatio-temporally correlated
 stochasticity}\label{msy-with-variable-patches-and-spatio-temporally-correlated-stochasticity}}
 
 Now, we illustrate how variable patch demography and high
 spatial-temporal correlations in stochastic recruitment affects the
-10-year average MSY.
+25-year average MSY.
 
 \begin{figure}[H]
 
@@ -918,17 +939,17 @@ spatial-temporal correlations in stochastic recruitment affects the
 \newpage
 
 \hypertarget{general-patterns-in-the-risk-of-hysteresis-state-shifts}{%
-\paragraph{General patterns in the risk of hysteresis \& state
+\subsubsection{General patterns in the risk of hysteresis \& state
 shifts}\label{general-patterns-in-the-risk-of-hysteresis-state-shifts}}
 
-\hypertarget{proportion-of-simulations-where-the-metapopulation-either-failed-to-recover-or-experienced-spatial-contraction-for-scenario-with-deterministic-recruitment-where-patches-are-the-same}{%
-\subparagraph{Proportion of simulations where the metapopulation either
-failed to recover or experienced spatial contraction for scenario with
-deterministic recruitment where patches are the
-same}\label{proportion-of-simulations-where-the-metapopulation-either-failed-to-recover-or-experienced-spatial-contraction-for-scenario-with-deterministic-recruitment-where-patches-are-the-same}}
-
 We now show similar patterns in the lack of recovery across the
-metapopulation after \(100\) generations post-disturbance.
+metapopulation after \(100\) generations post-disturbance. Recovered \%
+is defined as the number of simulations where metapopulation abundance
+averaged \texttt{1.0} of the average pre-disturbance abundance for
+\texttt{5} consecutive years after disturbance. This ``recovered rate''
+reflects the risk of a long-term state shift in metapopulation dynamics
+after disturbance in the face of stochasticity. We start with a scenario
+with deterministic recruitment where patches are the same.
 
 \begin{figure}[H]
 
@@ -938,10 +959,11 @@ metapopulation after \(100\) generations post-disturbance.
 
 \caption{Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment variation.}\label{fig:Recovery}
 \end{figure}
+\newpage
 
-\hypertarget{lack-of-recovery-with-variable-patches}{%
-\subparagraph{Lack of recovery with variable
-patches}\label{lack-of-recovery-with-variable-patches}}
+\hypertarget{state-shifts-with-variable-patches}{%
+\paragraph{State shifts with variable
+patches}\label{state-shifts-with-variable-patches}}
 
 Now, we illustrate how variable patch demography affects the risk of a
 state shift.
@@ -954,9 +976,10 @@ state shift.
 
 \caption{Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.}\label{fig:unrecovered with variable patches}
 \end{figure}
+\newpage
 
 \hypertarget{state-shifts-with-variable-patches-and-stochasticity}{%
-\subparagraph{State shifts with variable patches and
+\paragraph{State shifts with variable patches and
 stochasticity}\label{state-shifts-with-variable-patches-and-stochasticity}}
 
 Now, we illustrate how variable patch demography and stochastic
@@ -970,15 +993,16 @@ recruitment affects the risk of state shift.
 
 \caption{Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with variable patches and stochastic recruitment.}\label{fig:state shift with variable patches and stochasticity}
 \end{figure}
+\newpage
 
 \hypertarget{state-shifts-with-variable-patches-and-spatio-temporally-correlated-stochasticity}{%
-\subparagraph{State shifts with variable patches, and spatio-temporally
+\paragraph{State shifts with variable patches, and spatio-temporally
 correlated
 stochasticity}\label{state-shifts-with-variable-patches-and-spatio-temporally-correlated-stochasticity}}
 
 Now, we illustrate how variable patch demography and high
-spatial-temporal correlations in stochastic recrtuitment affects the
-risk of a state shift.
+spatial-temporal correlations in stochastic recruitment affects the risk
+of a state shift.
 
 \begin{figure}[H]
 
@@ -988,6 +1012,117 @@ risk of a state shift.
 
 \caption{Risk of state shift (lack of recovery or spatial contraction) after 100 generations along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with variable patches, and spatial-temporal correlations in stochastic recruitment.}\label{fig:state shifts with variable patches and space-time stochasticity}
 \end{figure}
+
+\newpage
+
+\hypertarget{general-patterns-in-the-risk-of-spatial-contraction}{%
+\subsubsection{General patterns in the risk of spatial
+contraction}\label{general-patterns-in-the-risk-of-spatial-contraction}}
+
+We now show similar patterns in patch occupancy after \(25\) years
+post-disturbance. Patch occupancy is defined as the average number of
+patches that fail to recover above \texttt{0.1} pre-disturbance
+abundance for scenario with deterministic recruitment where patches are
+the same. Patch occupancy characterizes the expected risk of spatial
+contractions or local patch collapses, and reflects how interactions
+between spatial structure, disturbance, and dispersal affect source-sink
+dynamics and the provisioning of rescue effects to local patches.
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_makeHTML_files/figure-latex/patch occupancy-1} 
+
+}
+
+\caption{Patch occupancy after 25 years along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with deterministic recruitment and homogeouns patches.}\label{fig:patch occupancy}
+\end{figure}
+\newpage
+
+\hypertarget{patch-occupancy-with-variable-patches}{%
+\paragraph{Patch occupancy with variable
+patches}\label{patch-occupancy-with-variable-patches}}
+
+Now, we illustrate how variable patch demography affects patch
+occupancy.
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_makeHTML_files/figure-latex/patch occupancy with variable patches-1} 
+
+}
+
+\caption{Patch occupancy after 25 years along  dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.}\label{fig:patch occupancy with variable patches}
+\end{figure}
+\newpage
+
+\hypertarget{patch-occupancy-with-variable-patches-and-stochasticity}{%
+\paragraph{Patch occupancy with variable patches and
+stochasticity}\label{patch-occupancy-with-variable-patches-and-stochasticity}}
+
+Now, we illustrate how variable patch demography and stochastic
+recruitment affects long-term patch occupancy.
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_makeHTML_files/figure-latex/patch occupancy with variable patches and stochasticity-1} 
+
+}
+
+\caption{Patch occupancy after 25 years along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with variable patches and stochastic recruitment.}\label{fig:patch occupancy with variable patches and stochasticity}
+\end{figure}
+
+\newpage
+
+\hypertarget{patch-occupancy-with-variable-patches-and-spatio-temporally-correlated-stochasticity-in-recruitment}{%
+\paragraph{Patch occupancy with variable patches and spatio-temporally
+correlated stochasticity in
+recruitment}\label{patch-occupancy-with-variable-patches-and-spatio-temporally-correlated-stochasticity-in-recruitment}}
+
+Now, we illustrate how variable patch demography and high
+spatial-temporal correlations in stochastic recrtuitment affects
+long-term patch occupancy.
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_makeHTML_files/figure-latex/patch occupancy with variable patches and space-time stochasticity-1} 
+
+}
+
+\caption{Patch occupancy after 25 years along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with variable patches and spatial-temporal correlations in stochastic recruitment.}\label{fig:patch occupancy with variable patches and space-time stochasticity}
+\end{figure}
+\newpage
+
+\hypertarget{references}{%
+\subsection*{References}\label{references}}
+\addcontentsline{toc}{subsection}{References}
+
+\hypertarget{refs}{}
+\leavevmode\hypertarget{ref-Anderson2015}{}%
+Anderson, S.C., Moore, J.W., McClure, M.M., Dulvy, N.K. \& Cooper, A.B.
+(2015). Portfolio conservation of metapopulations under climate change.
+Ecological Applications 25 (2), 559-572. \emph{Ecological Applications},
+\textbf{25}, 559--572.
+
+\leavevmode\hypertarget{ref-igraph2006}{}%
+Csardi, G. \& Nepusz, T. (2006). The igraph software package for complex
+network research. \emph{InterJournal}, \textbf{Complex Systems}, 1695.
+
+\leavevmode\hypertarget{ref-Forrest2010}{}%
+Forrest, R.E., McAllister, M.K., Dorn, M.W., Martell, S.J. \& Stanley,
+R.D. (2010). Hierarchical Bayesian estimation of recruitment parameters
+and reference points for Pacific rockfishes (Sebastes spp.) under
+alternative assumptions about the stock--recruit function.
+\emph{Canadian Journal of Fisheries and Aquatic Sciences}, \textbf{67},
+1611--1634.
+
+\leavevmode\hypertarget{ref-Hanski1998}{}%
+Hanski, I. (1998). Metapopulation dynamics. \emph{Nature}, \textbf{396},
+41--49.
+
+\leavevmode\hypertarget{ref-Yeakel2014}{}%
+Yeakel, J.D., Moore, J.W., Guimarães, P.R. \& Aguiar, M.A. de. (2014).
+Synchronisation and stability in river metapopulation networks.
+\emph{Ecology Letters}, \textbf{17}, 273--283.
 
 
 \end{document}
