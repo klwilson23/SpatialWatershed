@@ -118,7 +118,7 @@
   \posttitle{\par}
   \subtitle{Supplemental materials: Model details \& results}
   \author{\textup{Kyle L. Wilson$^a$}\footnote{Corresponding author - email:
-  \href{mailto:kl_wilson@sfu.ca}{\nolinkurl{kl\_wilson@sfu.ca}}}\textup{, Alex Sawyer$^a$, Anna Potapova$^a$, Colin Bailey$^a$, Elissa Sweeney-Bergen$^a$, Emma Hogson$^a$, Kara Pitman$^a$, Karl Seitz$^a$, Lauren Law$^a$, Luke Warkentin$^a$, Sam Wilson$^a$, William Atlas$^a$, Daniella LoScerbo$^b$, Doug C. Braun$^c$, Matt Sloat$^d$, Tim Tinker$^e$, and Jonathan W. Moore$^{a,c}$}\\
+  \href{mailto:kl_wilson@sfu.ca}{\nolinkurl{kl\_wilson@sfu.ca}}}\textup{, Alex Sawyer$^a$, Anna Potapova$^a$, Colin J. Bailey$^a$, Elissa Sweeney-Bergen$^a$, Emma E. Hodgson$^a$, Kara J. Pitman$^a$, Karl Seitz$^a$, Lauren Law$^a$, Luke Warkentin$^a$, Samantha M. Wilson$^a$, William I. Atlas$^a$, Daniella LoScerbo$^b$, Douglas C. Braun$^c$, Matthew R. Sloat$^d$, M. Tim Tinker$^e$, and Jonathan W. Moore$^{a,b}$}\\
 ~\\
 \textup{$^a$Earth to Ocean Research Group, Simon Fraser University}\\
 \textup{$^b$Resource and Environmental Management, Simon Fraser University}\\
@@ -129,7 +129,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{20 July 2019}
+    \date{22 July 2019}
 
 \usepackage{wrapfig}
 \usepackage{lipsum}
@@ -500,6 +500,12 @@ distant years such that:
 \caption{Likelihood weighting for samples collected over time from current year of sampling.}\label{fig:unnamed-chunk-1}
 \end{figure}
 
+This forward-weighting approach increased the sensitivity of the
+monitoring sub-model to detect demographic changes in the
+post-disturbance recovery regime. Data-weighting is increasingly being
+used in resource monitoring, although how weights are developed and
+applied to data is a case-by-case basis.
+
 Furthermore, we used penalized normal likelihoods on both
 \(\hat{\alpha_t}\) and \(\hat{\beta_t}\) such that:
 
@@ -526,18 +532,18 @@ the following function and fitted to the below \(\theta\) parameters
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{SRfn <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(theta) \{}
+\NormalTok{SRfn <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(theta, data, lastYr) \{}
 \NormalTok{    a.hat <-}\StringTok{ }\NormalTok{theta[}\DecValTok{1}\NormalTok{]}
 \NormalTok{    b.hat <-}\StringTok{ }\KeywordTok{exp}\NormalTok{(theta[}\DecValTok{2}\NormalTok{])}
 \NormalTok{    sd.hat <-}\StringTok{ }\KeywordTok{exp}\NormalTok{(theta[}\DecValTok{3}\NormalTok{])}
-\NormalTok{    rec.mean <-}\StringTok{ }\NormalTok{(a.hat }\OperatorTok{*}\StringTok{ }\NormalTok{spawnRec}\OperatorTok{$}\NormalTok{spawners)}\OperatorTok{/}\NormalTok{(}\DecValTok{1} \OperatorTok{+}\StringTok{ }\NormalTok{((a.hat }\OperatorTok{-}\StringTok{ }\DecValTok{1}\NormalTok{)}\OperatorTok{/}\NormalTok{b.hat) }\OperatorTok{*}\StringTok{ }\NormalTok{spawnRec}\OperatorTok{$}\NormalTok{spawners)}
+\NormalTok{    rec.mean <-}\StringTok{ }\NormalTok{(a.hat }\OperatorTok{*}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{spawners)}\OperatorTok{/}\NormalTok{(}\DecValTok{1} \OperatorTok{+}\StringTok{ }\NormalTok{((a.hat }\OperatorTok{-}\StringTok{ }\DecValTok{1}\NormalTok{)}\OperatorTok{/}\NormalTok{b.hat) }\OperatorTok{*}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{spawners)}
     \CommentTok{# negative log likelihood on recruitment parameters}
-\NormalTok{    nll <-}\StringTok{ }\DecValTok{-1} \OperatorTok{*}\StringTok{ }\KeywordTok{sum}\NormalTok{(}\KeywordTok{dlnorm}\NormalTok{(spawnRec}\OperatorTok{$}\NormalTok{recruits, }\DataTypeTok{meanlog =} \KeywordTok{log}\NormalTok{(rec.mean), }\DataTypeTok{sdlog =}\NormalTok{ sd.hat, }
-        \DataTypeTok{log =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{*}\StringTok{ }\NormalTok{spawnRec}\OperatorTok{$}\NormalTok{weights, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{    nll <-}\StringTok{ }\DecValTok{-1} \OperatorTok{*}\StringTok{ }\KeywordTok{sum}\NormalTok{(}\KeywordTok{dlnorm}\NormalTok{(data}\OperatorTok{$}\NormalTok{recruits, }\DataTypeTok{meanlog =} \KeywordTok{log}\NormalTok{(rec.mean), }\DataTypeTok{sdlog =}\NormalTok{ sd.hat, }
+        \DataTypeTok{log =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{*}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{weights, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
     \CommentTok{# penalized likelihood on estimated alpha}
-\NormalTok{    penalty1 <-}\StringTok{ }\OperatorTok{-}\KeywordTok{dnorm}\NormalTok{(a.hat, alphaLstYr, }\DecValTok{3} \OperatorTok{*}\StringTok{ }\NormalTok{alphaLstYr, }\DataTypeTok{log =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{    penalty1 <-}\StringTok{ }\OperatorTok{-}\KeywordTok{dnorm}\NormalTok{(a.hat, lastYr}\OperatorTok{$}\NormalTok{alphaLstYr, }\DecValTok{4} \OperatorTok{*}\StringTok{ }\NormalTok{lastYr}\OperatorTok{$}\NormalTok{alphaLstYr, }\DataTypeTok{log =} \OtherTok{TRUE}\NormalTok{)}
     \CommentTok{# penalized likelihood on estimated carrying capacity}
-\NormalTok{    penalty2 <-}\StringTok{ }\OperatorTok{-}\KeywordTok{dnorm}\NormalTok{(b.hat, metaKLstYr, }\DecValTok{3} \OperatorTok{*}\StringTok{ }\NormalTok{metaKLstYr, }\DataTypeTok{log =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{    penalty2 <-}\StringTok{ }\OperatorTok{-}\KeywordTok{dnorm}\NormalTok{(b.hat, lastYr}\OperatorTok{$}\NormalTok{metaKLstYr, }\DecValTok{4} \OperatorTok{*}\StringTok{ }\NormalTok{lastYr}\OperatorTok{$}\NormalTok{metaKLstYr, }\DataTypeTok{log =} \OtherTok{TRUE}\NormalTok{)}
 \NormalTok{    jnll <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(}\KeywordTok{c}\NormalTok{(nll, penalty1, penalty2), }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
     \KeywordTok{return}\NormalTok{(jnll)}
 \NormalTok{\}}

@@ -1,7 +1,7 @@
 ---
 title: "Managing for ecological surprises in metapopulations"
 author: |
-  | \textup{Kyle L. Wilson$^a$}^[Corresponding author - email: kl_wilson@sfu.ca]\textup{, Alex Sawyer$^a$, Anna Potapova$^a$, Colin Bailey$^a$, Elissa Sweeney-Bergen$^a$, Emma Hogson$^a$, Kara Pitman$^a$, Karl Seitz$^a$, Lauren Law$^a$, Luke Warkentin$^a$, Sam Wilson$^a$, William Atlas$^a$, Daniella LoScerbo$^b$, Doug C. Braun$^c$, Matt Sloat$^d$, Tim Tinker$^e$, and Jonathan W. Moore$^{a,c}$}
+  | \textup{Kyle L. Wilson$^a$}^[Corresponding author - email: kl_wilson@sfu.ca]\textup{, Alex Sawyer$^a$, Anna Potapova$^a$, Colin J. Bailey$^a$, Elissa Sweeney-Bergen$^a$, Emma E. Hodgson$^a$, Kara J. Pitman$^a$, Karl Seitz$^a$, Lauren Law$^a$, Luke Warkentin$^a$, Samantha M. Wilson$^a$, William I. Atlas$^a$, Daniella LoScerbo$^b$, Douglas C. Braun$^c$, Matthew R. Sloat$^d$, M. Tim Tinker$^e$, and Jonathan W. Moore$^{a,b}$}
   |
   | \textup{$^a$Earth to Ocean Research Group, Simon Fraser University}
   | \textup{$^b$Resource and Environmental Management, Simon Fraser University}
@@ -415,6 +415,8 @@ dataWeighting <- 0.1
 curve(exp(dataWeighting*(-x))/max(exp(dataWeighting*(-x))),from=0,to=100,xlab="Years lagged",ylab="Likelihood weight")
 ```
 
+This forward-weighting approach increased the sensitivity of the monitoring sub-model to detect demographic changes in the post-disturbance recovery regime. Data-weighting is increasingly being used in resource monitoring, although how weights are developed and applied to data is a case-by-case basis.
+
 Furthermore, we used penalized normal likelihoods on both $\hat{\alpha_t}$ and $\hat{\beta_t}$ such that:
 
 \begin{align}
@@ -430,17 +432,17 @@ and
 where $\mu=\hat{\alpha_{t-1}}$ and $\mu=\hat{\beta_{t-1}}$ represents the best estimates from the previous assessment and the `3` in the $\sigma$ term represents a 300% coefficient of variation. We used these penalized likelihoods to fit the above aggregate stock-recruitment model with *lognormal* error to the metapopulation stock-recruit data collected at time *t*. We used the following function and fitted to the below $\theta$ parameters (termed `theta` in the function `optim()` using the `L-BFGS-B` optimizer with a lower bound on $\hat{\alpha}$ of `1.01` (i.e., constrained to be at least above replacement).
 
 ```{r assessment model}
-SRfn <- function(theta){
+SRfn <- function(theta,data,lastYr){
   a.hat <- theta[1]
   b.hat <- exp(theta[2])
   sd.hat <- exp(theta[3])
-  rec.mean <- (a.hat*spawnRec$spawners)/(1+((a.hat-1)/b.hat)*spawnRec$spawners)
+  rec.mean <- (a.hat*data$spawners)/(1+((a.hat-1)/b.hat)*data$spawners)
   # negative log likelihood on recruitment parameters
-  nll <- -1*sum(dlnorm(spawnRec$recruits,meanlog=log(rec.mean),sdlog=sd.hat,log=TRUE)*spawnRec$weights,na.rm=TRUE)
+  nll <- -1*sum(dlnorm(data$recruits,meanlog=log(rec.mean),sdlog=sd.hat,log=TRUE)*data$weights,na.rm=TRUE)
   # penalized likelihood on estimated alpha
-  penalty1 <- -dnorm(a.hat,alphaLstYr,3*alphaLstYr,log=TRUE)
+  penalty1 <- -dnorm(a.hat,lastYr$alphaLstYr,4*lastYr$alphaLstYr,log=TRUE)
   # penalized likelihood on estimated carrying capacity
-  penalty2 <- -dnorm(b.hat,metaKLstYr,3*metaKLstYr,log=TRUE)
+  penalty2 <- -dnorm(b.hat,lastYr$metaKLstYr,4*lastYr$metaKLstYr,log=TRUE)
   jnll <- sum(c(nll,penalty1,penalty2),na.rm=TRUE)
   return(jnll)
 }
