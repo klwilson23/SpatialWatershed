@@ -16,7 +16,7 @@ output:
     - --biblio
     - Metapop_references.bib
     - --csl
-    - methods-in-ecology-and-evolution.csl
+    - conservation-letters.csl
   fig_caption: yes
   fontsize: 12pt
   highlight: tango
@@ -369,8 +369,8 @@ Corner_text("d) - spatial-temporal","topleft")
 ## Post-disturbance outcomes
 We measured the following post-disturbance outcomes to track the temporal and spatial recovery regime of the metapopulation.
 
-1. Recovered (a) & recovery rate (b) after disturbance:
-    a. Recovered is defined as the number of simulations where metapopulation abundance averaged `1.0` of the average pre-disturbance abundance for `5` consecutive years post-disturbance. This "recovered rate" reflects the risk of a long-term state shift in metapopulation dynamics after disturbance in the face of stochasticity. 
+1. Collapse (a) & recovery rate (b) after disturbance:
+    a. Collapse rate is defined as the number of simulations where metapopulation abundance failed to recover to `1.0` of the average pre-disturbance abundance for `5` consecutive years post-disturbance. This "collapse rate" reflects the risk of a long-term state shift in metapopulation dynamics after disturbance in the face of stochasticity. 
     b. Recovery rate the number of years to average pre-disturbance abundance for `5` consecutive years. The recovery rate (either in the number of generations or in the rate of recovery per year) captures how quickly the aggregate metapopulation recovers from disturbance but doesn't take into account whether any given local patches recover to their pre-disturbance capacity.
 
 2. Patch occupancy - the mean number of patches with `>0.1` local carrying capacity after disturbance in the short-term (5 years), medium-term (10 years), and long-term (25 years). This value characterizes the expected risk of spatial contractions or local patch collapses, and reflects how interactions between spatial structure, disturbance, and dispersal shape source-sink dynamics and the ability to provide (or not) rescue effects and recover local patches.
@@ -581,16 +581,18 @@ lagTime <- 1
 
 results$StateShift <- ((1-results$recovered)+(1-results$longOcc))/2
 results$RecoveryRate <- 1-results$recovery/NyrsPost
+results$collapsed <- 1-results$recovered
 
 dist_colours <- c("tomato","dodgerblue","orange")
 transparency <- 0.6
-plotColours <- ifelse(results$dispersal==0,
+plotColours <- ifelse(results$dispersal==-1,
                            adjustcolor(dist_colours[results$disturbance],1,offset=c(-0.35,-0.35,-0.35,0)),
                            adjustcolor(dist_colours[results$disturbance],1))
 
 layout(matrix(1:4,nrow=2,ncol=2,byrow=TRUE))
 par(mar=c(4,4,0.5,0.5))
 plot(results$RecoveryRate,results$longOcc,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Patch occupancy (25 years)")
+
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="longOcc"),col=adjustcolor(dist_colours[z],transparency))}))
 
 plot(results$RecoveryRate,results$longMSY,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Surplus production (25 years)")
@@ -599,15 +601,19 @@ invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHul
 plot(results$longMSY,results$longOcc,pch=21,bg=plotColours,xlab="Surplus production (25 years)",ylab="Patch occupancy (25 years)")
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="longMSY",y="longOcc"),col=adjustcolor(dist_colours[z],transparency))}))
 
-plot(results$RecoveryRate,results$recovered,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Recovered (% of simulations)")
-invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="recovered"),col=adjustcolor(dist_colours[z],transparency))}))
+plot(results$RecoveryRate,results$collapsed,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Collapse rate (% of simulations)")
+invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){
+  if(z<3){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="collapsed"),col=adjustcolor(dist_colours[z],transparency))}else{xMat <- unique(cbind(results[results$disturbance==scenarios$disturbance[z],"RecoveryRate"],results[results$disturbance==scenarios$disturbance[z],"collapsed"]))
+xSeq <- seq(min(xMat[,1]),max(xMat[,1]),by=0.1)
+polyMinMax <- cbind(c(xSeq,rev(xSeq)),c(sapply(xSeq,function(x){min(xMat[abs(xMat[which.min(abs(xMat[,1]-x)),1]-xMat[,1])<=0.025,2])}),sapply(rev(xSeq),function(x){max(xMat[abs(xMat[which.min(abs(xMat[,1]-x)),1]-xMat[,1])<=0.025,2])})))
+polygon(polyMinMax[,1],polyMinMax[,2],col=adjustcolor(dist_colours[z],transparency))}}))
 
-legend("bottomright",c("Uniform","Local, random","Local, extirpation"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime")
+legend("topright",c("Uniform","Local, random","Local, extirpation"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime")
 ```
 
 ### Role of network structure & dispersal
 
-We now show some general patterns in how variable patch demographic rates, network structure, dispersal, disturbance, recruitment stochasticity, and spatio-temporal correlations variation affects metapopulation *recovery rates*, *maximum sustainable yield* (analagous to the maximum rate of loss the system can sustain), and *recovered* (i.e, the number of simulations where the metapopulation fails to recover), and *patch occupancy* (i.e., number of patches with local abundance above some baseline).
+We now show some general patterns in how variable patch demographic rates, network structure, dispersal, disturbance, recruitment stochasticity, and spatio-temporal correlations variation affects metapopulation *recovery rates*, *maximum sustainable yield* (analagous to the maximum rate of loss the system can sustain), and *collapse rate* (i.e, the number of simulations where the metapopulation fails to recover), and *patch occupancy* (i.e., number of patches with local abundance above some baseline).
 
 First, lets show recovery rates for a scenario where (1) patches have the same local productivities and carrying capacities, (2) patches have different productivities and carrying capacities, (3) recruitment is deterministic and patches are different, and (4) spatial-temporal correlation in stochastic recruitment.
 
@@ -635,7 +641,7 @@ for(i in 1:length(scenarios$network))
                           results$spatial==scenarios$spatial[1] & 
                           results$alpha==scenarios$alpha[1] & 
                           results$beta==scenarios$beta[1],]
-  plot(subResults$dispersal,subResults$recovery,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovery (generations)",xlab="Dispersal rate",ylim=1.0*range(c(0,results$recovery)))
+  plot(subResults$dispersal,subResults$recovery,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovery rate (generations)",xlab="Dispersal rate",ylim=1.0*range(c(0,results$recovery)))
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
     lines(distResults$dispersal,distResults$recovery,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
@@ -659,7 +665,7 @@ for(i in 1:length(scenarios$network))
                           results$spatial==scenarios$spatial[1] & 
                           results$alpha==scenarios$alpha[2] & 
                           results$beta==scenarios$beta[2],]
-  plot(subResults$dispersal,subResults$recovery,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovery (generations)",xlab="Dispersal rate",ylim=1.0*range(c(0,results$recovery)))
+  plot(subResults$dispersal,subResults$recovery,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovery rate (generations)",xlab="Dispersal rate",ylim=1.0*range(c(0,results$recovery)))
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
     lines(distResults$dispersal,distResults$recovery,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
@@ -683,7 +689,7 @@ for(i in 1:length(scenarios$network))
                           results$spatial==scenarios$spatial[1] & 
                           results$alpha==scenarios$alpha[1] & 
                           results$beta==scenarios$beta[1],]
-  plot(subResults$dispersal,subResults$recovery,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovery (generations)",xlab="Dispersal rate",ylim=1.0*range(c(0,results$recovery)))
+  plot(subResults$dispersal,subResults$recovery,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovery rate (generations)",xlab="Dispersal rate",ylim=1.0*range(c(0,results$recovery)))
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
     lines(distResults$dispersal,distResults$recovery,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
@@ -707,7 +713,7 @@ for(i in 1:length(scenarios$network))
                           results$spatial==scenarios$spatial[3] & 
                           results$alpha==scenarios$alpha[1] & 
                           results$beta==scenarios$beta[1],]
-  plot(subResults$dispersal,subResults$recovery,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovery (generations)",xlab="Dispersal rate",ylim=1.0*range(c(0,results$recovery)))
+  plot(subResults$dispersal,subResults$recovery,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovery rate (generations)",xlab="Dispersal rate",ylim=1.0*range(c(0,results$recovery)))
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
     lines(distResults$dispersal,distResults$recovery,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
@@ -833,9 +839,9 @@ add2plot()
 
 ### General patterns in the risk of hysteresis & state shifts
 
-We now show similar patterns in the lack of recovery across the metapopulation after $100$ generations post-disturbance. Recovered % is defined as the number of simulations where metapopulation abundance averaged `1.0` of the average pre-disturbance abundance for `5` consecutive years after disturbance. This "recovered rate" reflects the risk of a long-term state shift in metapopulation dynamics after disturbance in the face of stochasticity. We start with a scenario with deterministic recruitment where patches are the same.
+We now show similar patterns in the rate of long-term collapse across the metapopulation after $100$ generations post-disturbance. Collapse rate % is defined as the number of simulations where metapopulation abundance failed to reach at least `1.0` of the average pre-disturbance abundance for `5` consecutive years after disturbance. This "collapse rate" reflects the risk of a long-term state shift in metapopulation dynamics after disturbance in the face of stochasticity. We start with a scenario with deterministic recruitment where patches are the same.
 
-```{r Recovery, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment variation.",fig.align="center"}
+```{r collapsed, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment variation.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 for(i in 1:length(scenarios$network))
@@ -846,10 +852,10 @@ for(i in 1:length(scenarios$network))
                           results$spatial==scenarios$spatial[1] & 
                           results$alpha==scenarios$alpha[1] & 
                           results$beta==scenarios$beta[1],]
-  plot(subResults$dispersal,subResults$recovered,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovered (% of simulations)",xlab="Dispersal rate",ylim=1.75*range(c(0,results$recovered)))
+  plot(subResults$dispersal,subResults$collapsed,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Collapse (% of simulations)",xlab="Dispersal rate",ylim=1.75*range(c(0,results$collapsed)))
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
-    lines(distResults$dispersal,distResults$recovered,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
+    lines(distResults$dispersal,distResults$collapsed,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
   }
 }
 
@@ -861,7 +867,7 @@ add2plot()
 
 Now, we illustrate how variable patch demography affects the risk of a state shift.
 
-```{r unrecovered with variable patches, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.",fig.align="center"}
+```{r collapsed with variable patches, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 for(i in 1:length(scenarios$network))
@@ -872,10 +878,10 @@ for(i in 1:length(scenarios$network))
                           results$spatial==scenarios$spatial[1] & 
                           results$alpha==scenarios$alpha[2] & 
                           results$beta==scenarios$beta[2],]
-  plot(subResults$dispersal,subResults$recovered,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovered (% of simulations)",xlab="Dispersal rate",ylim=1.75*range(c(0,results$recovered)))
+  plot(subResults$dispersal,subResults$collapsed,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Collapse (% of simulations)",xlab="Dispersal rate",ylim=1.75*range(c(0,results$collapsed)))
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
-    lines(distResults$dispersal,distResults$recovered,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
+    lines(distResults$dispersal,distResults$collapsed,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
   }
 }
 
@@ -898,10 +904,10 @@ for(i in 1:length(scenarios$network))
                           results$spatial==scenarios$spatial[1] & 
                           results$alpha==scenarios$alpha[2] & 
                           results$beta==scenarios$beta[2],]
-  plot(subResults$dispersal,subResults$recovered,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovered (% of simulations)",xlab="Dispersal rate",ylim=1.75*range(c(0,results$recovered)))
+  plot(subResults$dispersal,subResults$collapsed,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Collapse (% of simulations)",xlab="Dispersal rate",ylim=1.75*range(c(0,results$collapsed)))
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
-    lines(distResults$dispersal,distResults$recovered,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
+    lines(distResults$dispersal,distResults$collapsed,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
   }
 }
 
@@ -924,10 +930,10 @@ for(i in 1:length(scenarios$network))
                           results$spatial==scenarios$spatial[3] & 
                           results$alpha==scenarios$alpha[2] & 
                           results$beta==scenarios$beta[2],]
-  plot(subResults$dispersal,subResults$recovered,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovered (% of simulations)",xlab="Dispersal rate",ylim=1.75*range(c(0,results$recovered)))
+  plot(subResults$dispersal,subResults$collapsed,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Collapse (% of simulations)",xlab="Dispersal rate",ylim=1.75*range(c(0,results$collapsed)))
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
-    lines(distResults$dispersal,distResults$recovered,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
+    lines(distResults$dispersal,distResults$collapsed,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
   }
 }
 

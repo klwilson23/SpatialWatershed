@@ -26,9 +26,11 @@ magnitude_of_decline <- 0.9
 lagTime <- 1
 results$StateShift <- ((1-results$recovered)+(1-results$longOcc))/2
 results$RecoveryRate <- 1-results$recovery/NyrsPost
+results$collapsed <- 1-results$recovered
 
 library(mvtnorm)
 library(vioplot)
+library("alphahull")
 source("Functions/Linear network.R")
 source("Functions/Dispersal function.R")
 source("Functions/patch_variance.R")
@@ -40,7 +42,7 @@ source("Functions/Add landscapes plot.R")
 
 dist_colours <- c("tomato","dodgerblue","orange")
 transparency <- 0.6
-plotColours <- ifelse(results$dispersal==0,
+plotColours <- ifelse(results$dispersal==-1,
                            adjustcolor(dist_colours[results$disturbance],1,offset=c(-0.35,-0.35,-0.35,0)),
                            adjustcolor(dist_colours[results$disturbance],1))
 
@@ -48,6 +50,7 @@ tiff("Figures/Disturbance impacts on recovery regime polygon.tiff",compression="
 layout(matrix(1:4,nrow=2,ncol=2,byrow=TRUE))
 par(mar=c(4,4,0.5,0.5))
 plot(results$RecoveryRate,results$longOcc,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Patch occupancy (25 years)")
+
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="longOcc"),col=adjustcolor(dist_colours[z],transparency))}))
 
 plot(results$RecoveryRate,results$longMSY,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Surplus production (25 years)")
@@ -56,11 +59,35 @@ invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHul
 plot(results$longMSY,results$longOcc,pch=21,bg=plotColours,xlab="Surplus production (25 years)",ylab="Patch occupancy (25 years)")
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="longMSY",y="longOcc"),col=adjustcolor(dist_colours[z],transparency))}))
 
-plot(results$RecoveryRate,results$recovered,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Recovered (% of simulations)")
-invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="recovered"),col=adjustcolor(dist_colours[z],transparency))}))
+plot(results$RecoveryRate,results$collapsed,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Collapse rate (% of simulations)")
+invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="collapsed"),col=adjustcolor(dist_colours[z],transparency))}))
 
-legend("bottomright",c("Uniform","Local, random","Local, extirpation"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime")
+legend("topright",c("Uniform","Local, random","Local, extirpation"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime")
 dev.off()
+
+tiff("Figures/Disturbance impacts on recovery regime smoothed polygon.tiff",compression="lzw",units="in",height=8,width=8,res=800)
+layout(matrix(1:4,nrow=2,ncol=2,byrow=TRUE))
+par(mar=c(4,4,0.5,0.5))
+plot(results$RecoveryRate,results$longOcc,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Patch occupancy (25 years)")
+
+invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="longOcc"),col=adjustcolor(dist_colours[z],transparency))}))
+
+plot(results$RecoveryRate,results$longMSY,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Surplus production (25 years)")
+invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="longMSY"),col=adjustcolor(dist_colours[z],transparency))}))
+
+plot(results$longMSY,results$longOcc,pch=21,bg=plotColours,xlab="Surplus production (25 years)",ylab="Patch occupancy (25 years)")
+invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="longMSY",y="longOcc"),col=adjustcolor(dist_colours[z],transparency))}))
+
+plot(results$RecoveryRate,results$collapsed,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Collapse rate (% of simulations)")
+invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){
+  if(z<3){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="collapsed"),col=adjustcolor(dist_colours[z],transparency))}else{xMat <- unique(cbind(results[results$disturbance==scenarios$disturbance[z],"RecoveryRate"],results[results$disturbance==scenarios$disturbance[z],"collapsed"]))
+xSeq <- seq(min(xMat[,1]),max(xMat[,1]),by=0.1)
+polyMinMax <- cbind(c(xSeq,rev(xSeq)),c(sapply(xSeq,function(x){min(xMat[abs(xMat[which.min(abs(xMat[,1]-x)),1]-xMat[,1])<=0.025,2])}),sapply(rev(xSeq),function(x){max(xMat[abs(xMat[which.min(abs(xMat[,1]-x)),1]-xMat[,1])<=0.025,2])})))
+polygon(polyMinMax[,1],polyMinMax[,2],col=adjustcolor(dist_colours[z],transparency))}}))
+
+legend("topright",c("Uniform","Local, random","Local, extirpation"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime")
+dev.off()
+
 
 boxplot(longCV~stochastic+disturbance,data=results[results$spatial==scenarios$spatial[1] & results$temporal==scenarios$temporal[1],],col=dist_colours[results$disturbance],xlab="Stochasticity",ylab="Recovery rate (yr-1)")
 
@@ -81,7 +108,7 @@ par(mar=c(4,4,0.5,0.5))
 for(i in 1:length(scenarios$network))
 {
   subResults <- results[results$network==scenarios$network[i],]
-  plot(subResults$dispersal,subResults$recovery,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovery (generations)",xlab="Dispersal rate",ylim=1.0*range(c(0,results$recovery)),cex.lab=1.2)
+  plot(subResults$dispersal,subResults$recovery,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovery rate (generations)",xlab="Dispersal rate",ylim=1.0*range(c(0,results$recovery)),cex.lab=1.2)
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
     #points(distResults$dispersal,distResults$recovery,bg=dist_colours[j],pch=21)
@@ -104,14 +131,14 @@ for(i in 1:length(scenarios$network))
   boxplot(recovery~alpha,data=subResults,ylim=1.7*range(c(0,results$recovery)),add=TRUE,col="grey30",boxwex=0.25,xaxt="n",yaxt="n",border="white",outpch=21,outcol="white",whisklty="solid",staplelwd=NA,outcex=1.5,outbg="grey30")
   abline(h=25,lwd=2,col="black",xpd=FALSE)
   mtext("Local productivity",1,line=2.5,cex=0.7)
-  mtext("Recovery (generations)",2,line=2.5,cex=0.7)
+  mtext("Recovery rate (generations)",2,line=2.5,cex=0.7)
 }
 add2plot()
 
 tiff("Figures/Recovery along variable local productivities.tiff",compression="lzw",units="in",height=4,width=4,res=800)
 layout(1)
 par(mar=c(5,4,1,1))
-vioplot(recovery~alpha,data=results,ylim=range(c(0,results$recovery)),drawRect=FALSE,col=c("orange","dodgerblue"),xlab="Local productivity",ylab="Recovery (generations)")
+vioplot(recovery~alpha,data=results,ylim=range(c(0,results$recovery)),drawRect=FALSE,col=c("orange","dodgerblue"),xlab="Local productivity",ylab="Recovery rate (generations)")
 boxplot(recovery~alpha,data=results,ylim=range(c(0,results$recovery)),add=TRUE,col="grey30",boxwex=0.25,xaxt="n",yaxt="n",border="white",outpch=21,outcol="white",whisklty="solid",staplelwd=NA,outcex=1.5,outbg="grey30")
 dev.off()
 
@@ -125,7 +152,7 @@ for(i in 1:length(scenarios$network))
                           results$spatial==scenarios$spatial[1] & 
                           results$alpha==scenarios$alpha[1] & 
                           results$beta==scenarios$beta[1],]
-  plot(subResults$dispersal,subResults$recovery,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovery (generations)",xlab="Dispersal rate",ylim=1.5*range(c(0,results$recovery)))
+  plot(subResults$dispersal,subResults$recovery,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovery rate (generations)",xlab="Dispersal rate",ylim=1.5*range(c(0,results$recovery)))
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
     lines(distResults$dispersal,distResults$recovery,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
@@ -143,7 +170,7 @@ for(i in 1:length(scenarios$network))
                           results$spatial==scenarios$spatial[1] & 
                           results$alpha==scenarios$alpha[2] & 
                           results$beta==scenarios$beta[2],]
-  plot(subResults$dispersal,subResults$recovery,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovery (generations)",xlab="Dispersal rate",ylim=1.5*range(c(0,results$recovery)))
+  plot(subResults$dispersal,subResults$recovery,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovery rate (generations)",xlab="Dispersal rate",ylim=1.5*range(c(0,results$recovery)))
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
     lines(distResults$dispersal,distResults$recovery,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)
@@ -161,7 +188,7 @@ for(i in 1:length(scenarios$network))
                           results$spatial==scenarios$spatial[3] & 
                           results$alpha==scenarios$alpha[2] & 
                           results$beta==scenarios$beta[2],]
-  plot(subResults$dispersal,subResults$recovery,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovery (generations)",xlab="Dispersal rate",ylim=1.5*range(c(0,results$recovery)))
+  plot(subResults$dispersal,subResults$recovery,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovery rate (generations)",xlab="Dispersal rate",ylim=1.5*range(c(0,results$recovery)))
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
     lines(distResults$dispersal,distResults$recovery,col=dist_colours[j],type="b",pch=21,lwd=2,lty=1)

@@ -105,7 +105,7 @@
 \usepackage{titling}
 
 % Create subtitle command for use in maketitle
-\providecommand{\subtitle}[1]{
+\newcommand{\subtitle}[1]{
   \posttitle{
     \begin{center}\large#1\end{center}
     }
@@ -129,7 +129,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{22 July 2019}
+    \date{23 August 2019}
 
 \usepackage{wrapfig}
 \usepackage{lipsum}
@@ -178,7 +178,7 @@ recruits immigrating into patch \emph{i} from any other patch,
 any other patch, and \(\epsilon_{it}\) is stochasticity in recruitment.
 
 Resoure monitoring often occurs at the scale of the metapopulation
-(Anderson \emph{et al.} 2015), hence we define metapopulation adults as:
+(Anderson et al. 2015), hence we define metapopulation adults as:
 
 \begin{align}
 {MN}_t = \sum_{i=1}^{N_p} N_{it}
@@ -233,14 +233,14 @@ dynamics:
 networks}\label{creating-the-spatial-networks}}
 
 The next aspect to our metapopulation model is connecting the set of
-patches to one another (Yeakel \emph{et al.} 2014). We need to specify
-the number of patches, their arrangements (i.e., connections), and how
-far apart they are from one another. We followed some classic
-metapopulation and source-sink arrangements to create four networks that
-generalize across a few real-world topologies: a linear habitat network
-(e.g., coastline), a dendritic or branching network (e.g., coastal
-rivers), a star network (e.g., mountain \& valley, or lake with inlet
-tributaries), and a complex network (e.g., terrestrial plants).
+patches to one another (Yeakel et al. 2014). We need to specify the
+number of patches, their arrangements (i.e., connections), and how far
+apart they are from one another. We followed some classic metapopulation
+and source-sink arrangements to create four networks that generalize
+across a few real-world topologies: a linear habitat network (e.g.,
+coastline), a dendritic or branching network (e.g., coastal rivers), a
+star network (e.g., mountain \& valley, or lake with inlet tributaries),
+and a complex network (e.g., terrestrial plants).
 
 To make networks comparable, each spatial network type needs the same
 leading parameters (e.g., number of patches \(N_p\) and mean distance
@@ -292,7 +292,7 @@ Dispersal from patch \emph{i} into patch \emph{j} depends on constant
 dispersal rate \(\omega\) (defined as the proportion of total local
 recruits that will disperse) and an exponential distance-decay function
 between \emph{i} and \emph{j} with distance cost to dispersal \(m\)
-following Anderson \emph{et al.} (2015):
+following Anderson et al. (2015):
 
 \begin{align}
 E_{ij(t)}=\omega R_{it}p_{ij}
@@ -401,16 +401,16 @@ temporal and spatial recovery regime of the metapopulation.
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
-  Recovered (a) \& recovery rate (b) after disturbance:
+  Collapse (a) \& recovery rate (b) after disturbance:
 
   \begin{enumerate}
   \def\labelenumii{\alph{enumii}.}
   \tightlist
   \item
-    Recovered is defined as the number of simulations where
-    metapopulation abundance averaged \texttt{1.0} of the average
-    pre-disturbance abundance for \texttt{5} consecutive years
-    post-disturbance. This ``recovered rate'' reflects the risk of a
+    Collapse rate is defined as the number of simulations where
+    metapopulation abundance failed to recover to \texttt{1.0} of the
+    average pre-disturbance abundance for \texttt{5} consecutive years
+    post-disturbance. This ``collapse rate'' reflects the risk of a
     long-term state shift in metapopulation dynamics after disturbance
     in the face of stochasticity.
   \item
@@ -562,10 +562,10 @@ than local) scales.
 yield}\label{finding-maximum-sustainable-yield}}
 
 Resource managers measure productivity with a variety of performance
-reference points (Forrest \emph{et al.} 2010). One of the most widely
-used metrics, commonly called \emph{Maximum Sustainable Yield} in
-fisheries and other harvest literature (\(MSY\)), relates to the largest
-loss the population can sustain over an indefinite period of time while
+reference points (Forrest et al. 2010). One of the most widely used
+metrics, commonly called \emph{Maximum Sustainable Yield} in fisheries
+and other harvest literature (\(MSY\)), relates to the largest loss the
+population can sustain over an indefinite period of time while
 maximizing its ability to replenish itself. Under density-dependent
 growth, individuals' growth, survival, and reproduction at low
 population densities are not constrained by limited resources, but
@@ -782,7 +782,7 @@ rates, network structure, dispersal, disturbance, recruitment
 stochasticity, and spatio-temporal correlations variation affects
 metapopulation \emph{recovery rates}, \emph{maximum sustainable yield}
 (analagous to the maximum rate of loss the system can sustain), and
-\emph{recovered} (i.e, the number of simulations where the
+\emph{collapse rate} (i.e, the number of simulations where the
 metapopulation fails to recover), and \emph{patch occupancy} (i.e.,
 number of patches with local abundance above some baseline).
 
@@ -961,22 +961,23 @@ spatial-temporal correlations in stochastic recruitment affects the
 \subsubsection{General patterns in the risk of hysteresis \& state
 shifts}\label{general-patterns-in-the-risk-of-hysteresis-state-shifts}}
 
-We now show similar patterns in the lack of recovery across the
-metapopulation after \(100\) generations post-disturbance. Recovered \%
-is defined as the number of simulations where metapopulation abundance
-averaged \texttt{1.0} of the average pre-disturbance abundance for
-\texttt{5} consecutive years after disturbance. This ``recovered rate''
-reflects the risk of a long-term state shift in metapopulation dynamics
-after disturbance in the face of stochasticity. We start with a scenario
-with deterministic recruitment where patches are the same.
+We now show similar patterns in the rate of long-term collapse across
+the metapopulation after \(100\) generations post-disturbance. Collapse
+rate \% is defined as the number of simulations where metapopulation
+abundance failed to reach at least \texttt{1.0} of the average
+pre-disturbance abundance for \texttt{5} consecutive years after
+disturbance. This ``collapse rate'' reflects the risk of a long-term
+state shift in metapopulation dynamics after disturbance in the face of
+stochasticity. We start with a scenario with deterministic recruitment
+where patches are the same.
 
 \begin{figure}[H]
 
-{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/Recovery-1} 
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/collapsed-1} 
 
 }
 
-\caption{Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment variation.}\label{fig:Recovery}
+\caption{Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment variation.}\label{fig:collapsed}
 \end{figure}
 \newpage
 
@@ -989,11 +990,11 @@ state shift.
 
 \begin{figure}[H]
 
-{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/unrecovered with variable patches-1} 
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/collapsed with variable patches-1} 
 
 }
 
-\caption{Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.}\label{fig:unrecovered with variable patches}
+\caption{Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.}\label{fig:collapsed with variable patches}
 \end{figure}
 \newpage
 
@@ -1120,28 +1121,27 @@ long-term patch occupancy.
 Anderson, S.C., Moore, J.W., McClure, M.M., Dulvy, N.K. \& Cooper, A.B.
 (2015). Portfolio conservation of metapopulations under climate change.
 Ecological Applications 25 (2), 559-572. \emph{Ecological Applications},
-\textbf{25}, 559--572.
+25, 559--572.
 
 \leavevmode\hypertarget{ref-igraph2006}{}%
 Csardi, G. \& Nepusz, T. (2006). The igraph software package for complex
-network research. \emph{InterJournal}, \textbf{Complex Systems}, 1695.
+network research. \emph{InterJournal}, Complex Systems, 1695.
 
 \leavevmode\hypertarget{ref-Forrest2010}{}%
 Forrest, R.E., McAllister, M.K., Dorn, M.W., Martell, S.J. \& Stanley,
 R.D. (2010). Hierarchical Bayesian estimation of recruitment parameters
 and reference points for Pacific rockfishes (Sebastes spp.) under
 alternative assumptions about the stock--recruit function.
-\emph{Canadian Journal of Fisheries and Aquatic Sciences}, \textbf{67},
+\emph{Canadian Journal of Fisheries and Aquatic Sciences}, 67,
 1611--1634.
 
 \leavevmode\hypertarget{ref-Hanski1998}{}%
-Hanski, I. (1998). Metapopulation dynamics. \emph{Nature}, \textbf{396},
-41--49.
+Hanski, I. (1998). Metapopulation dynamics. \emph{Nature}, 396, 41--49.
 
 \leavevmode\hypertarget{ref-Yeakel2014}{}%
 Yeakel, J.D., Moore, J.W., Guimarães, P.R. \& Aguiar, M.A. de. (2014).
 Synchronisation and stability in river metapopulation networks.
-\emph{Ecology Letters}, \textbf{17}, 273--283.
+\emph{Ecology Letters}, 17, 273--283.
 
 
 \end{document}
