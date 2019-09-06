@@ -163,7 +163,7 @@ legend("bottomright",c("Patch 1","Patch 2","Metapopulation","Replacement"),bty="
 <br>
 
 ### Creating the spatial networks
-The next aspect to our metapopulation model is connecting the set of patches to one another [@Yeakel2014]. We need to specify the number of patches, their arrangements (i.e., connections), and how far apart they are from one another. We followed some classic metapopulation and source-sink arrangements to create four networks that generalize across a few real-world topologies: a linear habitat network (e.g., coastline), a dendritic or branching network (e.g., coastal rivers), a star network (e.g., mountain & valley, or lake with inlet tributaries), and a complex network (e.g., terrestrial plants). 
+The next aspect to our metapopulation model is connecting the set of patches to one another [@Yeakel2014]. We need to specify the number of patches, their arrangements (i.e., connections), and how far apart they are from one another. We followed some classic metapopulation and source-sink arrangements to create four networks that generalize across a few real-world topologies: a linear habitat network (e.g., coastline), a dendritic or branching network (e.g., coastal rivers), a star network (e.g., mountain & valley, or lake with inlet tributaries), and a complex network (e.g., grasslands). 
   
 To make networks comparable, each spatial network type needs the same leading parameters (e.g., number of patches $N_p$ and mean distance between neighboring patches $\bar{d}$). In this case, we set $N_p$ to `16` and $\bar{d}$ to `1` unit (distance units are arbitrary). We used the `igraph` package [@igraph2006] and some custom code to arrange our spatial networks as the following:
 
@@ -177,20 +177,20 @@ layout(matrix(1:4,nrow=2,ncol=2,byrow=T))
 par(mar=c(1,1,1,1),oma=c(0,0,0,0))
 
 nodeScalar <- 16
-network <- makeNetworks("linear",Npatches=Npatches,patchDist=patchDist)
+network <- makeNetworks("linear",Npatches=Npatches,patchDist=patchDist,colors="grey70")
 plot(network$landscape,col="dodgerblue",layout=cbind(0,seq(1,-1,length.out = gorder(network$landscape))),vertex.size=network$node.size*nodeScalar,xlim=c(-1,1),ylim=c(-1,1),rescale=FALSE)
 title(main="Linear",line=0,font.main=1)
 
 nodeScalar <- 18
-network <- makeNetworks("dendritic",Npatches=Npatches,patchDist=patchDist)
+network <- makeNetworks("dendritic",Npatches=Npatches,patchDist=patchDist,colors="grey70")
 plot(network$landscape,col="dodgerblue",layout=layout_as_tree(network$landscape,root=V(network$landscape)[1]),vertex.size=network$node.size*nodeScalar)
 title(main="Dendritic",line=0,font.main=1)
 
-network <- makeNetworks("star",Npatches=Npatches,patchDist=patchDist)
+network <- makeNetworks("star",Npatches=Npatches,patchDist=patchDist,colors="grey70")
 plot(network$landscape,col="dodgerblue",layout=layout.reingold.tilford(network$landscape,circular=T),vertex.size=network$node.size*nodeScalar)
 title(main="Star",line=0,font.main=1)
 
-network <- makeNetworks("complex",Npatches=Npatches,patchDist=patchDist)
+network <- makeNetworks("complex",Npatches=Npatches,patchDist=patchDist,colors="grey70")
 spatialLayout <- matrix(MORELETTERS(1:Npatches),nrow=sqrt(Npatches),ncol=sqrt(Npatches),byrow=TRUE)
 spatialLayout <- t(sapply(1:Npatches,function(x){which(spatialLayout==LETTERS[x],arr.ind=TRUE)}))
 spatialLayout <- spatialLayout[rank(attr(V(network$landscape),"names")),]
@@ -232,7 +232,7 @@ patchDist <- 1
 Npatches <- 16
 m <- 0.5
 omega <- 0.10
-network <- makeNetworks("linear",Npatches=Npatches,patchDist=patchDist)
+network <- makeNetworks("linear",Npatches=Npatches,patchDist=patchDist,colors="grey70")
 N <- 100
 E <- dispersal(omega,m,network$distanceMatrix,N)
 
@@ -299,7 +299,7 @@ becomes:
 R_{it}=\cfrac{\alpha_iN_{it-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{it-1}}e^{(\epsilon_{it}-\cfrac{ln(\sigma_{R}^2+1)}{2})}
 \end{align}
 
-where lognormal deviates for each patch *i* at time *t* are drawn from a multivariate normal distribution (*MVN*) If $\sigma_R$ is low, then metapopulation dynamics approach the deterministic case.  In some scenarios, we evaluate the role of spatially and/or temporally correlated deviates across the metapopulations to model potential common drivers affecting metapopulation dynamics (e.g., Moran effects). Expected recruitment deviates followed a first-order autoregression model such that:
+where lognormal deviates for each patch *i* at time *t* are drawn from a multivariate normal distribution (*MVN*) If $\sigma_R$ is low, then metapopulation dynamics approach the deterministic case.  In some scenarios, we evaluated the role of spatially and/or temporally correlated deviates across local patches to model potential common drivers affecting metapopulation dynamics (e.g., Moran effects). Expected recruitment deviates followed a first-order autoregression model such that:
 
 \begin{align}
 \epsilon_{it}=\rho_T\epsilon_{t-1}+MVN(\mu=0,\Sigma=\sigma_R(1-\rho_T^2)e^{(-\rho_SD_{ij})})
@@ -307,7 +307,7 @@ where lognormal deviates for each patch *i* at time *t* are drawn from a multiva
 
 where $\rho_T$ is temporal correlation (bounded $0-1$) $\rho_S$ is rate of distance-decay in spatial correlation (bounded $0-\infty$ with higher values leading to independent patches). If $rho_T$ is 0 and $rho_S$ is high, then annual recruitment deviates are independent. We illustrate the effects of four kinds of recruitment deviates below using the same random number generator seed:
 
-```{r independent stochasticity, echo=FALSE,warning=FALSE,message=FALSE,fig.height=6,fig.width=7,fig.cap="Metapopulation dynamics with independent (a), spatially correlated (b), temporally correlated (c), and spatio-temporally correlated (d) recruitment deviates.",fig.align="center"}
+```{r independent stochasticity, echo=FALSE,warning=FALSE,message=FALSE,fig.height=6,fig.width=7,fig.cap="Metapopulation dynamics with independent (a), spatially correlated (b), temporally correlated (c), and spatio-temporally correlated (d) recruitment deviates. Black line indicates metapopulation, and dashed lines indicate local patches with red and blue relating to abundances after 100 years post-disturbance were less than or greater than 1.0 pre-disturbance, respectively.",fig.align="center"}
 seed <- 20190620
 set.seed(seed)
 trial <- metaPop(Npatches=16,networkType="complex",patchDistance=1,Nburnin=50,NyrsPost=100,omega=0.01,m=100,alpha=2,metaK=1600,cv=0.12,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=FALSE)
@@ -379,7 +379,7 @@ We measured the following post-disturbance outcomes to track the temporal and sp
 \begin{align}
 \Delta_{MSY}=\cfrac{\hat{MSY_M}}{\sum_{i=1}^{N_p} MSY_{i}}
 \end{align}  
-A value of 1.0 would indicate that the disturbed metapopulation can sustain itself against the same disturbance regime as the sum of each patch independently. In other words, is the metapopulation more than ($\Delta_{MSY}$>1.0), less than ($\Delta_{MSY}$<1.0), or equal to the sum of its parts ($\Delta_{MSY}$=1.0).
+A value of 1.0 would indicate that the disturbed metapopulation can sustain itself against the same disturbance regime as the sum of each patch independently. In other words, is the metapopulation more than ($\Delta_{MSY}$>1.0), less than ($\Delta_{MSY}$<1.0), or equal to the sum of its parts ($\Delta_{MSY}$=1.0). We detail how *MSY* is estimated further below.
 
 ### Monitoring & management at aggregate-scale
 While true metapopulation dynamics are controlled by local patch dynamics and dispersal such that:

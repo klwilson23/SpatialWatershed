@@ -7,10 +7,11 @@ library(igraph)
 library(shape)
 source("Functions/some functions.R")
 
-makeNetworks <- function(network,Npatches,patchDist)
+makeNetworks <- function(network,Npatches,patchDist,colors=c("royalblue4","dodgerblue","lightblue","darkorange1","firebrick"))
 {
   MORELETTERS <- extend(LETTERS)
-  colfunc <- colorRampPalette(c("royalblue4","dodgerblue","lightblue","darkorange1","firebrick"))
+  colfunc <- colorRampPalette(colors)
+  #colfunc <- colorRampPalette("grey70")
   diameter <- patchDist
   
   if(network=="linear")
