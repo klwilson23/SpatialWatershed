@@ -54,16 +54,16 @@ SRfn <- function(theta,data,lastYr){
   return(jnll)
 }
 
-plottingFunc <- function(network,type,nodeScalar,Npatches){
+plottingFunc <- function(network,type,nodeScalar,Npatches,plotID=NA){
   par(xpd=TRUE,usr=c(-1.572561,1.572561,-1.080000,1.080000),mar=c(1,1,1,1))
   if(type=="linear"){
-    plot(network$landscape,col="dodgerblue",layout=cbind(seq(-1,1,length.out = gorder(network$landscape)),seq(1,-1,length.out = gorder(network$landscape))),vertex.size=network$node.size*nodeScalar,xlim=c(-1,1),ylim=c(-1,1),rescale=FALSE)
+    plot(network$landscape,col="dodgerblue",layout=cbind(seq(-1,1,length.out = gorder(network$landscape)),seq(1,-1,length.out = gorder(network$landscape))),vertex.size=network$node.size*nodeScalar,xlim=c(-1,1),ylim=c(-1,1),rescale=FALSE,vertex.label=plotID)
   }
   if(type=="dendritic"){
-    plot(network$landscape,col="dodgerblue",layout=layout_as_tree(network$landscape,root=V(network$landscape)[1]),vertex.size=network$node.size*nodeScalar)
+    plot(network$landscape,col="dodgerblue",layout=layout_as_tree(network$landscape,root=V(network$landscape)[1]),vertex.size=network$node.size*nodeScalar,vertex.label=plotID)
   }
   if(type=="star"){
-    plot(network$landscape,col="dodgerblue",layout=layout.reingold.tilford(network$landscape,circular=T),vertex.size=network$node.size*nodeScalar)
+    plot(network$landscape,col="dodgerblue",layout=layout.reingold.tilford(network$landscape,circular=T),vertex.size=network$node.size*nodeScalar,vertex.label=plotID)
   }
   if(type=="complex"){
     
@@ -71,11 +71,11 @@ plottingFunc <- function(network,type,nodeScalar,Npatches){
     
     spatialLayout <- t(sapply(1:Npatches,function(x){which(spatialLayout==LETTERS[x],arr.ind=TRUE)}))
     spatialLayout <- spatialLayout[rank(attr(V(network$landscape),"names")),]
-    plot(network$landscape,col="dodgerblue",layout=spatialLayout,vertex.size=network$node.size*nodeScalar)
+    plot(network$landscape,col="dodgerblue",layout=spatialLayout,vertex.size=network$node.size*nodeScalar,vertex.label=plotID)
   }
 }
 
-spatialRecoveryPlot <- function(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recovery,Nburnin,Nyears,alpha,metaK,alphaYr,metaKYr,lostCapacity,compensationBias,MSY,nodeScalar=35,network,networkType=networkType,Npatches=Npatches,NMsy)
+spatialRecoveryPlot <- function(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recovery,Nburnin,Nyears,alpha,metaK,alphaYr,metaKYr,lostCapacity,compensationBias,MSY,nodeScalar=35,network,networkType=networkType,Npatches=Npatches,NMsy,patchID=NA)
 {
   colfunc <- colorRampPalette(c("royalblue4","dodgerblue","lightblue","darkorange1","firebrick"))
   
@@ -119,16 +119,16 @@ spatialRecoveryPlot <- function(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recover
   #text(x=0.5,y=1.75,expression('N'[t]*'/K'),cex=1.5,xpd=NA)
   
   par(mar=c(5,5,1,1))
-  plot(MetaPop[1:(Nyears-1),"Spawners"],MetaPop[2:Nyears,"Recruits"],type="p",xlab="Metapopulation adults",ylab="Metapopulation recruits",pch=21,bg=ifelse(1:(Nyears-1)>Nburnin,"orange","dodgerblue"),xlim=c(0,max(MetaPop[,"Spawners"],na.rm=TRUE)),ylim=c(0,max(MetaPop[,"Recruits"],na.rm=TRUE)),cex.lab=textSize)
+  #plot(MetaPop[1:(Nyears-1),"Spawners"],MetaPop[2:Nyears,"Recruits"],type="p",xlab="Metapopulation adults",ylab="Metapopulation recruits",pch=21,bg=ifelse(1:(Nyears-1)>Nburnin,"orange","dodgerblue"),xlim=c(0,max(MetaPop[,"Spawners"],na.rm=TRUE)),ylim=c(0,max(MetaPop[,"Recruits"],na.rm=TRUE)),cex.lab=textSize)
   
-  curve((alpha*x)/(1+((alpha-1)/metaK)*x),from=0,to=max(MetaPop[,"Spawners"],na.rm=TRUE),add=TRUE,lwd=2,col="dodgerblue",xpd=FALSE)
+  curve((alpha*x)/(1+((alpha-1)/metaK)*x),from=0,to=max(MetaPop[,"Spawners"],na.rm=TRUE),lwd=2,col="dodgerblue",xpd=FALSE,xlab="Metapopulation adults",ylab="Metapopulation recruits",cex.lab=textSize,ylim=c(0,max(MetaPop[,"Recruits"],na.rm=TRUE)))
   curve((mean(alphaYr[(Nburnin+1):(Nburnin+recovery)],na.rm=TRUE)*x)/(1+((mean(alphaYr[(Nburnin+1):(Nburnin+recovery)],na.rm=TRUE)-1)/mean(metaKYr[(Nburnin+1):(Nburnin+recovery)],na.rm=TRUE))*x),from=0,to=max(MetaPop[,"Spawners"],na.rm=TRUE),add=TRUE,lwd=2,col="orange",xpd=FALSE)
   
   #abline(v=NMsy[1],lwd=2,lty=2,col="dodgerblue",xpd=FALSE)
   #abline(v=NMsy[2],lwd=2,lty=2,col="orange",xpd=FALSE)
   
   
-  legend("bottomright",c("Recrutment - pristine","Recruitment - disturbed"),pch=c(21,21),pt.bg=c("dodgerblue","orange"),lwd=c(1,1),lty=c(1,1),col=c("dodgerblue","orange"),bty="n",cex=textSize)
+  legend("bottomright",c("Recrutment - pristine","Recruitment - disturbed"),pch=c(NA,NA),pt.bg=c("dodgerblue","orange"),lwd=c(1,1),lty=c(1,1),col=c("dodgerblue","orange"),bty="n",cex=textSize)
   
   par(mar=c(5,4,1,1))
   plot(lostCapacity[Nburnin:Nyears],xlab="Years after disturbance",ylab="Relative bias",type="l",ylim=range(c(-0.3,lostCapacity[Nburnin:Nyears],alphaYr[Nburnin:Nyears]/alpha,compensationBias[Nburnin:Nyears],MSY[Nburnin:Nyears]),na.rm=TRUE),lwd=2,col="dodgerblue",xpd=NA,cex.lab=textSize)
@@ -148,7 +148,7 @@ spatialRecoveryPlotv2 <- function(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recov
   lines(MetaPop[,"Spawners"]/metaK,lwd=3,col="black")
   segments(y0=0,y1=1.05*max(t(popDyn[,,"Spawners"])/k_p),x0=(recovery+Nburnin),lwd=4,col="orange")
   
-  recoverText <- ifelse((recovery+Nburnin)==Nyears,"Not recovered","Time to recovery")
+  recoverText <- ifelse((recovery+Nburnin)==Nyears,"Not recovered","Time at recovery")
   text(x=(recovery+Nburnin)-30,y=1.1*max(t(popDyn[,,"Spawners"])/k_p,na.rm=TRUE),recoverText,cex=textSize*0.8)
   curvedarrow(from=c((recovery+Nburnin)-30,1.08*max(t(popDyn[,,"Spawners"])/k_p,na.rm=TRUE)),to=c((recovery+Nburnin),1.0*max(t(popDyn[,,"Spawners"])/k_p,na.rm=TRUE)),lwd=2,lty=1,lcol="grey50",arr.col="grey50",curve=0.002,endhead=TRUE,arr.pos=0.65)
   

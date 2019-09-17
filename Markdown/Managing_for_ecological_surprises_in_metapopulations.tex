@@ -129,7 +129,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{05 September 2019}
+    \date{16 September 2019}
 
 \usepackage{wrapfig}
 \usepackage{lipsum}
@@ -327,12 +327,12 @@ patch (i.e., \(j\neq i\). With \(\bar{d}= 1\), \(m=0.5\),
 \subsubsection{Disturbance regimes}\label{disturbance-regimes}}
 
 In all scenarios, disturbance was applied after \texttt{50} years of
-equilibrating the metapopulaton at pristine conditions. At year
-\texttt{51}, we applied the disturbance regime (the regime varied from
+equilibrating the metapopulaton at pristine conditions. We then applied
+the disturbance regime at year \texttt{50} (the regime varied from
 \emph{uniform}, \emph{localized, random}, and \emph{localized,
 extirpation} - see \emph{Scenarios} below). Disturbance immediately
 removes a set proportion of the metapopulation adults at that time
-(i.e., \texttt{0.9} of \(MN_{t=51}\)). Once applied, the metapopulation
+(i.e., \texttt{0.9} of \(MN_{t=50}\)). Once applied, the metapopulation
 was no longer disturbed and spatio-temporal recovery dynamics emerged
 naturally from these new conditions.
 
@@ -366,8 +366,8 @@ R_{it}=\cfrac{\alpha_iN_{it-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{it-1}}e^{(\epsil
 where lognormal deviates for each patch \emph{i} at time \emph{t} are
 drawn from a multivariate normal distribution (\emph{MVN}) If
 \(\sigma_R\) is low, then metapopulation dynamics approach the
-deterministic case. In some scenarios, we evaluate the role of spatially
-and/or temporally correlated deviates across the metapopulations to
+deterministic case. In some scenarios, we evaluated the role of
+spatially and/or temporally correlated deviates across local patches to
 model potential common drivers affecting metapopulation dynamics (e.g.,
 Moran effects). Expected recruitment deviates followed a first-order
 autoregression model such that:
@@ -389,7 +389,7 @@ the same random number generator seed:
 
 }
 
-\caption{Metapopulation dynamics with independent (a), spatially correlated (b), temporally correlated (c), and spatio-temporally correlated (d) recruitment deviates.}\label{fig:independent stochasticity}
+\caption{Metapopulation dynamics with independent (a), spatially correlated (b), temporally correlated (c), and spatio-temporally correlated (d) recruitment deviates. Black line indicates metapopulation, and dashed lines indicate local patches with red and blue relating to abundances after 100 years post-disturbance were less than or greater than 1.0 pre-disturbance, respectively.}\label{fig:independent stochasticity}
 \end{figure}
 
 \hypertarget{post-disturbance-outcomes}{%
@@ -443,7 +443,8 @@ temporal and spatial recovery regime of the metapopulation.
   patch independently. In other words, is the metapopulation more than
   (\(\Delta_{MSY}\)\textgreater{}1.0), less than
   (\(\Delta_{MSY}\)\textless{}1.0), or equal to the sum of its parts
-  (\(\Delta_{MSY}\)=1.0).
+  (\(\Delta_{MSY}\)=1.0). We detail how \emph{MSY} is estimated further
+  below.
 \end{enumerate}
 
 \hypertarget{monitoring-management-at-aggregate-scale}{%
@@ -642,7 +643,7 @@ and the recruits that result from this (termed \(R_{MSY}\)).
 \subsection{Scenarios}\label{scenarios}}
 
 We tested all combinations of the following eight processes (below) and
-ran a \texttt{100} bootstraps per scenario to estimate the mean for each
+ran \texttt{100} iterations per scenario to estimate the mean for each
 of the above outcomes.
 
 \begin{enumerate}
@@ -712,7 +713,7 @@ deterministic population dynamics.
 
 }
 
-\caption{Spatial recovery regime of metapopulation with linear topology through time (top left) and space (top right). Recruitment dynamics before and 10 years after disturbance (bottom left). Relative bias in aggregate-scale estimates of carrying capacity, compensation ratio, and recruitment production in recovery phase (bottom right).}\label{fig:example results1}
+\caption{Example iteration of spatial recovery regime of metapopulation with linear topology through time (top left) and space (top right). Recruitment dynamics before and 10 years after disturbance (bottom left). Relative bias in aggregate-scale estimates of carrying capacity, compensation ratio, and recruitment production in recovery phase (bottom right).}\label{fig:example results1}
 \end{figure}
 \newpage
 
@@ -725,7 +726,7 @@ dendritic network.
 
 }
 
-\caption{Spatial recovery regime of metapopulation with dendritic topology.}\label{fig:example results2}
+\caption{Example iteration of spatial recovery regime of metapopulation with dendritic topology.}\label{fig:example results2}
 \end{figure}
 \newpage
 
@@ -738,7 +739,7 @@ affects the recovery regime.
 
 }
 
-\caption{Spatial recovery regime of stochastic metapopulation.}\label{fig:example results3}
+\caption{Example iteration of spatial recovery regime of stochastic metapopulation.}\label{fig:example results3}
 \end{figure}
 \newpage
 
@@ -753,7 +754,7 @@ e.g., a mixed-stock fishery).
 
 }
 
-\caption{Spatial recovery regime of stochastic metapopulation.}\label{fig:example results4}
+\caption{Example iteration of spatial recovery regime of stochastic metapopulation.}\label{fig:example results4}
 \end{figure}
 \newpage
 
@@ -764,14 +765,33 @@ e.g., a mixed-stock fishery).
 \subsubsection{Effects of disturbance
 regime}\label{effects-of-disturbance-regime}}
 
+The strongest lever influencing recovery in our simulated
+metapopulations was by far, the characteristics of the disturbance
+regime. That is, more influential than the density dependence
+relationship, dispersal rates or network topology was how targeted
+patches were in the severity of disturbance. This was surprising and not
+expected in our initial hypotheses. Localized disturbances increased the
+risk of spatial contraction, reduced recovery rates and aggregate
+compensation, and increased the risk of a long-term state shift. By
+altering aggregate compensation, localized disturbance reduced the
+surplus production of the metapopulation. In other words, through
+changes in source-sink dynamics, metapopulations under localized
+disturbance acted less than the sum of their parts -- the more localized
+the impacts, the worse these effects. Uniform disturbances generally
+left the metapopulation dynamics unaffected with few ecological
+surprises. These above spatial and temporal recovery processes also
+appeared tied to one another such that changes to any of them had
+feedbacks with other recovery metrics.
+
 \begin{figure}[H]
 
 {\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/disturbance regime-1} 
 
 }
 
-\caption{Spatial and temporal recovery patterns along disturbance regimes.}\label{fig:disturbance regime}
+\caption{Spatial and temporal recovery patterns along disturbance regimes across all scenarios.}\label{fig:disturbance regime}
 \end{figure}
+\newpage
 
 \hypertarget{role-of-network-structure-dispersal}{%
 \subsubsection{Role of network structure \&
@@ -785,6 +805,44 @@ metapopulation \emph{recovery rates}, \emph{maximum sustainable yield}
 \emph{collapse rate} (i.e, the number of simulations where the
 metapopulation fails to recover), and \emph{patch occupancy} (i.e.,
 number of patches with local abundance above some baseline).
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/recovery and dispersal and spatial network-1} 
+
+}
+
+\caption{Metapopulation recovery rates along gradients of network configuration, dispersal rates, and spatial distribution of disturbance. The shaded region describes the interquartile range across all scenarios.}\label{fig:recovery and dispersal and spatial network}
+\end{figure}
+
+Dispersal, landscape structure, and local density-dependence also
+affected metapopulation recovery patterns in three key ways, though to a
+lesser extent. First, recovery rates increased with increased dispersal.
+However, this effect was nonlinear with diminishing benefits of
+dispersal occurring at \textasciitilde{}1-3\%, depending on spatial
+structure and disturbance. Second, more linearized networks had slower
+recovery times than more connected networks suggesting that rescue
+effects take some time to cascade through the entire network of patches;
+but this interacted with the disturbance regime as only local,
+extirpation exhibited this change in any substantial manner. Last,
+diversity in local patch compensation and carrying capacities tended to
+slow metapopulation recoveries - this effect interacted with other
+factors like stochasticity.
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/recovery with patch variation-1} 
+
+}
+
+\caption{Effects of variable local patch productivities on metapopulation recovery across all scenarios.}\label{fig:recovery with patch variation}
+\end{figure}
+
+\newpage
+
+\hypertarget{patterns-in-recovery-rates}{%
+\subsubsection{Patterns in recovery
+rates}\label{patterns-in-recovery-rates}}
 
 First, lets show recovery rates for a scenario where (1) patches have
 the same local productivities and carrying capacities, (2) patches have
@@ -830,8 +888,8 @@ patch productivities slows recovery across all scenarios.
 \newpage
 
 Now, lets show recovery rates for the same scenario but allowing for
-recruitment to be stochastic (but patches are the same in demography).
-We see the same three main effects of dispersal, network, and
+recruitment to be stochastic (but patches are identical in demographic
+traits). We see the same three main effects of dispersal, network, and
 disturbance noted above. We also see a few subtle changes: (1)
 stochasticity slows recovery for uniform and local disturbance, but (2)
 quickens recovery for extreme local disturbance.
@@ -862,8 +920,8 @@ recovery times for extreme localized disturbance.
 \end{figure}
 \newpage
 
-\hypertarget{general-patterns-in-msy}{%
-\subsubsection{General patterns in MSY}\label{general-patterns-in-msy}}
+\hypertarget{patterns-in-msy}{%
+\subsubsection{Patterns in MSY}\label{patterns-in-msy}}
 
 \hypertarget{msy-with-deterministic-recruitment-where-patches-are-the-same}{%
 \paragraph{MSY with deterministic recruitment where patches are the
@@ -883,16 +941,14 @@ different productivities and carrying capacities, (3) recruitment is
 deterministic and patches are different, (4) spatial-temporal
 correlation in stochastic recruitment.
 
-Below, we can see three main effects on recovery rates (number of
-generations to reach recovery). First, recovery gets faster with
-increased dispersal. Most of the action here takes place at low rates of
-dispersal indicating most spatial topologies don't need much dispersal
-to quicken their recovery. In preliminary runs, dispersal rates of
-\texttt{0.05-0.2} provided similar recovery patterns. Second, more
-localized disturbances regimes lead to slower recovery. Third,
-linearized networks have slower recovery times than interconnected,
-complex networks suggesting that rescue effects take some time to
-cascade through the entire network of patches.
+Below, we can see two main effects on surplus production. First, spatial
+disturbance is a strong driver of surplus production with more localized
+disturbance reducing the surplus. Second, dispersal rates are only
+limiting in scenarios with localized disturbance. This suggests that (1)
+uniformly disturbed metapopulations operate as the ``sum of their
+parts'' but (2) localized disturbances affect metapopulation surplus
+production leading to slower internal recovery and/or reduced rescue
+effects from neighboring patches.
 
 \begin{figure}[H]
 
@@ -957,9 +1013,9 @@ spatial-temporal correlations in stochastic recruitment affects the
 
 \newpage
 
-\hypertarget{general-patterns-in-the-risk-of-hysteresis-state-shifts}{%
-\subsubsection{General patterns in the risk of hysteresis \& state
-shifts}\label{general-patterns-in-the-risk-of-hysteresis-state-shifts}}
+\hypertarget{patterns-in-the-risk-of-hysteresis-state-shifts}{%
+\subsubsection{Patterns in the risk of hysteresis \& state
+shifts}\label{patterns-in-the-risk-of-hysteresis-state-shifts}}
 
 We now show similar patterns in the rate of long-term collapse across
 the metapopulation after \(100\) generations post-disturbance. Collapse
@@ -1035,9 +1091,9 @@ of a state shift.
 
 \newpage
 
-\hypertarget{general-patterns-in-the-risk-of-spatial-contraction}{%
-\subsubsection{General patterns in the risk of spatial
-contraction}\label{general-patterns-in-the-risk-of-spatial-contraction}}
+\hypertarget{patterns-in-the-risk-of-spatial-contraction}{%
+\subsubsection{Patterns in the risk of spatial
+contraction}\label{patterns-in-the-risk-of-spatial-contraction}}
 
 We now show similar patterns in patch occupancy after \(25\) years
 post-disturbance. Patch occupancy is defined as the average number of
