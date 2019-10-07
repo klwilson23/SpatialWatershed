@@ -30,6 +30,7 @@ results$collapsed <- 1-results$recovered
 
 library(mvtnorm)
 library(vioplot)
+library(ggplot2)
 library("alphahull")
 source("Functions/Linear network.R")
 source("Functions/Dispersal function.R")
@@ -56,13 +57,13 @@ invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHul
 plot(results$RecoveryRate,results$longMSY,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Surplus production (25 years)")
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="longMSY"),col=adjustcolor(dist_colours[z],transparency))}))
 
-plot(results$longMSY,results$longOcc,pch=21,bg=plotColours,xlab="Surplus production (25 years)",ylab="Patch occupancy (25 years)")
-invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="longMSY",y="longOcc"),col=adjustcolor(dist_colours[z],transparency))}))
-
 plot(results$RecoveryRate,results$collapsed,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Collapse rate (% of simulations)")
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="collapsed"),col=adjustcolor(dist_colours[z],transparency))}))
 
-legend("topright",c("Uniform","Local, random","Local, extirpation"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime")
+plot(results$longMSY,results$longOcc,pch=21,bg=plotColours,xlab="Surplus production (25 years)",ylab="Patch occupancy (25 years)")
+invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="longMSY",y="longOcc"),col=adjustcolor(dist_colours[z],transparency))}))
+
+legend("bottomright",c("Uniform","Local, random","Local, extirpation"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime")
 dev.off()
 
 tiff("Figures/Disturbance impacts on recovery regime smoothed polygon.tiff",compression="lzw",units="in",height=8,width=8,res=800)
@@ -75,17 +76,17 @@ invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHul
 plot(results$RecoveryRate,results$longMSY,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Surplus production (25 years)")
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="longMSY"),col=adjustcolor(dist_colours[z],transparency))}))
 
-plot(results$longMSY,results$longOcc,pch=21,bg=plotColours,xlab="Surplus production (25 years)",ylab="Patch occupancy (25 years)")
-invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="longMSY",y="longOcc"),col=adjustcolor(dist_colours[z],transparency))}))
-
 plot(results$RecoveryRate,results$collapsed,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Collapse rate (% of simulations)")
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){
   if(z<3){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="collapsed"),col=adjustcolor(dist_colours[z],transparency))}else{xMat <- unique(cbind(results[results$disturbance==scenarios$disturbance[z],"RecoveryRate"],results[results$disturbance==scenarios$disturbance[z],"collapsed"]))
-xSeq <- seq(min(xMat[,1]),max(xMat[,1]),by=0.1)
-polyMinMax <- cbind(c(xSeq,rev(xSeq)),c(sapply(xSeq,function(x){min(xMat[abs(xMat[which.min(abs(xMat[,1]-x)),1]-xMat[,1])<=0.025,2])}),sapply(rev(xSeq),function(x){max(xMat[abs(xMat[which.min(abs(xMat[,1]-x)),1]-xMat[,1])<=0.025,2])})))
-polygon(polyMinMax[,1],polyMinMax[,2],col=adjustcolor(dist_colours[z],transparency))}}))
+  xSeq <- seq(min(xMat[,1]),max(xMat[,1]),by=0.1)
+  polyMinMax <- cbind(c(xSeq,rev(xSeq)),c(sapply(xSeq,function(x){min(xMat[abs(xMat[which.min(abs(xMat[,1]-x)),1]-xMat[,1])<=0.025,2])}),sapply(rev(xSeq),function(x){max(xMat[abs(xMat[which.min(abs(xMat[,1]-x)),1]-xMat[,1])<=0.025,2])})))
+  polygon(polyMinMax[,1],polyMinMax[,2],col=adjustcolor(dist_colours[z],transparency))}}))
 
-legend("topright",c("Uniform","Local, random","Local, extirpation"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime")
+plot(results$longMSY,results$longOcc,pch=21,bg=plotColours,xlab="Surplus production (25 years)",ylab="Patch occupancy (25 years)")
+invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="longMSY",y="longOcc"),col=adjustcolor(dist_colours[z],transparency))}))
+
+legend("bottomright",c("Uniform","Local, random","Local, extirpation"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime")
 dev.off()
 
 
@@ -98,24 +99,24 @@ matLayout[1:8,1:8] <- 1
 matLayout[1:8,9:16] <- 2
 matLayout[9:16,1:8] <- 3
 matLayout[9:16,9:16] <- 4
-matLayout[1:3,6:8] <- 5
-matLayout[1:3,14:16] <- 6
-matLayout[9:11,6:8] <- 7
-matLayout[9:11,14:16] <- 8
+matLayout[5:7,6:8] <- 5
+matLayout[5:7,14:16] <- 6
+matLayout[13:15,6:8] <- 7
+matLayout[13:15,14:16] <- 8
 
 layout(matLayout)
 par(mar=c(4,4,0.5,0.5))
 for(i in 1:length(scenarios$network))
 {
   subResults <- results[results$network==scenarios$network[i],]
-  plot(subResults$dispersal,subResults$recovery,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovery rate (generations)",xlab="Dispersal rate",ylim=1.0*range(c(0,results$recovery)),cex.lab=1.2)
+  plot(subResults$dispersal,subResults$RecoveryRate,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovery rate (yr-1)",xlab="Dispersal rate",ylim=1.0*range(c(0,results$RecoveryRate)),cex.lab=1.2)
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
     #points(distResults$dispersal,distResults$recovery,bg=dist_colours[j],pch=21)
   }
   
   invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){
-    y_rng <- sapply(1:length(scenarios$dispersal),function(x){quantile(subResults$recovery[v_all.equal(subResults$dispersal,scenarios$dispersal[x]) & subResults$disturbance==scenarios$disturbance[z]],probs=c(0.25,0.75))});
+    y_rng <- sapply(1:length(scenarios$dispersal),function(x){quantile(subResults$RecoveryRate[v_all.equal(subResults$dispersal,scenarios$dispersal[x]) & subResults$disturbance==scenarios$disturbance[z]],probs=c(0.25,0.75))});
     polygon(x=c(scenarios$dispersal,rev(scenarios$dispersal)),y=c(y_rng[1,],rev(y_rng[2,])),col=adjustcolor(dist_colours[z],transparency))}))
 }
 legend("right",c("Uniform","Local, random","Local, extirpation"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime",cex=1.2)
@@ -135,12 +136,19 @@ for(i in 1:length(scenarios$network))
 }
 add2plot()
 
-tiff("Figures/Recovery along variable local productivities.tiff",compression="lzw",units="in",height=4,width=4,res=800)
-layout(1)
-par(mar=c(5,4,1,1))
-vioplot(recovery~alpha,data=results,ylim=range(c(0,results$recovery)),drawRect=FALSE,col=c("orange","dodgerblue"),xlab="Local productivity",ylab="Recovery rate (generations)")
-boxplot(recovery~alpha,data=results,ylim=range(c(0,results$recovery)),add=TRUE,col="grey30",boxwex=0.25,xaxt="n",yaxt="n",border="white",outpch=21,outcol="white",whisklty="solid",staplelwd=NA,outcex=1.5,outbg="grey30")
-dev.off()
+# http://www.sthda.com/english/wiki/ggplot2-violin-plot-quick-start-guide-r-software-and-data-visualization
+results$patchScen <- paste(results$alpha,"\u03B1","\n",results$beta,"\u03B2")
+results$stochasticity <- as.character(results$stochastic)
+p <- ggplot(data=results, aes(x=patchScen, y=RecoveryRate, fill=stochasticity))+ 
+  geom_violin(trim=FALSE,scale = "width")+
+  facet_wrap(~stochasticity)+
+  geom_boxplot(width=0.1,colour="grey90",outlier.shape=NA,fill="grey50")+
+  scale_fill_brewer(palette="Dark2") +
+  labs(x="Patch variation",y="Recovery rate (yr-1)",fill="Stochasticity") +
+  theme_minimal() +
+  theme(legend.position="top",strip.text.x = element_blank())
+p
+ggsave("Figures/Recovery along variable local productivities.tiff",plot=p,compression="lzw",units="in",height=4,width=6,dpi=800)
 
 layout(matLayout)
 par(mar=c(5,4,1,1))

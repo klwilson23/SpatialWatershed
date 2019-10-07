@@ -90,10 +90,12 @@ knitr::knit_hooks$set(plot = function(x, options) {  # set new plot hook ...
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 ```
 
-```{r source,echo=FALSE,echo=FALSE,warning = FALSE, message = FALSE}
+```{r source,echo=FALSE,warning = FALSE, message = FALSE}
 library(mvtnorm)
 library(marima)
 library(diagram)
+library(vioplot)
+library(ggplot2)
 source("Functions/make networks.R")
 source("Functions/Dispersal function.R")
 source("Functions/patch_variance.R")
@@ -168,7 +170,7 @@ The next aspect to our metapopulation model is connecting the set of patches to 
 To make networks comparable, each spatial network type needs the same leading parameters (e.g., number of patches $N_p$ and mean distance between neighboring patches $\bar{d}$). In this case, we set $N_p$ to `16` and $\bar{d}$ to `1` unit (distance units are arbitrary). We used the `igraph` package [@igraph2006] and some custom code to arrange our spatial networks as the following:
 
 <br>
-```{r networks, echo=FALSE,fig.hold=TRUE,fig.width=4, fig.height = 4,fig.cap="Four spatial network topologies.",fig.align="center"}
+```{r networks, echo=FALSE,fig.hold=TRUE,fig.width=5, fig.height = 5,fig.cap="Four spatial network topologies.",fig.align="center"}
 source("Functions/some functions.R")
 source("Functions/make networks.R")
 patchDist <- 1
@@ -250,7 +252,7 @@ plot(network$landscape,col="dodgerblue",layout=cbind(1,seq(1,-1,length.out = gor
 
 ### Disturbance regimes
 
-In all scenarios, disturbance was applied after `50` years of equilibrating the metapopulaton at pristine conditions. At year `51`, we applied the disturbance regime (the regime varied from *uniform*, *localized, random*, and *localized, extirpation* - see *Scenarios* below). Disturbance immediately removes a set proportion of the metapopulation adults at that time (i.e., `0.9` of $MN_{t=51}$). Once applied, the metapopulation was no longer disturbed and spatio-temporal recovery dynamics emerged naturally from these new conditions.
+In all scenarios, disturbance was applied after `50` years of equilibrating the metapopulaton at pristine conditions. We then applied the disturbance regime at year `50` (the regime varied from *uniform*, *localized, random*, and *localized, extirpation* - see *Scenarios* below). Disturbance immediately removes a set proportion of the metapopulation adults at that time (i.e., `0.9` of $MN_{t=50}$). Once applied, the metapopulation was no longer disturbed and spatio-temporal recovery dynamics emerged naturally from these new conditions.
 
 ```{r example disturbance regime, echo=FALSE,warning=FALSE,message=FALSE,fig.height=4,fig.width=7,fig.cap="Recovery regime of metapopulation with linear topology through time (left) and space (right).",fig.align="center"}
 
@@ -505,7 +507,7 @@ findMSY <- function(alpha,beta,Npatches,model){
 
 ## Scenarios
 
-We tested all combinations of the following eight processes (below) and ran a `100` bootstraps per scenario to estimate the mean for each of the above outcomes.
+We tested all combinations of the following eight processes (below) and ran `100` iterations per scenario to estimate the mean for each of the above outcomes.
 
 1. Homogenous and spatially variable recruitment compensation ratio across patches, i.e. intrinsic rate of population growth ($\alpha_i$).
 
@@ -530,33 +532,34 @@ We tested all combinations of the following eight processes (below) and ran a `1
 
 We demonstrate our metapopulation model with an example outcome for a linear network composed of `16` patches, a dispersal rate of `0.01` and a high enough dispersal cost such that individuals are only willing to move to their closest neighboring patches. This limits the strength of potential rescue effects. For this example, patches varied in their productivity and carrying capacity but will have deterministic population dynamics.
 
-```{r example results1, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Spatial recovery regime of metapopulation with linear topology through time (top left) and space (top right). Recruitment dynamics before and 10 years after disturbance (bottom left). Relative bias in aggregate-scale estimates of carrying capacity, compensation ratio, and recruitment production in recovery phase (bottom right).",fig.align="center"}
+```{r example results1, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Example iteration of spatial recovery regime of metapopulation with linear topology through time (top left) and space (top right). Recruitment dynamics before and 10 years after disturbance (bottom left). Relative bias in aggregate-scale estimates of carrying capacity, compensation ratio, and recruitment production in recovery phase (bottom right).",fig.align="center"}
 linearSim <- metaPop(Npatches=16,networkType="linear",patchDistance=1,Nburnin=50,NyrsPost=100,omega=0.01,m=100,alpha=2,metaK=1600,cv=1e-6,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=TRUE)
 ```
 \newpage
 We can then contrast this with a different network shape, like a dendritic network. 
 
-```{r example results2, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Spatial recovery regime of metapopulation with dendritic topology.",fig.align="center"}
+```{r example results2, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Example iteration of spatial recovery regime of metapopulation with dendritic topology.",fig.align="center"}
 dendriticSim <- metaPop(Npatches=16,networkType="dendritic",patchDistance=1,Nburnin=50,NyrsPost=100,omega=0.01,m=100,alpha=2,metaK=1600,cv=1e-6,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=TRUE)
 ```
 \newpage
 Now, let's add some stochasticity to recruitment and see how this affects the recovery regime.
 
-```{r example results3, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Spatial recovery regime of stochastic metapopulation.",fig.align="center"}
+```{r example results3, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Example iteration of spatial recovery regime of stochastic metapopulation.",fig.align="center"}
 dendriticSim2 <- metaPop(Npatches=16,networkType="dendritic",patchDistance=1,Nburnin=50,NyrsPost=100,omega=0.01,m=100,alpha=2,metaK=1600,cv=0.1,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=TRUE)
 ```
 \newpage
 Next, we can contrast with a disturbance regime where the disturbance is concentrated on local patches that can be completely extirpated (rather than the disturbance being applied proportionally across all patches e.g., a mixed-stock fishery).
 
-```{r example results4, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Spatial recovery regime of stochastic metapopulation.",fig.align="center"}
+```{r example results4, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Example iteration of spatial recovery regime of stochastic metapopulation.",fig.align="center"}
 dendriticSim3 <- metaPop(Npatches=16,networkType="dendritic",patchDistance=1,Nburnin=50,NyrsPost=100,omega=0.01,m=100,alpha=2,metaK=1600,cv=0.1,DistScenario="random_patch",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=TRUE)
 ```
 \newpage
 ## General patterns
 
 ### Effects of disturbance regime
+The strongest lever influencing recovery in our simulated metapopulations was by far, the characteristics of the disturbance regime. That is, more influential than the density dependence relationship, dispersal rates or network topology was how targeted patches were in the severity of disturbance. This was surprising and not expected in our initial hypotheses. Localized disturbances increased the risk of spatial contraction, reduced recovery rates and aggregate compensation, and increased the risk of a long-term state shift. By altering aggregate compensation, localized disturbance reduced the surplus production of the metapopulation. In other words, through changes in source-sink dynamics, metapopulations under localized disturbance acted less than the sum of their parts – the more localized the impacts, the worse these effects. Uniform disturbances generally left the metapopulation dynamics unaffected with few ecological surprises. These above spatial and temporal recovery processes also appeared tied to one another such that changes to any of them had feedbacks with other recovery metrics.
 
-```{r disturbance regime, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Spatial and temporal recovery patterns along disturbance regimes.",fig.align="center"}
+```{r disturbance regime, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Spatial and temporal recovery patterns along disturbance regimes across all scenarios.",fig.align="center"}
 results <- readRDS("Simulations/results2019-06-30.rds")
 scenarios <- readRDS("Simulations/scenarios2019-06-30.rds")
 Nboots <- 100
@@ -598,22 +601,138 @@ invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHul
 plot(results$RecoveryRate,results$longMSY,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Surplus production (25 years)")
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="longMSY"),col=adjustcolor(dist_colours[z],transparency))}))
 
-plot(results$longMSY,results$longOcc,pch=21,bg=plotColours,xlab="Surplus production (25 years)",ylab="Patch occupancy (25 years)")
-invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="longMSY",y="longOcc"),col=adjustcolor(dist_colours[z],transparency))}))
-
 plot(results$RecoveryRate,results$collapsed,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Collapse rate (% of simulations)")
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){
   if(z<3){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="collapsed"),col=adjustcolor(dist_colours[z],transparency))}else{xMat <- unique(cbind(results[results$disturbance==scenarios$disturbance[z],"RecoveryRate"],results[results$disturbance==scenarios$disturbance[z],"collapsed"]))
-xSeq <- seq(min(xMat[,1]),max(xMat[,1]),by=0.1)
-polyMinMax <- cbind(c(xSeq,rev(xSeq)),c(sapply(xSeq,function(x){min(xMat[abs(xMat[which.min(abs(xMat[,1]-x)),1]-xMat[,1])<=0.025,2])}),sapply(rev(xSeq),function(x){max(xMat[abs(xMat[which.min(abs(xMat[,1]-x)),1]-xMat[,1])<=0.025,2])})))
-polygon(polyMinMax[,1],polyMinMax[,2],col=adjustcolor(dist_colours[z],transparency))}}))
+  xSeq <- seq(min(xMat[,1]),max(xMat[,1]),by=0.1)
+  polyMinMax <- cbind(c(xSeq,rev(xSeq)),c(sapply(xSeq,function(x){min(xMat[abs(xMat[which.min(abs(xMat[,1]-x)),1]-xMat[,1])<=0.025,2])}),sapply(rev(xSeq),function(x){max(xMat[abs(xMat[which.min(abs(xMat[,1]-x)),1]-xMat[,1])<=0.025,2])})))
+  polygon(polyMinMax[,1],polyMinMax[,2],col=adjustcolor(dist_colours[z],transparency))}}))
 
-legend("topright",c("Uniform","Local, random","Local, extirpation"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime")
+plot(results$longMSY,results$longOcc,pch=21,bg=plotColours,xlab="Surplus production (25 years)",ylab="Patch occupancy (25 years)")
+invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="longMSY",y="longOcc"),col=adjustcolor(dist_colours[z],transparency))}))
+
+legend("bottomright",c("Uniform","Local, random","Local, extirpation"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime")
 ```
-
+\newpage
 ### Role of network structure & dispersal
 
 We now show some general patterns in how variable patch demographic rates, network structure, dispersal, disturbance, recruitment stochasticity, and spatio-temporal correlations variation affects metapopulation *recovery rates*, *maximum sustainable yield* (analagous to the maximum rate of loss the system can sustain), and *collapse rate* (i.e, the number of simulations where the metapopulation fails to recover), and *patch occupancy* (i.e., number of patches with local abundance above some baseline).
+
+```{r recovery and dispersal and spatial network, echo=FALSE,fig.height=6.5,fig.width=6.5,fig.cap="Metapopulation recovery rates along gradients of network configuration, dispersal rates, and spatial distribution of disturbance. The shaded region describes the interquartile range across all scenarios.",fig.align="center"}
+results <- readRDS("Simulations/results2019-06-30.rds")
+scenarios <- readRDS("Simulations/scenarios2019-06-30.rds")
+Nboots <- 100
+Nlevels <- 11
+model <- "Beverton-Holt"
+# simulation parameters
+Npatches <- 16
+patchDist <- 1
+Nburnin <- 50
+NyrsPost <- 100
+Nyears <- Nburnin+NyrsPost
+compLag <- 25 # how many years to lag estimates of compensation
+dataWeighting <- 0.1 # penalty to past years for data weighting
+m <- 100 # distance decay function: penalty of 1 says about 60% of dispersing recruits move to neighbor patches. penalty of 2 says about 90% of dispersing recruits move to neighbor patches
+# adult stock-juvenile recruitment traits
+alpha <- 2
+metaK <- 1600
+# how big is the disturbance after Nburnin years?
+magnitude_of_decline <- 0.9
+# what is the lag time between recruits and spawners
+lagTime <- 1
+
+results$StateShift <- ((1-results$recovered)+(1-results$longOcc))/2
+results$RecoveryRate <- 1-results$recovery/NyrsPost
+results$collapsed <- 1-results$recovered
+
+dist_colours <- c("tomato","dodgerblue","orange")
+transparency <- 0.6
+plotColours <- ifelse(results$dispersal==-1,
+                           adjustcolor(dist_colours[results$disturbance],1,offset=c(-0.35,-0.35,-0.35,0)),
+                           adjustcolor(dist_colours[results$disturbance],1))
+matLayout <- matrix(0,nrow=16,ncol=16)
+matLayout <- matrix(0,nrow=16,ncol=16)
+matLayout[1:8,1:8] <- 1
+matLayout[1:8,9:16] <- 2
+matLayout[9:16,1:8] <- 3
+matLayout[9:16,9:16] <- 4
+matLayout[5:7,6:8] <- 5
+matLayout[5:7,14:16] <- 6
+matLayout[13:15,6:8] <- 7
+matLayout[13:15,14:16] <- 8
+
+layout(matLayout)
+par(mar=c(4,4,0.5,0.5))
+for(i in 1:length(scenarios$network))
+{
+  subResults <- results[results$network==scenarios$network[i],]
+  plot(subResults$dispersal,subResults$RecoveryRate,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovery rate (yr-1)",xlab="Dispersal rate",ylim=1.0*range(c(0,results$RecoveryRate)),cex.lab=1.2)
+  for(j in 1:length(scenarios$disturbance)){
+    distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
+    #points(distResults$dispersal,distResults$recovery,bg=dist_colours[j],pch=21)
+  }
+  
+  invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){
+    y_rng <- sapply(1:length(scenarios$dispersal),function(x){quantile(subResults$RecoveryRate[v_all.equal(subResults$dispersal,scenarios$dispersal[x]) & subResults$disturbance==scenarios$disturbance[z]],probs=c(0.25,0.75))});
+    polygon(x=c(scenarios$dispersal,rev(scenarios$dispersal)),y=c(y_rng[1,],rev(y_rng[2,])),col=adjustcolor(dist_colours[z],transparency))}))
+}
+legend("right",c("Uniform","Local, random","Local, extirpation"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime",cex=1.2)
+add2plot()
+
+```
+
+Dispersal, landscape structure, and local density-dependence also affected metapopulation recovery patterns in three key ways, though to a lesser extent. First, recovery rates increased with increased dispersal. However, this effect was nonlinear with diminishing benefits of dispersal occurring at ~1-3%, depending on spatial structure and disturbance. Second, more linearized networks had slower recovery times than more connected networks suggesting that rescue effects take some time to cascade through the entire network of patches; but this interacted with the disturbance regime as only local, extirpation exhibited this change in any substantial manner. Last, diversity in local patch compensation and carrying capacities tended to slow metapopulation recoveries - this effect interacted with other factors like stochasticity.
+
+```{r recovery with patch variation,echo=FALSE,warning = FALSE, message = FALSE,fig.height=4.5,fig.width=6,fig.cap="Effects of variable local patch productivities on metapopulation recovery across all scenarios.",fig.align="center"}
+results <- readRDS("Simulations/results2019-06-30.rds")
+scenarios <- readRDS("Simulations/scenarios2019-06-30.rds")
+Nboots <- 100
+Nlevels <- 11
+model <- "Beverton-Holt"
+# simulation parameters
+Npatches <- 16
+patchDist <- 1
+Nburnin <- 50
+NyrsPost <- 100
+Nyears <- Nburnin+NyrsPost
+compLag <- 25 # how many years to lag estimates of compensation
+dataWeighting <- 0.1 # penalty to past years for data weighting
+m <- 100 # distance decay function: penalty of 1 says about 60% of dispersing recruits move to neighbor patches. penalty of 2 says about 90% of dispersing recruits move to neighbor patches
+# adult stock-juvenile recruitment traits
+alpha <- 2
+metaK <- 1600
+# how big is the disturbance after Nburnin years?
+magnitude_of_decline <- 0.9
+# what is the lag time between recruits and spawners
+lagTime <- 1
+
+results$StateShift <- ((1-results$recovered)+(1-results$longOcc))/2
+results$RecoveryRate <- 1-results$recovery/NyrsPost
+results$collapsed <- 1-results$recovered
+
+dist_colours <- c("tomato","dodgerblue","orange")
+transparency <- 0.6
+plotColours <- ifelse(results$dispersal==-1,
+                           adjustcolor(dist_colours[results$disturbance],1,offset=c(-0.35,-0.35,-0.35,0)),
+                           adjustcolor(dist_colours[results$disturbance],1))
+# http://www.sthda.com/english/wiki/ggplot2-violin-plot-quick-start-guide-r-software-and-data-visualization
+results$patchScen <- paste(results$alpha,"\u03B1","\n",results$beta,"\u03B2")
+results$stochasticity <- as.character(results$stochastic)
+p <- ggplot(data=results, aes(x=patchScen, y=RecoveryRate, fill=stochasticity))+ 
+  geom_violin(trim=FALSE,scale = "width")+
+  facet_wrap(~stochasticity)+
+  geom_boxplot(width=0.1,colour="grey90",outlier.shape=NA,fill="grey50")+
+  scale_fill_brewer(palette="Dark2") +
+  labs(x="Patch variation",y="Recovery rate (yr-1)",fill="Stochasticity") +
+  theme_minimal() +
+  theme(legend.position="top",strip.text.x = element_blank())
+p
+
+
+```
+
+\newpage
+### Patterns in recovery rates
 
 First, lets show recovery rates for a scenario where (1) patches have the same local productivities and carrying capacities, (2) patches have different productivities and carrying capacities, (3) recruitment is deterministic and patches are different, and (4) spatial-temporal correlation in stochastic recruitment.
 
@@ -676,7 +795,7 @@ add2plot()
 
 ```
 \newpage
-Now, lets show recovery rates for the same scenario but allowing for recruitment to be stochastic (but patches are the same in demography). We see the same three main effects of dispersal, network, and disturbance noted above. We also see a few subtle changes: (1) stochasticity slows recovery for uniform and local disturbance, but (2) quickens recovery for extreme local disturbance.
+Now, lets show recovery rates for the same scenario but allowing for recruitment to be stochastic (but patches are identical in demographic traits). We see the same three main effects of dispersal, network, and disturbance noted above. We also see a few subtle changes: (1) stochasticity slows recovery for uniform and local disturbance, but (2) quickens recovery for extreme local disturbance.
 
 ```{r stochastic recruitment, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Recovery rates along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with stochasticity.",fig.align="center"}
 layout(matLayout)
@@ -724,7 +843,7 @@ add2plot()
 
 ```
 \newpage
-### General patterns in MSY
+### Patterns in MSY
 
 #### MSY with deterministic recruitment where patches are the same
 
@@ -732,7 +851,7 @@ We now show similar patterns in how the maximum surplus production of the whole 
 
 We will show 25-year MSY patterns for a scenario where (1) patches have the same local productivities and carrying capacities, (2) patches have different productivities and carrying capacities, (3) recruitment is deterministic and patches are different, (4) spatial-temporal correlation in stochastic recruitment.
 
-Below, we can see three main effects on recovery rates (number of generations to reach recovery). First, recovery gets faster with increased dispersal. Most of the action here takes place at low rates of dispersal indicating most spatial topologies don't need much dispersal to quicken their recovery. In preliminary runs, dispersal rates of `0.05-0.2` provided similar recovery patterns. Second, more localized disturbances regimes lead to slower recovery. Third, linearized networks have slower recovery times than interconnected, complex networks suggesting that rescue effects take some time to cascade through the entire network of patches.
+Below, we can see two main effects on surplus production. First, spatial disturbance is a strong driver of surplus production with more localized disturbance reducing the surplus. Second, dispersal rates are only limiting in scenarios with localized disturbance. This suggests that (1) uniformly disturbed metapopulations operate as the "sum of their parts" but (2) localized disturbances affect metapopulation surplus production leading to slower internal recovery and/or reduced rescue effects from neighboring patches.
 
 ```{r MSY, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Maximum surplus production along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with deterministic recruitment and the same patches.",fig.align="center"}
 layout(matLayout)
@@ -837,7 +956,7 @@ add2plot()
 
 \newpage
 
-### General patterns in the risk of hysteresis & state shifts
+### Patterns in the risk of hysteresis & state shifts
 
 We now show similar patterns in the rate of long-term collapse across the metapopulation after $100$ generations post-disturbance. Collapse rate % is defined as the number of simulations where metapopulation abundance failed to reach at least `1.0` of the average pre-disturbance abundance for `5` consecutive years after disturbance. This "collapse rate" reflects the risk of a long-term state shift in metapopulation dynamics after disturbance in the face of stochasticity. We start with a scenario with deterministic recruitment where patches are the same.
 
@@ -942,7 +1061,7 @@ add2plot()
 ```
 
 \newpage
-### General patterns in the risk of spatial contraction
+### Patterns in the risk of spatial contraction
 
 We now show similar patterns in patch occupancy after $25$ years post-disturbance. Patch occupancy is defined as the average number of patches that fail to recover above `0.1` pre-disturbance abundance for scenario with deterministic recruitment where patches are the same. Patch occupancy characterizes the expected risk of spatial contractions or local patch collapses, and reflects how interactions between spatial structure, disturbance, and dispersal affect source-sink dynamics and the provisioning of rescue effects to local patches.
 

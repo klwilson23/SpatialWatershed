@@ -29,7 +29,8 @@ metaPop <- function(Npatches=16,
                     dataWeighting=0.1,
                     alphaVariable=TRUE,
                     kVariable=TRUE,
-                    spatialPlots=TRUE)
+                    spatialPlots=TRUE,
+                    patchID=NA)
 {
 
   # make the spatial network
@@ -232,6 +233,7 @@ metaPop <- function(Npatches=16,
   
   if(spatialPlots)
   {
+    network
     spatialRecoveryPlot(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recovery,Nburnin,Nyears,alpha,metaK,alphaYr,metaKYr,lostCapacity,compensationBias,MSYYr,nodeScalar=35,network=network,networkType=networkType,Npatches=Npatches,NMsy=c(sum(NMSY_p),mnNMSY)) 
   }
 
