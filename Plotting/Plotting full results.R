@@ -28,6 +28,28 @@ results$StateShift <- ((1-results$recovered)+(1-results$longOcc))/2
 results$RecoveryRate <- 1-results$recovery/NyrsPost
 results$collapsed <- 1-results$recovered
 
+results$unrecovered <- factor(ifelse(results$metaAbund >=0.9,"recovered",ifelse(results$metaAbund>=0.7,"recovered","unrecovered")),levels=c("recovered","unrecovered"))
+results$recovery_pace <- factor(ifelse(results$recovery <=10,"fast",ifelse(results$recovery<=25,"fast","slow")),levels=c("fast","slow"))
+results$contraction <- factor(ifelse(results$medOcc >=0.9,"full",ifelse(results$medOcc >=0.25,"full","contraction")),levels=c("full","contraction"))
+results$masked <- factor(ifelse(results$unrecovered!="unrecovered" & results$contraction=="contraction","masked_collapse","unmasked"),levels=c("unmasked","masked_collapse"))
+
+results$outcome <- factor(paste(results$unrecovered,results$recovery_pace,results$contraction,results$masked),levels=c("recovered fast full unmasked","recovered slow full unmasked","recovered fast contraction masked_collapse","recovered slow contraction masked_collapse","unrecovered slow full unmasked","unrecovered slow contraction unmasked" ))
+levels(results$outcome)
+table(results$outcome)
+dist_colours <- c("tomato","dodgerblue","orange")
+transparency <- 0.6
+plotColours <- colorRampPalette(c("tomato","dodgerblue","orange"))
+head(results)
+layout(matrix(1:8,nrow=4,ncol=2,byrow=TRUE))
+plot(outcome~network,data=results,col=plotColours(length(unique(results$outcome))))
+plot(outcome~disturbance,data=results,col=plotColours(length(unique(results$outcome))))
+plot(outcome~dispersal,data=results,col=plotColours(length(unique(results$outcome))))
+plot(outcome~alpha,data=results,col=plotColours(length(unique(results$outcome))))
+plot(outcome~beta,data=results,col=plotColours(length(unique(results$outcome))))
+plot(outcome~spatial,data=results,col=plotColours(length(unique(results$outcome))))
+plot(outcome~temporal,data=results,col=plotColours(length(unique(results$outcome))))
+plot(outcome~stochastic,data=results,col=plotColours(length(unique(results$outcome))))
+
 library(mvtnorm)
 library(vioplot)
 library(ggplot2)
