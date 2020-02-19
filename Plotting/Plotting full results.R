@@ -1,6 +1,20 @@
 results <- readRDS("Simulations/results2019-06-30.rds")
 scenarios <- readRDS("Simulations/scenarios2019-06-30.rds")
 
+library(mvtnorm)
+library(vioplot)
+library(ggplot2)
+library(ggalluvial)
+library("alphahull")
+source("Functions/Linear network.R")
+source("Functions/Dispersal function.R")
+source("Functions/patch_variance.R")
+source("Functions/local disturbance.R")
+source("Functions/some functions.R")
+source("Functions/Metapop function.R")
+source("Functions/popDynFn.R")
+source("Functions/Add landscapes plot.R")
+
 NaNsims <- which(apply(apply(results[,-(1:8)],2,is.nan),1,any))
 
 results[NaNsims,]
@@ -28,12 +42,21 @@ results$StateShift <- ((1-results$recovered)+(1-results$longOcc))/2
 results$RecoveryRate <- 1-results$recovery/NyrsPost
 results$collapsed <- 1-results$recovered
 
-results$unrecovered <- factor(ifelse(results$metaAbund >=0.9,"recovered",ifelse(results$metaAbund>=0.7,"recovered","unrecovered")),levels=c("recovered","unrecovered"))
-results$recovery_pace <- factor(ifelse(results$recovery <=10,"fast",ifelse(results$recovery<=25,"fast","slow")),levels=c("fast","slow"))
-results$contraction <- factor(ifelse(results$medOcc >=0.9,"full",ifelse(results$medOcc >=0.25,"full","contraction")),levels=c("full","contraction"))
-results$masked <- factor(ifelse(results$unrecovered!="unrecovered" & results$contraction=="contraction","masked_collapse","unmasked"),levels=c("unmasked","masked_collapse"))
+results$unrecovered <- factor(ifelse(results$metaAbund >=0.9,"Recovered",ifelse(results$metaAbund>=0.7,"Recovering","Unrecovered")),levels=c("Recovered","Recovering","Unrecovered"))
+results$recovery_pace <- factor(ifelse(results$recovery <=10,"Fast",ifelse(results$recovery<=25,"Moderate","Slow")),levels=c("Fast","Moderate","Slow"))
+results$contraction <- factor(ifelse(results$medOcc >=0.9,"Full",ifelse(results$medOcc >=0.25,"Filling","Contracted")),levels=c("Full","Filling","Contracted"))
+results$masked <- factor(ifelse(results$unrecovered!="Unrecovered" & results$contraction=="Contracted","Hidden collapses","Good monitoring"),levels=c("Good monitoring","Hidden collapses"))
 
-results$outcome <- factor(paste(results$unrecovered,results$recovery_pace,results$contraction,results$masked),levels=c("recovered fast full unmasked","recovered slow full unmasked","recovered fast contraction masked_collapse","recovered slow contraction masked_collapse","unrecovered slow full unmasked","unrecovered slow contraction unmasked" ))
+results$outcome <- factor(paste(results$unrecovered,results$recovery_pace,results$contraction,results$masked))
+results$surprise <- factor(ifelse(grepl("Hidden",results$outcome),"Hidden collapses",
+                           ifelse(grepl("Contracted",results$outcome),"Spatial contraction",
+                                  ifelse(grepl("Full",results$outcome),"No surprises","Slow recovery"))))
+
+results$surprise_logic <- ifelse(results$surprise=="No surprises",0,1)
+
+surprises <- data.frame(aggregate(surprise_logic~network+dispersal+disturbance+surprise,data=results,FUN=sum))
+
+
 levels(results$outcome)
 table(results$outcome)
 dist_colours <- c("tomato","dodgerblue","orange")
@@ -50,18 +73,32 @@ plot(outcome~spatial,data=results,col=plotColours(length(unique(results$outcome)
 plot(outcome~temporal,data=results,col=plotColours(length(unique(results$outcome))))
 plot(outcome~stochastic,data=results,col=plotColours(length(unique(results$outcome))))
 
-library(mvtnorm)
-library(vioplot)
-library(ggplot2)
-library("alphahull")
-source("Functions/Linear network.R")
-source("Functions/Dispersal function.R")
-source("Functions/patch_variance.R")
-source("Functions/local disturbance.R")
-source("Functions/some functions.R")
-source("Functions/Metapop function.R")
-source("Functions/popDynFn.R")
-source("Functions/Add landscapes plot.R")
+data(majors)
+head(majors)
+ggplot(surprises,aes(y = surprise_logic,axis1 = surprise, axis2 = disturbance, axis3 = network)) +
+  geom_alluvium(aes(fill = network),width = 1/12, reverse = FALSE) +
+  guides(fill = FALSE) +
+  geom_stratum(width = 1/8,color="grey",reverse = FALSE) +
+  geom_text(stat = "stratum", infer.label = TRUE, reverse = FALSE) +
+  scale_x_continuous(breaks = 1:3, labels = c("Surprise", "Network", "Disturbance")) +
+  coord_flip() +
+  ggtitle("Ecological surprises by habitat network and disturbance")
+
+surprises$dispersal <- factor(surprises$dispersal)
+
+data(vaccinations)
+levels(vaccinations$response) <- rev(levels(vaccinations$response))
+ggplot(surprises,
+       aes(x = dispersal, stratum = surprise, alluvium = disturbance,
+           y = surprise_logic,
+           fill = surprise, label = surprise)) +
+  scale_x_discrete(expand = c(.1, .1)) +
+  geom_flow() +
+  geom_stratum(alpha = .5) +
+  geom_text(stat = "stratum", size = 3) +
+  theme(legend.position = "none") +
+  ggtitle("vaccination survey responses at three points in time")
+
 
 dist_colours <- c("tomato","dodgerblue","orange")
 transparency <- 0.6
