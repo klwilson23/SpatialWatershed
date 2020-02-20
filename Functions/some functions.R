@@ -4,6 +4,8 @@ Corner_text <- function(text, location="topright",...) #function to write text t
   legend(location,legend=text, bty ="n", pch=NA,...)
 }
 
+wrapper <- function(x, ...) paste(strwrap(x, ...), collapse = "\n")
+
 get_beta <- function(mean,cv) #function that returns the alpha and beta shape parameters of a beta distribution, based on the mean and variation of a given beta distribution
 {
   sd <- mean*cv

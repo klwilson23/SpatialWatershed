@@ -1,6 +1,25 @@
 results <- readRDS("Simulations/results2019-06-30.rds")
 scenarios <- readRDS("Simulations/scenarios2019-06-30.rds")
 
+library(mvtnorm)
+library(vioplot)
+library(ggplot2)
+library(ggalluvial)
+library("alphahull")
+library(wesanderson)
+library(ggpubr)
+
+wesAnderson <- "Moonrise1"
+
+source("Functions/Linear network.R")
+source("Functions/Dispersal function.R")
+source("Functions/patch_variance.R")
+source("Functions/local disturbance.R")
+source("Functions/some functions.R")
+source("Functions/Metapop function.R")
+source("Functions/popDynFn.R")
+source("Functions/Add landscapes plot.R")
+
 NaNsims <- which(apply(apply(results[,-(1:8)],2,is.nan),1,any))
 
 results[NaNsims,]
@@ -28,18 +47,45 @@ results$StateShift <- ((1-results$recovered)+(1-results$longOcc))/2
 results$RecoveryRate <- 1-results$recovery/NyrsPost
 results$collapsed <- 1-results$recovered
 
-library(mvtnorm)
-library(vioplot)
-library(ggplot2)
-library("alphahull")
-source("Functions/Linear network.R")
-source("Functions/Dispersal function.R")
-source("Functions/patch_variance.R")
-source("Functions/local disturbance.R")
-source("Functions/some functions.R")
-source("Functions/Metapop function.R")
-source("Functions/popDynFn.R")
-source("Functions/Add landscapes plot.R")
+results$unrecovered <- factor(ifelse(results$metaAbund >=0.9,"Recovered",ifelse(results$metaAbund>=0.7,"Recovering","Collapsed")),levels=c("Recovered","Recovering","Collapsed"))
+results$recovery_pace <- factor(ifelse(results$recovery <=10,"Fast",ifelse(results$recovery<=25,"Moderate","Slow")),levels=c("Fast","Moderate","Slow"))
+results$contraction <- factor(ifelse(results$medOcc >=0.9,"Full",ifelse(results$medOcc >=0.15,"Filling","Contracted")),levels=c("Full","Filling","Contracted"))
+results$masked <- factor(ifelse(results$unrecovered!="Collapsed" & results$longOcc <= 0.50,"Hidden collapses","Good monitoring"),levels=c("Good monitoring","Hidden collapses"))
+results$lostCap <- factor(ifelse(results$longMSY <=0.5,"Lost capacity","Healthy"),levels=c("Healthy","Lost capacity"))
+results$outcome <- factor(paste(results$unrecovered,results$recovery_pace,results$contraction,results$masked,results$lostCap))
+results$surprise <- factor(ifelse(grepl("Contracted",results$outcome),"Spatial contraction",
+                           ifelse(grepl("Hidden",results$outcome),"Hidden collapses",
+                                  ifelse(grepl("Lost capacity",results$outcome),"Lost capacity",
+                                         ifelse(grepl("Fast",results$outcome) & grepl("Recover",results$outcome),"Resilient","Slow recovery")))),levels=c("Resilient","Slow recovery","Lost capacity","Hidden collapses","Spatial contraction"))
+
+results$surprise_logic <- ifelse(results$surprise=="Resilient",1,1)
+results$dispersal_range <- factor(ifelse(results$dispersal>=0.001,"High","Low"),levels=c("High","Low"))
+results$network_lab <- factor(results$network,levels=levels(results$network),labels=c("Linear","Dendritic","Star","Complex"))
+results$disturb_lab <- factor(results$disturbance,levels=levels(results$disturbance),labels=c("Uniform","Local, random","Local, extirpation"))
+results$density_dep <- factor(results$alpha,levels=levels(results$alpha),labels=c("Identical","Diverse"))
+
+surprises <- data.frame(aggregate(surprise_logic~network_lab+dispersal_range+disturb_lab+density_dep+surprise,data=results,FUN=sum))
+
+gradColour <- colorRampPalette(rev(c("#bd0026","tomato","#fdae61","dodgerblue","forestgreen")))
+margins <- c(0.1,1,0.1,0.1)
+p1 <- ggplot(surprises,aes(y = surprise_logic,axis1 = density_dep, axis2 = dispersal_range,axis3=disturb_lab,axis4=surprise)) +
+      geom_alluvium(aes(fill = surprise),width = 1/6,reverse=FALSE) +
+      guides(fill = FALSE) +
+      geom_stratum(width = 1/6,fill="grey",color="white", reverse = FALSE) +
+      geom_text(stat = "stratum",size=3.5, infer.label = TRUE, reverse = FALSE) +
+      scale_x_discrete(limits = c("Patch productivity", "Dispersal","Disturbance","Surprise"),expand=c(0.05,0.05)) +
+      scale_fill_manual(values=gradColour(n=length(unique(surprises$surprise)))) +
+      #scale_fill_brewer(type="div",palette="RdYlBu",direction=-1) +
+      theme_minimal() +
+      ylab("Frequency of outcome") +
+      coord_cartesian(clip = "off") +
+      theme(legend.position="none",strip.text.x=element_blank(),plot.margin=unit(margins,"line")) +
+      ggtitle("Ecological surprises in metapopulations")
+pAnnotated <- annotate_figure(p1,bottom=text_grob(wrapper("Interplay between density-dependent productivity, disturbance, and dispersal can lead to suprising recovery outcomes.",width=115),color="black",hjust=0,x=0.01,face="italic",size=10))
+pAnnotated
+wid_height <- 16/12
+height <- 14
+ggsave("Figures/surprising outcomes.jpeg",pAnnotated,units="cm",dpi=800,width=height*wid_height,height=height)
 
 dist_colours <- c("tomato","dodgerblue","orange")
 transparency <- 0.6
