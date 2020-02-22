@@ -49,24 +49,28 @@ results$collapsed <- 1-results$recovered
 
 results$unrecovered <- factor(ifelse(results$metaAbund >=0.9,"Recovered",ifelse(results$metaAbund>=0.7,"Recovering","Collapsed")),levels=c("Recovered","Recovering","Collapsed"))
 results$recovery_pace <- factor(ifelse(results$recovery <=10,"Fast",ifelse(results$recovery<=25,"Moderate","Slow")),levels=c("Fast","Moderate","Slow"))
-results$contraction <- factor(ifelse(results$medOcc >=0.9,"Full",ifelse(results$medOcc >=0.15,"Filling","Contracted")),levels=c("Full","Filling","Contracted"))
-results$masked <- factor(ifelse(results$unrecovered!="Collapsed" & results$longOcc <= 0.50,"Hidden collapses","Good monitoring"),levels=c("Good monitoring","Hidden collapses"))
+results$contraction <- factor(ifelse(results$longOcc >=0.9,"Full",ifelse(results$longOcc >=0.75,"Filling","Contracted")),levels=c("Full","Filling","Contracted"))
+results$masked <- factor(ifelse(results$unrecovered!="Collapsed" & results$longOcc <= 0.5,"Hidden collapses","Good monitoring"),levels=c("Good monitoring","Hidden collapses"))
 results$lostCap <- factor(ifelse(results$longMSY <=0.5,"Lost capacity","Healthy"),levels=c("Healthy","Lost capacity"))
-results$outcome <- factor(paste(results$unrecovered,results$recovery_pace,results$contraction,results$masked,results$lostCap))
-results$surprise <- factor(ifelse(grepl("Contracted",results$outcome),"Spatial contraction",
-                           ifelse(grepl("Hidden",results$outcome),"Hidden collapses",
-                                  ifelse(grepl("Lost capacity",results$outcome),"Lost capacity",
-                                         ifelse(grepl("Fast",results$outcome) & grepl("Recover",results$outcome),"Resilient","Slow recovery")))),levels=c("Resilient","Slow recovery","Lost capacity","Hidden collapses","Spatial contraction"))
+
+results$collape_logic <- factor(ifelse(results$metaAbund <= 0.10, "Wide collapse","Healthy"),levels=c("Healthy","Wide collapse"))
+
+results$outcome <- factor(paste(results$unrecovered,results$recovery_pace,results$contraction,results$masked,results$lostCap,results$collape_logic))
+results$surprise <- factor(ifelse(grepl("Wide collapse",results$outcome),"Critical risk",
+                                  ifelse(grepl("Contracted",results$outcome) & !grepl("Recovered",results$unrecovered),"Spatial contraction",
+                                         ifelse(grepl("Hidden",results$outcome),"Hidden collapses",
+                                                ifelse(grepl("Lost capacity",results$outcome),"Lost capacity",
+                                                       ifelse(grepl("Fast",results$outcome) & grepl("Recover",results$outcome),"Resilient","Slow recovery"))))),levels=c("Resilient","Slow recovery","Lost capacity","Hidden collapses","Spatial contraction","Critical risk"))
 
 results$surprise_logic <- ifelse(results$surprise=="Resilient",1,1)
 results$dispersal_range <- factor(ifelse(results$dispersal>=0.001,"High","Low"),levels=c("High","Low"))
 results$network_lab <- factor(results$network,levels=levels(results$network),labels=c("Linear","Dendritic","Star","Complex"))
-results$disturb_lab <- factor(results$disturbance,levels=levels(results$disturbance),labels=c("Uniform","Local, random","Local, extirpation"))
+results$disturb_lab <- factor(results$disturbance,levels=levels(results$disturbance),labels=c("Even","Localized, mixed","Localized, extirpation"))
 results$density_dep <- factor(results$alpha,levels=levels(results$alpha),labels=c("Identical","Diverse"))
 
 surprises <- data.frame(aggregate(surprise_logic~network_lab+dispersal_range+disturb_lab+density_dep+surprise,data=results,FUN=sum))
 
-gradColour <- colorRampPalette(rev(c("#bd0026","tomato","#fdae61","dodgerblue","forestgreen")))
+gradColour <- colorRampPalette(rev(c("black","#bd0026","tomato","#fdae61","dodgerblue","forestgreen")))
 margins <- c(0.1,1,0.1,0.1)
 p1 <- ggplot(surprises,aes(y = surprise_logic,axis1 = density_dep, axis2 = dispersal_range,axis3=disturb_lab,axis4=surprise)) +
       geom_alluvium(aes(fill = surprise),width = 1/6,reverse=FALSE) +
@@ -85,7 +89,7 @@ pAnnotated <- annotate_figure(p1,bottom=text_grob(wrapper("Interplay between den
 pAnnotated
 wid_height <- 16/12
 height <- 14
-ggsave("Figures/surprising outcomes.jpeg",pAnnotated,units="cm",dpi=800,width=height*wid_height,height=height)
+ggsave("Figures/surprising outcomes.jpeg",p1,units="cm",dpi=800,width=height*wid_height,height=height)
 
 dist_colours <- c("tomato","dodgerblue","orange")
 transparency <- 0.6
