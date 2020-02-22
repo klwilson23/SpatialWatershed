@@ -87,7 +87,7 @@ p1 <- ggplot(surprises,aes(y = surprise_logic,axis1 = density_dep, axis2 = dispe
       ggtitle("Ecological surprises in metapopulations")
 pAnnotated <- annotate_figure(p1,bottom=text_grob(wrapper("Interplay between density-dependent productivity, disturbance, and dispersal can lead to suprising recovery outcomes.",width=115),color="black",hjust=0,x=0.01,face="italic",size=10))
 pAnnotated
-wid_height <- 16/12
+wid_height <- 16/10
 height <- 14
 ggsave("Figures/surprising outcomes.jpeg",p1,units="cm",dpi=800,width=height*wid_height,height=height)
 
