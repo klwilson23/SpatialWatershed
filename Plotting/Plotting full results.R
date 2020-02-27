@@ -8,6 +8,9 @@ library(ggalluvial)
 library("alphahull")
 library(wesanderson)
 library(ggpubr)
+library(cluster)
+library(fpc)
+library(clValid)
 
 wesAnderson <- "Moonrise1"
 
@@ -62,23 +65,87 @@ results$surprise <- factor(ifelse(grepl("Wide collapse",results$outcome),"Critic
                                                 ifelse(grepl("Lost capacity",results$outcome),"Lost capacity",
                                                        ifelse(grepl("Fast",results$outcome) & grepl("Recover",results$outcome),"Resilient","Slow recovery"))))),levels=c("Resilient","Slow recovery","Lost capacity","Hidden collapses","Spatial contraction","Critical risk"))
 
+# do some hierarchical clustering analyses
+head(results)
+results_clust <- data.frame(scale(results[,c("RecoveryRate","collapsed","medOcc","medMSY","longOcc","longMSY","metaAbund")],center = TRUE,scale = TRUE))
+fitted <- clustering(results_clust,n=4,type="hier",standard=T)
+clustOpt <- NULL
+dunnInd <- dunn2 <- gamma <- silWidth <- clus.SS <- widGap <- separat <- c()
+k_vec <- 2:8
+for(i in (k_vec-1))
+{
+  clustOpt[[i]] <- clustering(results_clust,n=i+1,type="hier",standard=F)
+  dunnInd[i] <- clustOpt[[i]]$dunnInd
+  dunn2[i] <- clustOpt[[i]]$dunn2nd
+  gamma[i] <- clustOpt[[i]]$gamma
+  silWidth[i] <- clustOpt[[i]]$width
+  clus.SS[i] <- clustOpt[[i]]$minSS
+  widGap[i] <- clustOpt[[i]]$gap
+  separat[i] <- clustOpt[[i]]$separat
+  #Sys.sleep(0.1)
+}
+
+layout(matrix(c(1:7,0,0),nrow=3,ncol=3,byrow=TRUE))
+par(mar=c(5,4,1,1))
+opt_k <- k_vec
+xlabel <- "k, number of clusters"
+
+plot(k_vec,dunnInd, xlab=xlabel, ylab="Dunn index (version 1)", type="l")
+points(opt_k,dunnInd[opt_k-1],pch=21,bg=(opt_k))
+
+plot(k_vec,dunn2, xlab=xlabel, ylab="Dunn index (version 2)", type="l")
+points(opt_k,dunn2[opt_k-1],pch=21,bg=(opt_k))
+
+plot(k_vec,gamma, xlab=xlabel, ylab="Normalized gamma", type="l")
+points(opt_k,gamma[opt_k-1],pch=21,bg=(opt_k))
+
+plot(k_vec,silWidth, xlab=xlabel, ylab="Average Silhoette Width", type="l")
+points(opt_k,silWidth[opt_k-1],pch=21,bg=(opt_k))
+
+plot(k_vec,clus.SS, xlab=xlabel, ylab="Minimized sum of squares residuals", type="l")
+points(opt_k,clus.SS[opt_k-1],pch=21,bg=(opt_k))
+lines(smooth.spline(k_vec,clus.SS,cv=TRUE),lty=2,col="blue")
+
+plot(k_vec,widGap, xlab=xlabel, ylab="Widest within-cluster gap", type="l")
+points(opt_k,widGap[opt_k-1],pch=21,bg=(opt_k))
+
+plot(k_vec,separat, xlab=xlabel, ylab="Separation Index", type="l")
+points(opt_k,separat[opt_k-1],pch=21,bg=(opt_k))
+
+layout(matrix(1,nrow=1,ncol=1))
+fitted <- clustering(results_clust,n=6,type="hier",standard=F)
+clusplot(results_clust, fitted$groups, color=TRUE, shade=TRUE, labels=4, lines=1, main="", plotchar=TRUE)
+results_clust$cluster_surprises <- results$cluster_surprises <- as.factor(fitted$groups)
+
+aggregate(cbind(recovery,collapsed,medOcc,medMSY,longOcc,longMSY,metaAbund)~cluster_surprises,data=results,FUN=mean)
+
+results$cluster_surprises <- factor(results$cluster_surprises,labels=c("Resilient","Slow recovery","Critical risk","Spatial contraction","Hidden collapses","Lost capacity"))
+
+results$cluster_surprises <- factor(results$cluster_surprises,levels=c("Resilient","Slow recovery","Hidden collapses","Spatial contraction","Lost capacity","Critical risk"))
+
+aggregate(cbind(recovery,RecoveryRate,collapsed,medOcc,medMSY,longOcc,longMSY,metaAbund)~cluster_surprises,data=results,FUN=mean)
+table(results$cluster_surprises)/nrow(results)
+
+jpeg("Figures/surprises clustering.jpeg",res=800,width=6,height=6,units="in")
+clusplot(results_clust, results$cluster_surprises, color=TRUE, shade=FALSE, labels=4, lines=0, main="", plotchar=FALSE)
+dev.off()
 results$surprise_logic <- ifelse(results$surprise=="Resilient",1,1)
 results$dispersal_range <- factor(ifelse(results$dispersal>=0.001,"High","Low"),levels=c("High","Low"))
 results$network_lab <- factor(results$network,levels=levels(results$network),labels=c("Linear","Dendritic","Star","Complex"))
 results$disturb_lab <- factor(results$disturbance,levels=levels(results$disturbance),labels=c("Even","Localized, mixed","Localized, extirpation"))
 results$density_dep <- factor(results$alpha,levels=levels(results$alpha),labels=c("Identical","Diverse"))
 
-surprises <- data.frame(aggregate(surprise_logic~network_lab+dispersal_range+disturb_lab+density_dep+surprise,data=results,FUN=sum))
+surprises <- data.frame(aggregate(surprise_logic~network_lab+dispersal_range+disturb_lab+density_dep+cluster_surprises,data=results,FUN=sum))
 
 gradColour <- colorRampPalette(rev(c("black","#bd0026","tomato","#fdae61","dodgerblue","forestgreen")))
 margins <- c(0.1,1,0.1,0.1)
-p1 <- ggplot(surprises,aes(y = surprise_logic,axis1 = density_dep, axis2 = dispersal_range,axis3=disturb_lab,axis4=surprise)) +
-      geom_alluvium(aes(fill = surprise),width = 1/6,reverse=FALSE) +
+p1 <- ggplot(surprises,aes(y = surprise_logic,axis1 = density_dep, axis2 = dispersal_range,axis3=disturb_lab,axis4=cluster_surprises)) +
+      geom_alluvium(aes(fill = cluster_surprises),width = 1/6,reverse=FALSE) +
       guides(fill = FALSE) +
       geom_stratum(width = 1/6,fill="grey",color="white", reverse = FALSE) +
       geom_text(stat = "stratum",size=3.5, infer.label = TRUE, reverse = FALSE) +
-      scale_x_discrete(limits = c("Patch productivity", "Dispersal","Disturbance","Surprise"),expand=c(0.05,0.05)) +
-      scale_fill_manual(values=gradColour(n=length(unique(surprises$surprise)))) +
+      scale_x_discrete(limits = c("Patch productivity", "Dispersal","Disturbance","Outcome"),expand=c(0.05,0.05)) +
+      scale_fill_manual(values=gradColour(n=length(unique(surprises$cluster_surprises)))) +
       #scale_fill_brewer(type="div",palette="RdYlBu",direction=-1) +
       theme_minimal() +
       ylab("Frequency of outcome") +

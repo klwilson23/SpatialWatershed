@@ -172,3 +172,43 @@ findHull <- function(df,x,y)
 {
   df[chull(df[,x],df[,y]),c(x,y)]
 }
+
+clustering <- function(x,n,type,standard)
+{
+  d <- dist(x,method="euclidean")
+  
+  layout(matrix(1,nrow=1,ncol=1))
+  if(type=="hier")
+  {
+    fit <- hclust(d,method="ward.D2")
+    boot.meth <- hclustCBI
+    plot(fit)
+  }
+  if(type=="agnes")
+  {
+    fit <- agnes(d)
+    boot.meth <- hclustCBI
+    plot(fit)
+  }
+  if(type=="kmeans")
+  {
+    fit <- kmeans(d,n)
+    boot.meth <- kmeansCBI
+    
+  }
+  plot(fit)
+  groups <- cutree(fit, k=n)
+  rect.hclust(fit, k=n, border="red")
+  clustStats <- cluster.stats(d,groups)
+  SS <- clustStats$within.cluster.ss
+  dunnFit <- clustStats$dunn # the Dunn index
+  dunn <- clustStats$dunn2
+  gamma <- clustStats$pearsongamma
+  width <- clustStats$avg.silwidth
+  widGap <- clustStats$widestgap
+  separation <- clustStats$sindex
+
+  return(list(data=d,fit=fit,groups=groups,dunnInd = dunnFit,
+              dunn2nd = dunn,gamma=gamma,width=width,minSS=SS,gap=widGap,
+              separat = separation))
+}
