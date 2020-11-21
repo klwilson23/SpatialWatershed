@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.6.20)  21 NOV 2020 11:23
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.6.20)  21 NOV 2020 13:33
 entering extended mode
 **./Managing_for_ecological_surprises_in_metapopulations.tex
 (Managing_for_ecological_surprises_in_metapopulations.tex
@@ -1246,7 +1246,7 @@ l.756 \newpage
                <./Managing_for_ecological_surprises_in_metapopulations_files/fi
 gure-latex/example results4-1.pdf>]
 <Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/distur
-bance regime-1.pdf, id=258, pagebox=cropbox, 433.62pt x 397.485pt>
+bance regime-1.pdf, id=258, pagebox=cropbox, 433.62pt x 433.62pt>
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/d
 isturbance regime-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/di
@@ -1254,10 +1254,10 @@ sturbance regime-1.pdf>
 Package pdftex.def Info: Managing_for_ecological_surprises_in_metapopulations_f
 iles/figure-latex/disturbance regime-1.pdf  used on input line 785. on input li
 ne 785.
-Package pdftex.def Info: Requested size: 433.63217pt x 397.49614pt on input lin
+Package pdftex.def Info: Requested size: 433.63878pt x 433.63878pt on input lin
 e 785.
-[19pdfTeX warning (ext4): destination with the same identifier (name{figure.11}
-) has been already used, duplicate ignored
+[19] [20pdfTeX warning (ext4): destination with the same identifier (name{figur
+e.11}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
@@ -1265,8 +1265,8 @@ l.791 \newpage
                <./Managing_for_ecological_surprises_in_metapopulations_files/fi
 gure-latex/disturbance regime-1.pdf>]
 <Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/recove
-ry and dispersal and spatial network-1.pdf, id=275, pagebox=cropbox, 469.755pt 
-x 469.755pt>
+ry and dispersal and spatial network-1.pdf, id=280, pagebox=cropbox, 397.485pt 
+x 361.35pt>
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/r
 ecovery and dispersal and spatial network-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/re
@@ -1274,18 +1274,10 @@ covery and dispersal and spatial network-1.pdf>
 Package pdftex.def Info: Managing_for_ecological_surprises_in_metapopulations_f
 iles/figure-latex/recovery and dispersal and spatial network-1.pdf  used on inp
 ut line 808. on input line 808.
-Package pdftex.def Info: Requested size: 469.75386pt x 469.75386pt on input lin
+Package pdftex.def Info: Requested size: 397.48402pt x 361.34912pt on input lin
 e 808.
-[20pdfTeX warning (ext4): destination with the same identifier (name{figure.12}
-) has been already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.828 
-       <./Managing_for_ecological_surprises_in_metapopulations_files/figure-lat
-ex/recovery and dispersal and spatial network-1.pdf>]
 <Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/recove
-ry with patch variation-1.pdf, id=290, pagebox=cropbox, 433.62pt x 325.215pt>
+ry with patch variation-1.pdf, id=281, pagebox=cropbox, 433.62pt x 325.215pt>
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/r
 ecovery with patch variation-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/re
@@ -1295,8 +1287,16 @@ iles/figure-latex/recovery with patch variation-1.pdf  used on input line 831.
 on input line 831.
 Package pdftex.def Info: Requested size: 433.63878pt x 325.22908pt on input lin
 e 831.
-[21pdfTeX warning (ext4): destination with the same identifier (name{figure.13}
+[21pdfTeX warning (ext4): destination with the same identifier (name{figure.12}
 ) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.837 \newpage
+               <./Managing_for_ecological_surprises_in_metapopulations_files/fi
+gure-latex/recovery and dispersal and spatial network-1.pdf>] [22pdfTeX warning
+ (ext4): destination with the same identifier (name{figure.13}) has been alread
+y used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
@@ -1304,7 +1304,7 @@ l.837 \newpage
                <./Managing_for_ecological_surprises_in_metapopulations_files/fi
 gure-latex/recovery with patch variation-1.pdf>]
 <Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/cluste
-r results-1.pdf, id=301, pagebox=cropbox, 578.16pt x 361.35pt>
+r results-1.pdf, id=308, pagebox=cropbox, 578.16pt x 361.35pt>
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/c
 luster results-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/cl
@@ -1314,7 +1314,7 @@ iles/figure-latex/cluster results-1.pdf  used on input line 870. on input line
 870.
 Package pdftex.def Info: Requested size: 469.75385pt x 293.59616pt on input lin
 e 870.
-[22pdfTeX warning (ext4): destination with the same identifier (name{figure.14}
+[23pdfTeX warning (ext4): destination with the same identifier (name{figure.14}
 ) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
@@ -1323,7 +1323,7 @@ l.877 \newpage
                <./Managing_for_ecological_surprises_in_metapopulations_files/fi
 gure-latex/cluster results-1.pdf>]
 <Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/genera
-l results-1.pdf, id=316, pagebox=cropbox, 433.62pt x 397.485pt>
+l results-1.pdf, id=323, pagebox=cropbox, 433.62pt x 397.485pt>
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/g
 eneral results-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/ge
@@ -1333,7 +1333,7 @@ iles/figure-latex/general results-1.pdf  used on input line 902. on input line
 902.
 Package pdftex.def Info: Requested size: 433.63217pt x 397.49614pt on input lin
 e 902.
-[23pdfTeX warning (ext4): destination with the same identifier (name{figure.15}
+[24pdfTeX warning (ext4): destination with the same identifier (name{figure.15}
 ) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
@@ -1342,7 +1342,7 @@ l.908 \newpage
                <./Managing_for_ecological_surprises_in_metapopulations_files/fi
 gure-latex/general results-1.pdf>]
 <Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/result
-s for variables patches-1.pdf, id=328, pagebox=cropbox, 433.62pt x 397.485pt>
+s for variables patches-1.pdf, id=335, pagebox=cropbox, 433.62pt x 397.485pt>
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/r
 esults for variables patches-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/re
@@ -1352,7 +1352,7 @@ iles/figure-latex/results for variables patches-1.pdf  used on input line 918.
 on input line 918.
 Package pdftex.def Info: Requested size: 433.63217pt x 397.49614pt on input lin
 e 918.
-[24pdfTeX warning (ext4): destination with the same identifier (name{figure.16}
+[25pdfTeX warning (ext4): destination with the same identifier (name{figure.16}
 ) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
@@ -1361,7 +1361,7 @@ l.924 \newpage
                <./Managing_for_ecological_surprises_in_metapopulations_files/fi
 gure-latex/results for variables patches-1.pdf>]
 <Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/stocha
-stic recruitment-1.pdf, id=339, pagebox=cropbox, 433.62pt x 397.485pt>
+stic recruitment-1.pdf, id=347, pagebox=cropbox, 433.62pt x 397.485pt>
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/s
 tochastic recruitment-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/st
@@ -1371,7 +1371,7 @@ iles/figure-latex/stochastic recruitment-1.pdf  used on input line 935. on inpu
 t line 935.
 Package pdftex.def Info: Requested size: 433.63217pt x 397.49614pt on input lin
 e 935.
-[25pdfTeX warning (ext4): destination with the same identifier (name{figure.17}
+[26pdfTeX warning (ext4): destination with the same identifier (name{figure.17}
 ) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
@@ -1380,7 +1380,7 @@ l.941 \newpage
                <./Managing_for_ecological_surprises_in_metapopulations_files/fi
 gure-latex/stochastic recruitment-1.pdf>]
 <Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/spatio
-temporal correlation-1.pdf, id=351, pagebox=cropbox, 433.62pt x 397.485pt>
+temporal correlation-1.pdf, id=358, pagebox=cropbox, 433.62pt x 397.485pt>
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/s
 patiotemporal correlation-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/sp
@@ -1390,7 +1390,7 @@ iles/figure-latex/spatiotemporal correlation-1.pdf  used on input line 951. on
 input line 951.
 Package pdftex.def Info: Requested size: 433.63217pt x 397.49614pt on input lin
 e 951.
-[26pdfTeX warning (ext4): destination with the same identifier (name{figure.18}
+[27pdfTeX warning (ext4): destination with the same identifier (name{figure.18}
 ) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
@@ -1399,7 +1399,7 @@ l.957 \newpage
                <./Managing_for_ecological_surprises_in_metapopulations_files/fi
 gure-latex/spatiotemporal correlation-1.pdf>]
 <Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/MSY-1.
-pdf, id=362, pagebox=cropbox, 433.62pt x 397.485pt>
+pdf, id=369, pagebox=cropbox, 433.62pt x 397.485pt>
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/M
 SY-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/MS
@@ -1408,7 +1408,7 @@ Package pdftex.def Info: Managing_for_ecological_surprises_in_metapopulations_f
 iles/figure-latex/MSY-1.pdf  used on input line 991. on input line 991.
 Package pdftex.def Info: Requested size: 433.63217pt x 397.49614pt on input lin
 e 991.
-[27] [28pdfTeX warning (ext4): destination with the same identifier (name{figur
+[28] [29pdfTeX warning (ext4): destination with the same identifier (name{figur
 e.19}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
@@ -1417,7 +1417,7 @@ l.998 \newpage
                <./Managing_for_ecological_surprises_in_metapopulations_files/fi
 gure-latex/MSY-1.pdf>]
 <Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/MSY wi
-th variable patches-1.pdf, id=380, pagebox=cropbox, 433.62pt x 397.485pt>
+th variable patches-1.pdf, id=387, pagebox=cropbox, 433.62pt x 397.485pt>
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/M
 SY with variable patches-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/MS
@@ -1427,7 +1427,7 @@ iles/figure-latex/MSY with variable patches-1.pdf  used on input line 1008. on
 input line 1008.
 Package pdftex.def Info: Requested size: 433.63217pt x 397.49614pt on input lin
 e 1008.
-[29pdfTeX warning (ext4): destination with the same identifier (name{figure.20}
+[30pdfTeX warning (ext4): destination with the same identifier (name{figure.20}
 ) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
@@ -1436,7 +1436,7 @@ l.1014 \newpage
                 <./Managing_for_ecological_surprises_in_metapopulations_files/f
 igure-latex/MSY with variable patches-1.pdf>]
 <Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/MSY wi
-th variable patches and stochasticity-1.pdf, id=393, pagebox=cropbox, 433.62pt 
+th variable patches and stochasticity-1.pdf, id=400, pagebox=cropbox, 433.62pt 
 x 397.485pt>
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/M
 SY with variable patches and stochasticity-1.pdf Graphic file (type pdf)
@@ -1447,7 +1447,7 @@ iles/figure-latex/MSY with variable patches and stochasticity-1.pdf  used on in
 put line 1025. on input line 1025.
 Package pdftex.def Info: Requested size: 433.63217pt x 397.49614pt on input lin
 e 1025.
-[30pdfTeX warning (ext4): destination with the same identifier (name{figure.21}
+[31pdfTeX warning (ext4): destination with the same identifier (name{figure.21}
 ) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
@@ -1456,7 +1456,7 @@ l.1031 \newpage
                 <./Managing_for_ecological_surprises_in_metapopulations_files/f
 igure-latex/MSY with variable patches and stochasticity-1.pdf>]
 <Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/MSY wi
-th variable patches and space-time stochasticity-1.pdf, id=406, pagebox=cropbox
+th variable patches and space-time stochasticity-1.pdf, id=414, pagebox=cropbox
 , 433.62pt x 397.485pt>
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/M
 SY with variable patches and space-time stochasticity-1.pdf Graphic file (type 
@@ -1468,7 +1468,7 @@ iles/figure-latex/MSY with variable patches and space-time stochasticity-1.pdf
  used on input line 1043. on input line 1043.
 Package pdftex.def Info: Requested size: 433.63217pt x 397.49614pt on input lin
 e 1043.
-[31pdfTeX warning (ext4): destination with the same identifier (name{figure.22}
+[32pdfTeX warning (ext4): destination with the same identifier (name{figure.22}
 ) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
@@ -1477,7 +1477,7 @@ l.1050 \newpage
                 <./Managing_for_ecological_surprises_in_metapopulations_files/f
 igure-latex/MSY with variable patches and space-time stochasticity-1.pdf>]
 <Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/collap
-sed-1.pdf, id=420, pagebox=cropbox, 433.62pt x 397.485pt>
+sed-1.pdf, id=427, pagebox=cropbox, 433.62pt x 397.485pt>
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/c
 ollapsed-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/co
@@ -1487,7 +1487,7 @@ iles/figure-latex/collapsed-1.pdf  used on input line 1068. on input line 1068.
 
 Package pdftex.def Info: Requested size: 433.63217pt x 397.49614pt on input lin
 e 1068.
-[32pdfTeX warning (ext4): destination with the same identifier (name{figure.23}
+[33pdfTeX warning (ext4): destination with the same identifier (name{figure.23}
 ) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
@@ -1496,7 +1496,7 @@ l.1074 \newpage
                 <./Managing_for_ecological_surprises_in_metapopulations_files/f
 igure-latex/collapsed-1.pdf>]
 <Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/collap
-sed with variable patches-1.pdf, id=432, pagebox=cropbox, 433.62pt x 397.485pt>
+sed with variable patches-1.pdf, id=439, pagebox=cropbox, 433.62pt x 397.485pt>
 
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/c
 ollapsed with variable patches-1.pdf Graphic file (type pdf)
@@ -1507,7 +1507,7 @@ iles/figure-latex/collapsed with variable patches-1.pdf  used on input line 108
 5. on input line 1085.
 Package pdftex.def Info: Requested size: 433.63217pt x 397.49614pt on input lin
 e 1085.
-[33pdfTeX warning (ext4): destination with the same identifier (name{figure.24}
+[34pdfTeX warning (ext4): destination with the same identifier (name{figure.24}
 ) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
@@ -1516,7 +1516,7 @@ l.1091 \newpage
                 <./Managing_for_ecological_surprises_in_metapopulations_files/f
 igure-latex/collapsed with variable patches-1.pdf>]
 <Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/state 
-shift with variable patches and stochasticity-1.pdf, id=445, pagebox=cropbox, 4
+shift with variable patches and stochasticity-1.pdf, id=452, pagebox=cropbox, 4
 33.62pt x 397.485pt>
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/s
 tate shift with variable patches and stochasticity-1.pdf Graphic file (type pdf
@@ -1528,7 +1528,7 @@ iles/figure-latex/state shift with variable patches and stochasticity-1.pdf  us
 ed on input line 1102. on input line 1102.
 Package pdftex.def Info: Requested size: 433.63217pt x 397.49614pt on input lin
 e 1102.
-[34pdfTeX warning (ext4): destination with the same identifier (name{figure.25}
+[35pdfTeX warning (ext4): destination with the same identifier (name{figure.25}
 ) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
@@ -1537,7 +1537,7 @@ l.1108 \newpage
                 <./Managing_for_ecological_surprises_in_metapopulations_files/f
 igure-latex/state shift with variable patches and stochasticity-1.pdf>]
 <Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/state 
-shifts with variable patches and space-time stochasticity-1.pdf, id=458, pagebo
+shifts with variable patches and space-time stochasticity-1.pdf, id=465, pagebo
 x=cropbox, 433.62pt x 397.485pt>
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/s
 tate shifts with variable patches and space-time stochasticity-1.pdf Graphic fi
@@ -1549,7 +1549,7 @@ iles/figure-latex/state shifts with variable patches and space-time stochastici
 ty-1.pdf  used on input line 1121. on input line 1121.
 Package pdftex.def Info: Requested size: 433.63217pt x 397.49614pt on input lin
 e 1121.
-[35pdfTeX warning (ext4): destination with the same identifier (name{figure.26}
+[36pdfTeX warning (ext4): destination with the same identifier (name{figure.26}
 ) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
@@ -1559,7 +1559,7 @@ l.1128 \newpage
 igure-latex/state shifts with variable patches and space-time stochasticity-1.p
 df>]
 <Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/patch 
-occupancy-1.pdf, id=471, pagebox=cropbox, 433.62pt x 397.485pt>
+occupancy-1.pdf, id=478, pagebox=cropbox, 433.62pt x 397.485pt>
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/p
 atch occupancy-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/pa
@@ -1569,7 +1569,7 @@ iles/figure-latex/patch occupancy-1.pdf  used on input line 1145. on input line
  1145.
 Package pdftex.def Info: Requested size: 433.63217pt x 397.49614pt on input lin
 e 1145.
-[36pdfTeX warning (ext4): destination with the same identifier (name{figure.27}
+[37pdfTeX warning (ext4): destination with the same identifier (name{figure.27}
 ) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
@@ -1578,7 +1578,7 @@ l.1151 \newpage
                 <./Managing_for_ecological_surprises_in_metapopulations_files/f
 igure-latex/patch occupancy-1.pdf>]
 <Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/patch 
-occupancy with variable patches-1.pdf, id=483, pagebox=cropbox, 433.62pt x 397.
+occupancy with variable patches-1.pdf, id=491, pagebox=cropbox, 433.62pt x 397.
 485pt>
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/p
 atch occupancy with variable patches-1.pdf Graphic file (type pdf)
@@ -1589,7 +1589,7 @@ iles/figure-latex/patch occupancy with variable patches-1.pdf  used on input li
 ne 1162. on input line 1162.
 Package pdftex.def Info: Requested size: 433.63217pt x 397.49614pt on input lin
 e 1162.
-[37pdfTeX warning (ext4): destination with the same identifier (name{figure.28}
+[38pdfTeX warning (ext4): destination with the same identifier (name{figure.28}
 ) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
@@ -1598,7 +1598,7 @@ l.1168 \newpage
                 <./Managing_for_ecological_surprises_in_metapopulations_files/f
 igure-latex/patch occupancy with variable patches-1.pdf>]
 <Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/patch 
-occupancy with variable patches and stochasticity-1.pdf, id=497, pagebox=cropbo
+occupancy with variable patches and stochasticity-1.pdf, id=504, pagebox=cropbo
 x, 433.62pt x 397.485pt>
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/p
 atch occupancy with variable patches and stochasticity-1.pdf Graphic file (type
@@ -1610,7 +1610,7 @@ iles/figure-latex/patch occupancy with variable patches and stochasticity-1.pdf
   used on input line 1179. on input line 1179.
 Package pdftex.def Info: Requested size: 433.63217pt x 397.49614pt on input lin
 e 1179.
-[38pdfTeX warning (ext4): destination with the same identifier (name{figure.29}
+[39pdfTeX warning (ext4): destination with the same identifier (name{figure.29}
 ) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
@@ -1619,7 +1619,7 @@ l.1186 \newpage
                 <./Managing_for_ecological_surprises_in_metapopulations_files/f
 igure-latex/patch occupancy with variable patches and stochasticity-1.pdf>]
 <Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/patch 
-occupancy with variable patches and space-time stochasticity-1.pdf, id=510, pag
+occupancy with variable patches and space-time stochasticity-1.pdf, id=517, pag
 ebox=cropbox, 433.62pt x 397.485pt>
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/p
 atch occupancy with variable patches and space-time stochasticity-1.pdf Graphic
@@ -1631,7 +1631,7 @@ iles/figure-latex/patch occupancy with variable patches and space-time stochast
 icity-1.pdf  used on input line 1199. on input line 1199.
 Package pdftex.def Info: Requested size: 433.63217pt x 397.49614pt on input lin
 e 1199.
-[39pdfTeX warning (ext4): destination with the same identifier (name{figure.30}
+[40pdfTeX warning (ext4): destination with the same identifier (name{figure.30}
 ) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
@@ -1641,7 +1641,7 @@ l.1205 \newpage
 igure-latex/patch occupancy with variable patches and space-time stochasticity-
 1.pdf>]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1238.
-[40]
+[41]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 1238.
 (Managing_for_ecological_surprises_in_metapopulations.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1238.
@@ -1649,8 +1649,8 @@ Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 1238.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1238.
  ) 
 Here is how much of TeX's memory you used:
- 14814 strings out of 493319
- 225483 string characters out of 3138935
+ 14815 strings out of 493319
+ 225490 string characters out of 3138935
  430520 words of memory out of 3000000
  17867 multiletter control sequences out of 15000+200000
  71087 words of font info for 104 fonts, out of 3000000 for 9000
@@ -1677,10 +1677,10 @@ C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmsy7.pfb><C:/Program Files/M
 iKTeX 2.9/fonts/type1/public/lm/lmtk10.pfb><C:/Program Files/MiKTeX 2.9/fonts/t
 ype1/public/lm/lmtt10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lm
 tti10.pfb>
-Output written on Managing_for_ecological_surprises_in_metapopulations.pdf (40 
-pages, 3244735 bytes).
+Output written on Managing_for_ecological_surprises_in_metapopulations.pdf (41 
+pages, 3243222 bytes).
 PDF statistics:
- 703 PDF objects out of 1000 (max. 8388607)
- 171 named destinations out of 1000 (max. 500000)
+ 710 PDF objects out of 1000 (max. 8388607)
+ 172 named destinations out of 1000 (max. 500000)
  14647 words of extra memory for PDF output out of 17280 (max. 10000000)
 

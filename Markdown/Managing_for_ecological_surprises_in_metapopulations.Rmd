@@ -1,17 +1,17 @@
 ---
 title: "Managing for ecological surprises in metapopulations"
 author: |
-  | Kyle L. Wilson$^a$^[Corresponding author - email: kl\_wilson@sfu.ca], Alex Sawyer$^a$, Anna Potapova$^a$, Colin J. Bailey$^a$,
-  | Elissa Sweeney-Bergen$^{a,b}$, Emma E. Hodgson$^{a,c}$, Kara J. Pitman$^a$, Karl Seitz$^a$, 
-  | Lauren Law$^{a,c}$, Luke Warkentin$^a$, Samantha M. Wilson$^a$, William I. Atlas$^{a,d}$, 
-  | Daniella LoScerbo$^e$, Douglas C. Braun$^c$, Matthew R. Sloat$^d$, M. Tim Tinker$^f$, 
-  | and Jonathan W. Moore$^{a,e}$
+  | Kyle L. Wilson$^a$^[Corresponding author - email: kl\_wilson@sfu.ca], Alex Sawyer$^a$, Anna Potapova$^a$, Colin J. Bailey$^a$,Daniella LoScerbo$^b$,
+  | Elissa Sweeney-Bergen$^{a,c}$, Emma E. Hodgson$^{a,d}$, Kara J. Pitman$^a$, Karl Seitz$^a$,
+  | Lauren Law$^{a,d}$, Luke Warkentin$^{a,d}$, Samantha M. Wilson$^a$, William I. Atlas$^{a,e}$, 
+  | Douglas C. Braun$^d$, Matthew R. Sloat$^e$, M. Tim Tinker$^f$, 
+  | and Jonathan W. Moore$^{a,b}$
   |
   | $^a$Earth to Ocean Research Group, Simon Fraser University
-  | $^b$Fisheries Department, Lake Babine Nation
-  | $^c$Fisheries and Oceans Canada
-  | $^d$Wild Salmon Center
-  | $^e$Resource and Environmental Management, Simon Fraser University
+  | $^b$Resource and Environmental Management, Simon Fraser University
+  | $^c$Fisheries Department, Lake Babine Nation
+  | $^d$Fisheries and Oceans Canada
+  | $^e$Wild Salmon Center
   | $^f$Ecology and Evolutionary Biology, University of California Santa Cruz
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
@@ -576,7 +576,7 @@ dendriticSim3 <- metaPop(Npatches=16,networkType="dendritic",patchDistance=1,Nbu
 ### Effects of disturbance regime
 The strongest lever influencing recovery in our simulated metapopulations was by far, the characteristics of the disturbance regime. That is, more influential than the density dependence relationship, dispersal rates or network topology was how targeted patches were in the severity of disturbance. This was surprising and not expected in our initial hypotheses. Localized disturbances increased the risk of spatial contraction, reduced recovery rates and aggregate compensation, and increased the risk of a long-term state shift. By altering aggregate compensation, localized disturbance reduced the surplus production of the metapopulation. In other words, through changes in source-sink dynamics, metapopulations under localized disturbance acted less than the sum of their parts – the more localized the impacts, the worse these effects. Uniform disturbances generally left the metapopulation dynamics unaffected with few ecological surprises. These above spatial and temporal recovery processes also appeared tied to one another such that changes to any of them had feedbacks with other recovery metrics.
 
-```{r disturbance regime, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Spatial and temporal recovery patterns along disturbance regimes across all scenarios.",fig.align="center"}
+```{r disturbance regime, echo=FALSE,fig.height=6,fig.width=6,fig.cap="Spatial and temporal recovery patterns along disturbance regimes across all scenarios.",fig.align="center"}
 results <- readRDS("Simulations/results2019-06-30.rds")
 scenarios <- readRDS("Simulations/scenarios2019-06-30.rds")
 Nboots <- 100
@@ -611,14 +611,14 @@ plotColours <- ifelse(results$dispersal==-1,
 
 layout(matrix(1:4,nrow=2,ncol=2,byrow=TRUE))
 par(mar=c(4,4,0.5,0.5))
-plot(results$RecoveryRate,results$longOcc,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Patch occupancy (25 years)")
+plot(results$RecoveryRate,results$longOcc,pch=21,bg=plotColours,xlab=expression('Recovery rate (yr'^-1*')'),ylab="Patch occupancy (25 years)")
 
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="longOcc"),col=adjustcolor(dist_colours[z],transparency))}))
 
-plot(results$RecoveryRate,results$longMSY,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Surplus production (25 years)")
+plot(results$RecoveryRate,results$longMSY,pch=21,bg=plotColours,xlab=expression('Recovery rate (yr'^-1*')'),ylab="Surplus production (25 years)")
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="longMSY"),col=adjustcolor(dist_colours[z],transparency))}))
 
-plot(results$RecoveryRate,results$collapsed,pch=21,bg=plotColours,xlab="Recovery rate (yr-1)",ylab="Collapse rate (% of simulations)")
+plot(results$RecoveryRate,results$collapsed,pch=21,bg=plotColours,xlab=expression('Recovery rate (yr'^-1*')'),ylab="Collapse rate (% of simulations)")
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){
   if(z<3){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="collapsed"),col=adjustcolor(dist_colours[z],transparency))}else{xMat <- unique(cbind(results[results$disturbance==scenarios$disturbance[z],"RecoveryRate"],results[results$disturbance==scenarios$disturbance[z],"collapsed"]))
   xSeq <- seq(min(xMat[,1]),max(xMat[,1]),by=0.1)
@@ -635,7 +635,7 @@ legend("bottomright",c("Uniform","Local, random","Local, extirpation"),pch=22,pt
 
 We now show some general patterns in how variable patch demographic rates, network structure, dispersal, disturbance, recruitment stochasticity, and spatio-temporal correlations variation affects metapopulation *recovery rates*, *maximum sustainable yield* (analagous to the maximum rate of loss the system can sustain), and *collapse rate* (i.e, the number of simulations where the metapopulation fails to recover), and *patch occupancy* (i.e., number of patches with local abundance above some baseline).
 
-```{r recovery and dispersal and spatial network, echo=FALSE,fig.height=6.5,fig.width=6.5,fig.cap="Metapopulation recovery rates along gradients of network configuration, dispersal rates, and spatial distribution of disturbance. The shaded region describes the interquartile range across all scenarios.",fig.align="center"}
+```{r recovery and dispersal and spatial network, echo=FALSE,fig.height=5,fig.width=5.5,fig.cap="Metapopulation recovery rates along gradients of network configuration, dispersal rates, and spatial distribution of disturbance. The shaded region describes the interquartile range across all scenarios.",fig.align="center"}
 results <- readRDS("Simulations/results2019-06-30.rds")
 scenarios <- readRDS("Simulations/scenarios2019-06-30.rds")
 Nboots <- 100
@@ -679,11 +679,11 @@ matLayout[13:15,6:8] <- 7
 matLayout[13:15,14:16] <- 8
 
 layout(matLayout)
-par(mar=c(4,4,0.5,0.5))
+par(mar=c(4,4.5,0.5,0.5))
 for(i in 1:length(scenarios$network))
 {
   subResults <- results[results$network==scenarios$network[i],]
-  plot(subResults$dispersal,subResults$RecoveryRate,col=0,lty=0,type="b",lwd=0,pch=0,ylab="Recovery rate (yr-1)",xlab="Dispersal rate",ylim=1.0*range(c(0,results$RecoveryRate)),cex.lab=1.2)
+  plot(subResults$dispersal,subResults$RecoveryRate,col=0,lty=0,type="b",lwd=0,pch=0,ylab=expression('Recovery rate (yr'^-1*')'),xlab="Dispersal rate",ylim=1.0*range(c(0,results$RecoveryRate)),cex.lab=1.2)
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
     #points(distResults$dispersal,distResults$recovery,bg=dist_colours[j],pch=21)
@@ -740,7 +740,7 @@ p <- ggplot(data=results, aes(x=patchScen, y=RecoveryRate, fill=stochasticity))+
   facet_wrap(~stochasticity)+
   geom_boxplot(width=0.1,colour="grey90",outlier.shape=NA,fill="grey50")+
   scale_fill_brewer(palette="Dark2") +
-  labs(x="Patch variation",y="Recovery rate (yr-1)",fill="Stochasticity") +
+  labs(x="Patch variation",y=expression('Recovery rate (yr'^-1*')'),fill="Stochasticity") +
   theme_minimal() +
   theme(legend.position="top",strip.text.x = element_blank())
 p
