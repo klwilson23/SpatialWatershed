@@ -134,8 +134,9 @@ results$dispersal_range <- factor(ifelse(results$dispersal>=0.001,"High","Low"),
 results$network_lab <- factor(results$network,levels=levels(results$network),labels=c("Linear","Dendritic","Star","Complex"))
 results$disturb_lab <- factor(results$disturbance,levels=levels(results$disturbance),labels=c("Even","Localized, mixed","Localized, extirpation"))
 results$density_dep <- factor(results$alpha,levels=levels(results$alpha),labels=c("Identical","Diverse"))
-
+saveRDS(results,file="Figures/clustering_outcomes.rds")
 surprises <- data.frame(aggregate(surprise_logic~network_lab+dispersal_range+disturb_lab+density_dep+cluster_surprises,data=results,FUN=sum))
+saveRDS(surprises,file="Figures/gg_clustering_outcomes.rds")
 
 gradColour <- colorRampPalette(rev(c("black","#bd0026","tomato","#fdae61","dodgerblue","forestgreen")))
 margins <- c(0.1,1,0.1,0.1)
@@ -209,7 +210,7 @@ dev.off()
 
 boxplot(longCV~stochastic+disturbance,data=results[results$spatial==scenarios$spatial[1] & results$temporal==scenarios$temporal[1],],col=dist_colours[results$disturbance],xlab="Stochasticity",ylab=expression('Recovery rate (yr'^-1*')'))
 
-tiff("Figures/Recovery along dispersal network and disturbance clines.tiff",compression="lzw",units="in",height=8,width=8,res=800)
+tiff("Figures/Recovery along dispersal network and disturbance clines.tiff",compression="lzw",units="in",height=5.25,width=6,res=800)
 
 matLayout <- matrix(0,nrow=16,ncol=16)
 matLayout[1:8,1:8] <- 1
@@ -222,7 +223,7 @@ matLayout[13:15,6:8] <- 7
 matLayout[13:15,14:16] <- 8
 
 layout(matLayout)
-par(mar=c(4,4,0.5,0.5))
+par(mar=c(4,4.45,0.5,0.5))
 for(i in 1:length(scenarios$network))
 {
   subResults <- results[results$network==scenarios$network[i],]

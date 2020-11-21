@@ -1,33 +1,46 @@
-\documentclass[]{article}
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
 \usepackage{lmodern}
 \usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
-\usepackage{fixltx2e} % provides \textsubscript
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
-\else % if luatex or xelatex
-  \ifxetex
-    \usepackage{mathspec}
-  \else
-    \usepackage{fontspec}
-  \fi
-  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
-% use upquote if available, for straight quotes in verbatim environments
+% Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
-% use microtype if available
-\IfFileExists{microtype.sty}{%
-\usepackage{microtype}
-\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Managing for ecological surprises in metapopulations},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
 \usepackage[margin=1in]{geometry}
-\usepackage{hyperref}
-\hypersetup{unicode=true,
-            pdftitle={Managing for ecological surprises in metapopulations},
-            pdfborder={0 0 0},
-            breaklinks=true}
-\urlstyle{same}  % don't use monospace font for urls
 \usepackage{color}
 \usepackage{fancyvrb}
 \newcommand{\VerbBar}{|}
@@ -77,60 +90,14 @@
 % margins by default, and it is still possible to overwrite the defaults
 % using explicit options in \includegraphics[width, height, ...]{}
 \setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
-\IfFileExists{parskip.sty}{%
-\usepackage{parskip}
-}{% else
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{6pt plus 2pt minus 1pt}
-}
-\setlength{\emergencystretch}{3em}  % prevent overfull lines
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-\setcounter{secnumdepth}{0}
-% Redefines (sub)paragraphs to behave more like sections
-\ifx\paragraph\undefined\else
-\let\oldparagraph\paragraph
-\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
-\fi
-\ifx\subparagraph\undefined\else
-\let\oldsubparagraph\subparagraph
-\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
-\fi
-
-%%% Use protect on footnotes to avoid problems with footnotes in titles
-\let\rmarkdownfootnote\footnote%
-\def\footnote{\protect\rmarkdownfootnote}
-
-%%% Change title format to be more compact
-\usepackage{titling}
-
-% Create subtitle command for use in maketitle
-\newcommand{\subtitle}[1]{
-  \posttitle{
-    \begin{center}\large#1\end{center}
-    }
-}
-
-\setlength{\droptitle}{-2em}
-
-  \title{Managing for ecological surprises in metapopulations}
-    \pretitle{\vspace{\droptitle}\centering\huge}
-  \posttitle{\par}
-  \subtitle{Supplemental materials: Model details \& results}
-  \author{\textup{Kyle L. Wilson$^a$}\footnote{Corresponding author - email:
-  \href{mailto:kl_wilson@sfu.ca}{\nolinkurl{kl\_wilson@sfu.ca}}}\textup{, Alex Sawyer$^a$, Anna Potapova$^a$, Colin J. Bailey$^a$, Elissa Sweeney-Bergen$^a$, Emma E. Hodgson$^a$, Kara J. Pitman$^a$, Karl Seitz$^a$, Lauren Law$^a$, Luke Warkentin$^a$, Samantha M. Wilson$^a$, William I. Atlas$^a$, Daniella LoScerbo$^b$, Douglas C. Braun$^c$, Matthew R. Sloat$^d$, M. Tim Tinker$^e$, and Jonathan W. Moore$^{a,b}$}\\
-~\\
-\textup{$^a$Earth to Ocean Research Group, Simon Fraser University}\\
-\textup{$^b$Resource and Environmental Management, Simon Fraser University}\\
-\textup{$^c$Fisheries and Oceans Canada}\\
-\textup{$^d$Wild Salmon Center}\\
-\textup{$^e$Ecology and Evolutionary Biology, University of California Santa Cruz}}
-    \preauthor{\centering\large\emph}
-  \postauthor{\par}
-      \predate{\centering\large\emph}
-  \postdate{\par}
-    \date{16 September 2019}
-
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
 \usepackage{wrapfig}
 \usepackage{lipsum}
 \usepackage{float}
@@ -140,6 +107,36 @@
 \renewcommand{\thefigure}{S\arabic{figure}}
 \renewcommand{\thetable}{S\arabic{table}}
 \usepackage{fancyhdr}
+\setlength{\parskip}{\baselineskip}
+\renewenvironment{Shaded}{\vspace{\parskip}\begin{snugshade}}{\end{snugshade}}
+
+\title{Managing for ecological surprises in metapopulations}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{Supplemental materials: Model details \& results}
+\author{Kyle L. Wilson\(^a\)\footnote{Corresponding author - email:
+  kl\_\href{mailto:wilson@sfu.ca}{\nolinkurl{wilson@sfu.ca}}}, Alex
+Sawyer\(^a\), Anna Potapova\(^a\), Colin J. Bailey\(^a\),\\
+Elissa Sweeney-Bergen\(^{a,b}\), Emma E. Hodgson\(^{a,c}\), Kara J.
+Pitman\(^a\), Karl Seitz\(^a\),\\
+Lauren Law\(^{a,c}\), Luke Warkentin\(^a\), Samantha M. Wilson\(^a\),
+William I. Atlas\(^{a,d}\),\\
+Daniella LoScerbo\(^e\), Douglas C. Braun\(^c\), Matthew R. Sloat\(^d\),
+M. Tim Tinker\(^f\),\\
+and Jonathan W. Moore\(^{a,e}\)\\
+~\\
+\(^a\)Earth to Ocean Research Group, Simon Fraser University\\
+\(^b\)Fisheries Department, Lake Babine Nation\\
+\(^c\)Fisheries and Oceans Canada\\
+\(^d\)Wild Salmon Center\\
+\(^e\)Resource and Environmental Management, Simon Fraser University\\
+\(^f\)Ecology and Evolutionary Biology, University of California Santa
+Cruz}
+\date{21 November 2020}
 
 \begin{document}
 \maketitle
@@ -441,8 +438,8 @@ temporal and spatial recovery regime of the metapopulation.
   A value of 1.0 would indicate that the disturbed metapopulation can
   sustain itself against the same disturbance regime as the sum of each
   patch independently. In other words, is the metapopulation more than
-  (\(\Delta_{MSY}\)\textgreater{}1.0), less than
-  (\(\Delta_{MSY}\)\textless{}1.0), or equal to the sum of its parts
+  (\(\Delta_{MSY}\)\textgreater1.0), less than
+  (\(\Delta_{MSY}\)\textless1.0), or equal to the sum of its parts
   (\(\Delta_{MSY}\)=1.0). We detail how \emph{MSY} is estimated further
   below.
 \end{enumerate}
@@ -628,8 +625,8 @@ and the recruits that result from this (termed \(R_{MSY}\)).
     \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{Npatches) \{}
 \NormalTok{        a_p <-}\StringTok{ }\NormalTok{alpha[i]}
 \NormalTok{        b_p <-}\StringTok{ }\NormalTok{beta[i]}
-\NormalTok{        F_msy[i] <-}\StringTok{ }\KeywordTok{uniroot}\NormalTok{(fun_yield, }\DataTypeTok{interval =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{), }\DataTypeTok{extendInt =} \StringTok{"yes"}\NormalTok{, }
-            \DataTypeTok{alpha =}\NormalTok{ a_p, }\DataTypeTok{beta =}\NormalTok{ b_p, }\DataTypeTok{delta =} \FloatTok{1e-04}\NormalTok{, }\DataTypeTok{model =}\NormalTok{ model)}\OperatorTok{$}\NormalTok{root}
+\NormalTok{        F_msy[i] <-}\StringTok{ }\KeywordTok{uniroot}\NormalTok{(fun_yield, }\DataTypeTok{interval =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{), }\DataTypeTok{extendInt =} \StringTok{"yes"}\NormalTok{, }\DataTypeTok{alpha =}\NormalTok{ a_p, }
+            \DataTypeTok{beta =}\NormalTok{ b_p, }\DataTypeTok{delta =} \FloatTok{1e-04}\NormalTok{, }\DataTypeTok{model =}\NormalTok{ model)}\OperatorTok{$}\NormalTok{root}
 \NormalTok{    \}}
 \NormalTok{    MSY <-}\StringTok{ }\KeywordTok{sapply}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\NormalTok{Npatches, }\ControlFlowTok{function}\NormalTok{(x) \{}
         \KeywordTok{yieldRoot}\NormalTok{(}\DataTypeTok{alpha =}\NormalTok{ alpha[x], }\DataTypeTok{beta =}\NormalTok{ beta[x], }\DataTypeTok{Fcur =}\NormalTok{ F_msy[[x]][}\DecValTok{1}\NormalTok{], }\DataTypeTok{model =}\NormalTok{ model)}
@@ -819,7 +816,7 @@ Dispersal, landscape structure, and local density-dependence also
 affected metapopulation recovery patterns in three key ways, though to a
 lesser extent. First, recovery rates increased with increased dispersal.
 However, this effect was nonlinear with diminishing benefits of
-dispersal occurring at \textasciitilde{}1-3\%, depending on spatial
+dispersal occurring at \textasciitilde1-3\%, depending on spatial
 structure and disturbance. Second, more linearized networks had slower
 recovery times than more connected networks suggesting that rescue
 effects take some time to cascade through the entire network of patches;
@@ -836,6 +833,45 @@ factors like stochasticity.
 }
 
 \caption{Effects of variable local patch productivities on metapopulation recovery across all scenarios.}\label{fig:recovery with patch variation}
+\end{figure}
+\newpage
+
+\hypertarget{surprising-ecological-outcomes}{%
+\subsubsection{Surprising ecological
+outcomes}\label{surprising-ecological-outcomes}}
+
+Metapopulation recovery regimes emerged from a complex interplay of
+density-dependent productivity (shown in Figure 6 of the main text),
+network structure (shown here), dispersal, and disturbance regimes.
+Overall, clustering analyses of our model results found evidence for six
+common outcomes: (1) resilient recovery -- metapopulation recovery
+\textless10 years, (2) slow recovery -- metapopulation recovery
+\textgreater10 years and no other surprise, (3) lost capacity --
+long-term maximum surplus production \textless50\% before disturbance,
+(4) hidden collapses -- metapopulation recovered (or was recovering) but
+50\% of patches remain unoccupied, (5) spatial contraction --
+\textgreater25\% of patches remain unoccupied and (6) critical risk --
+metapopulation abundance remains \textless10\% of pre-disturbance.
+Resilient recovery regimes were most common when disturbance was evenly
+applied across the network and local patches were identical. Any
+localized disturbances created ecological surprises, and the frequency
+of these surprises were often exacerbated when patches were diverse.
+Localized, mixed disturbances tended to reduce recovery by 50\% compared
+to even disturbances (from 16 years to 24 years on average). The
+riskiest recovery outcomes emerged when disturbance was localized and
+allowed for extirpation. In these scenarios, recovery was slowed by
+\textgreater100\% (from 16 years to \textgreater32 years on average),
+surplus production was often reduced by \textgreater50\%, long-term
+patch occupancy was reduced by \textgreater35\%. Last, note that linear
+networks tended to have higher risks for long-term spatial contractions.
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/cluster results-1} 
+
+}
+
+\caption{Interplay between network structure, disturbance, and dispersal can lead to suprising recovery outcomes.}\label{fig:cluster results}
 \end{figure}
 
 \newpage
@@ -1013,9 +1049,9 @@ spatial-temporal correlations in stochastic recruitment affects the
 
 \newpage
 
-\hypertarget{patterns-in-the-risk-of-hysteresis-state-shifts}{%
-\subsubsection{Patterns in the risk of hysteresis \& state
-shifts}\label{patterns-in-the-risk-of-hysteresis-state-shifts}}
+\hypertarget{patterns-in-long-term-collapse-i.e.-state-shifts}{%
+\subsubsection{Patterns in long-term collapse (i.e., state
+shifts)}\label{patterns-in-long-term-collapse-i.e.-state-shifts}}
 
 We now show similar patterns in the rate of long-term collapse across
 the metapopulation after \(100\) generations post-disturbance. Collapse
@@ -1184,7 +1220,7 @@ Csardi, G. \& Nepusz, T. (2006). The igraph software package for complex
 network research. \emph{InterJournal}, Complex Systems, 1695.
 
 \leavevmode\hypertarget{ref-Forrest2010}{}%
-Forrest, R.E., McAllister, M.K., Dorn, M.W., Martell, S.J. \& Stanley,
+Forrest, R.E., McAllister, M.K., Dorn, M.W., Martell, S.J.D. \& Stanley,
 R.D. (2010). Hierarchical Bayesian estimation of recruitment parameters
 and reference points for Pacific rockfishes (Sebastes spp.) under
 alternative assumptions about the stock--recruit function.
@@ -1195,9 +1231,8 @@ alternative assumptions about the stock--recruit function.
 Hanski, I. (1998). Metapopulation dynamics. \emph{Nature}, 396, 41--49.
 
 \leavevmode\hypertarget{ref-Yeakel2014}{}%
-Yeakel, J.D., Moore, J.W., Guimarães, P.R. \& Aguiar, M.A. de. (2014).
+Yeakel, J.D., Moore, J.W., Guimarães, P.R. \& Aguiar, M.A.M. de. (2014).
 Synchronisation and stability in river metapopulation networks.
 \emph{Ecology Letters}, 17, 273--283.
-
 
 \end{document}
