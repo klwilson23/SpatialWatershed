@@ -136,7 +136,7 @@ and Jonathan W. Moore\(^{a,b}\)\\
 \(^e\)Wild Salmon Center\\
 \(^f\)Ecology and Evolutionary Biology, University of California Santa
 Cruz}
-\date{21 November 2020}
+\date{23 November 2020}
 
 \begin{document}
 \maketitle
@@ -326,12 +326,12 @@ patch (i.e., \(j\neq i\). With \(\bar{d}= 1\), \(m=0.5\),
 In all scenarios, disturbance was applied after \texttt{50} years of
 equilibrating the metapopulaton at pristine conditions. We then applied
 the disturbance regime at year \texttt{50} (the regime varied from
-\emph{uniform}, \emph{localized, random}, and \emph{localized,
-extirpation} - see \emph{Scenarios} below). Disturbance immediately
-removes a set proportion of the metapopulation adults at that time
-(i.e., \texttt{0.9} of \(MN_{t=50}\)). Once applied, the metapopulation
-was no longer disturbed and spatio-temporal recovery dynamics emerged
-naturally from these new conditions.
+\emph{even}, \emph{localized, even}, and \emph{localized, uneven} - see
+\emph{Scenarios} below). Disturbance immediately removes a set
+proportion of the metapopulation adults at that time (i.e., \texttt{0.9}
+of \(MN_{t=50}\)). Once applied, the metapopulation was no longer
+disturbed and spatio-temporal recovery dynamics emerged naturally from
+these new conditions.
 
 \begin{figure}[H]
 
@@ -563,19 +563,19 @@ Resource managers measure productivity with a variety of performance
 reference points (Forrest et al. 2010). One of the most widely used
 metrics, commonly called \emph{Maximum Sustainable Yield} in fisheries
 and other harvest literature (\(MSY\)), relates to the largest loss the
-population can sustain over an indefinite period of time while
-maximizing its ability to replenish itself. Under density-dependent
-growth, individuals' growth, survival, and reproduction at low
-population densities are not constrained by limited resources, but
-overall production is low because there are few individuals. At high
-densities, limited resources increasingly constrain individual's
-reproductive success until the population reaches carrying capacity, and
-overall production drops to zero because per-capita success is low.
-However, at some intermediate densities, both per-capita and overall
-production is high, and population growth is at its maximum point due to
-the large number of reproducing individuals. At this point, there is the
-maximum surplus of individuals produced above replacement that can help
-to withstand disturbance or harvest regimes and contribute to future
+population can sustain over an indefinite period of time that maximizes
+its ability to replenish itself. Under density-dependent growth,
+individuals' growth, survival, and reproduction at low population
+densities are not constrained by limited resources, but overall
+production is low because there are few individuals. At high densities,
+limited resources increasingly constrain individual's reproductive
+success until the population reaches carrying capacity, and overall
+production drops to zero because per-capita success is low. However, at
+some intermediate densities, both per-capita and overall production is
+high, and population growth is at its maximum point due to the large
+number of reproducing individuals. At this point, there is the maximum
+surplus of individuals produced above replacement that can help to
+withstand disturbance or harvest regimes and contribute to future
 recovery, either through increasing local patch densities or by
 emigrating neighboring patches providing ``rescue effects''.
 
@@ -661,16 +661,16 @@ of the above outcomes.
   \def\labelenumii{\alph{enumii}.}
   \tightlist
   \item
-    \emph{uniform} - random individuals removed at equal vulnerability
+    \emph{Even} - random individuals removed at equal vulnerability
     across all patches.
   \item
-    \emph{localized, random} - random individuals removed from randomly
+    \emph{localized, even} - random individuals removed from randomly
     selected subset of patches (as long as the target individuals lost
     in the metapopulation can be achieved in that subset of patches)
   \item
-    \emph{localized, extirpation} - total extirpation of randomly
-    selected subset of patches (as long as the target individuals lost
-    in the metapopulation can be achieved in that subset of patches)
+    \emph{localized, uneven} - total extirpation of randomly selected
+    subset of patches (as long as the target individuals lost in the
+    metapopulation can be achieved in that subset of patches)
   \end{enumerate}
 \item
   Density-independent dispersal rates \(\omega\) from 0 to 20\% of
@@ -763,16 +763,16 @@ e.g., a mixed-stock fishery).
 regime}\label{effects-of-disturbance-regime}}
 
 The strongest lever influencing recovery in our simulated
-metapopulations was by far, the characteristics of the disturbance
-regime. That is, more influential than the density dependence
-relationship, dispersal rates or network topology was how targeted
-patches were in the severity of disturbance. This was surprising and not
-expected in our initial hypotheses. Localized disturbances increased the
-risk of spatial contraction, reduced recovery rates and aggregate
-compensation, and increased the risk of a long-term state shift. By
-altering aggregate compensation, localized disturbance reduced the
-surplus production of the metapopulation. In other words, through
-changes in source-sink dynamics, metapopulations under localized
+metapopulations was, by far, the characteristics of the disturbance
+regime. Specifically, the degree to how locally concentrated the
+disturbance was on the set of patches was more influential than variable
+density dependence, dispersal rates, or network topology. This was
+surprising and not expected in our initial hypotheses. Localized
+disturbances increased the risk of spatial contraction, reduced recovery
+rates and aggregate compensation, and increased the risk of a long-term
+state shift. By altering aggregate compensation, localized disturbance
+reduced the surplus production of the metapopulation. In other words,
+through changes in source-sink dynamics, metapopulations under localized
 disturbance acted less than the sum of their parts -- the more localized
 the impacts, the worse these effects. Uniform disturbances generally
 left the metapopulation dynamics unaffected with few ecological
@@ -854,12 +854,12 @@ long-term maximum surplus production \textless50\% before disturbance,
 metapopulation abundance remains \textless10\% of pre-disturbance.
 Resilient recovery regimes were most common when disturbance was evenly
 applied across the network and local patches were identical. Any
-localized disturbances created ecological surprises, and the frequency
-of these surprises were often exacerbated when patches were diverse.
-Localized, mixed disturbances tended to reduce recovery by 50\% compared
-to even disturbances (from 16 years to 24 years on average). The
-riskiest recovery outcomes emerged when disturbance was localized and
-allowed for extirpation. In these scenarios, recovery was slowed by
+localized disturbances could create ecological surprises, and the
+frequency of these surprises were often exacerbated when patches were
+diverse. Localized, even disturbances tended to reduce recovery by 50\%
+compared to even disturbances (from 16 years to 24 years on average).
+The riskiest recovery outcomes emerged when disturbance was localized
+and allowed for extirpation. In these scenarios, recovery was slowed by
 \textgreater100\% (from 16 years to \textgreater32 years on average),
 surplus production was often reduced by \textgreater50\%, long-term
 patch occupancy was reduced by \textgreater35\%. Last, note that linear
@@ -892,10 +892,10 @@ increased dispersal. Most of the action here takes place at low rates of
 dispersal indicating most spatial topologies don't need much dispersal
 to quicken their recovery. In preliminary runs, dispersal rates of
 \texttt{0.05-0.2} provided similar recovery patterns. Second, more
-localized disturbances regimes lead to slower recovery. Third,
-linearized networks have slower recovery times than interconnected,
-complex networks suggesting that rescue effects take some time to
-cascade through the entire network of patches.
+localized disturbances regimes led to slower recovery. Third, linearized
+networks have slower recovery times than interconnected, complex
+networks suggesting that rescue effects take some time to cascade
+through the entire network of patches.
 
 \begin{figure}[H]
 
@@ -903,7 +903,7 @@ cascade through the entire network of patches.
 
 }
 
-\caption{Recovery rates along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients without stochasticity.}\label{fig:general results}
+\caption{Recovery rates along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients without stochasticity.}\label{fig:general results}
 \end{figure}
 \newpage
 
@@ -919,7 +919,7 @@ patch productivities slows recovery across all scenarios.
 
 }
 
-\caption{Recovery rates along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with variable local productivity and carrying capacities.}\label{fig:results for variables patches}
+\caption{Recovery rates along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable local productivity and carrying capacities.}\label{fig:results for variables patches}
 \end{figure}
 \newpage
 
@@ -927,7 +927,7 @@ Now, lets show recovery rates for the same scenario but allowing for
 recruitment to be stochastic (but patches are identical in demographic
 traits). We see the same three main effects of dispersal, network, and
 disturbance noted above. We also see a few subtle changes: (1)
-stochasticity slows recovery for uniform and local disturbance, but (2)
+stochasticity slows recovery for even and local disturbance, but (2)
 quickens recovery for extreme local disturbance.
 
 \begin{figure}[H]
@@ -936,14 +936,14 @@ quickens recovery for extreme local disturbance.
 
 }
 
-\caption{Recovery rates along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with stochasticity.}\label{fig:stochastic recruitment}
+\caption{Recovery rates along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with stochasticity.}\label{fig:stochastic recruitment}
 \end{figure}
 \newpage
 
 Now, lets show recovery rates for the same scenarios but with spatial
 and temporal correlations in recruitment stochasticity. In addition to
 the same effects of stochasticity, we also generally see a small effect
-of slower recovery times for uniform and local disturbance, but faster
+of slower recovery times for even and local disturbance, but faster
 recovery times for extreme localized disturbance.
 
 \begin{figure}[H]
@@ -952,7 +952,7 @@ recovery times for extreme localized disturbance.
 
 }
 
-\caption{Recovery rates along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment variation.}\label{fig:spatiotemporal correlation}
+\caption{Recovery rates along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with high spatial-temporal correlation in recruitment variation.}\label{fig:spatiotemporal correlation}
 \end{figure}
 \newpage
 
@@ -981,10 +981,10 @@ Below, we can see two main effects on surplus production. First, spatial
 disturbance is a strong driver of surplus production with more localized
 disturbance reducing the surplus. Second, dispersal rates are only
 limiting in scenarios with localized disturbance. This suggests that (1)
-uniformly disturbed metapopulations operate as the ``sum of their
-parts'' but (2) localized disturbances affect metapopulation surplus
-production leading to slower internal recovery and/or reduced rescue
-effects from neighboring patches.
+evenly disturbed metapopulations operate as the ``sum of their parts''
+but (2) localized disturbances affect metapopulation surplus production
+leading to slower internal recovery and/or reduced rescue effects from
+neighboring patches.
 
 \begin{figure}[H]
 
@@ -992,7 +992,7 @@ effects from neighboring patches.
 
 }
 
-\caption{Maximum surplus production along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with deterministic recruitment and the same patches.}\label{fig:MSY}
+\caption{Maximum surplus production along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with deterministic recruitment and the same patches.}\label{fig:MSY}
 \end{figure}
 
 \newpage
@@ -1009,7 +1009,7 @@ average MSY.
 
 }
 
-\caption{Maximum surplus production along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.}\label{fig:MSY with variable patches}
+\caption{Maximum surplus production along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable patches.}\label{fig:MSY with variable patches}
 \end{figure}
 \newpage
 
@@ -1026,7 +1026,7 @@ average MSY.
 
 }
 
-\caption{Maximum surplus production along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with variable patches and stochasticity.}\label{fig:MSY with variable patches and stochasticity}
+\caption{Maximum surplus production along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable patches and stochasticity.}\label{fig:MSY with variable patches and stochasticity}
 \end{figure}
 \newpage
 
@@ -1044,7 +1044,7 @@ spatial-temporal correlations in stochastic recruitment affects the
 
 }
 
-\caption{Maximum surplus production along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment stochasticity and variable patches.}\label{fig:MSY with variable patches and space-time stochasticity}
+\caption{Maximum surplus production along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with high spatial-temporal correlation in recruitment stochasticity and variable patches.}\label{fig:MSY with variable patches and space-time stochasticity}
 \end{figure}
 
 \newpage
@@ -1069,7 +1069,7 @@ where patches are the same.
 
 }
 
-\caption{Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with high spatial-temporal correlation in recruitment variation.}\label{fig:collapsed}
+\caption{Risk of state shift after 100 generations along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with high spatial-temporal correlation in recruitment variation.}\label{fig:collapsed}
 \end{figure}
 \newpage
 
@@ -1086,7 +1086,7 @@ state shift.
 
 }
 
-\caption{Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.}\label{fig:collapsed with variable patches}
+\caption{Risk of state shift after 100 generations along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable patches.}\label{fig:collapsed with variable patches}
 \end{figure}
 \newpage
 
@@ -1103,7 +1103,7 @@ recruitment affects the risk of state shift.
 
 }
 
-\caption{Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with variable patches and stochastic recruitment.}\label{fig:state shift with variable patches and stochasticity}
+\caption{Risk of state shift after 100 generations along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable patches and stochastic recruitment.}\label{fig:state shift with variable patches and stochasticity}
 \end{figure}
 \newpage
 
@@ -1122,7 +1122,7 @@ of a state shift.
 
 }
 
-\caption{Risk of state shift (lack of recovery or spatial contraction) after 100 generations along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with variable patches, and spatial-temporal correlations in stochastic recruitment.}\label{fig:state shifts with variable patches and space-time stochasticity}
+\caption{Risk of state shift (lack of recovery or spatial contraction) after 100 generations along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable patches, and spatial-temporal correlations in stochastic recruitment.}\label{fig:state shifts with variable patches and space-time stochasticity}
 \end{figure}
 
 \newpage
@@ -1146,7 +1146,7 @@ dynamics and the provisioning of rescue effects to local patches.
 
 }
 
-\caption{Patch occupancy after 25 years along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with deterministic recruitment and homogeouns patches.}\label{fig:patch occupancy}
+\caption{Patch occupancy after 25 years along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with deterministic recruitment and homogeouns patches.}\label{fig:patch occupancy}
 \end{figure}
 \newpage
 
@@ -1163,7 +1163,7 @@ occupancy.
 
 }
 
-\caption{Patch occupancy after 25 years along  dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with variable patches.}\label{fig:patch occupancy with variable patches}
+\caption{Patch occupancy after 25 years along  dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable patches.}\label{fig:patch occupancy with variable patches}
 \end{figure}
 \newpage
 
@@ -1180,7 +1180,7 @@ recruitment affects long-term patch occupancy.
 
 }
 
-\caption{Patch occupancy after 25 years along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with variable patches and stochastic recruitment.}\label{fig:patch occupancy with variable patches and stochasticity}
+\caption{Patch occupancy after 25 years along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable patches and stochastic recruitment.}\label{fig:patch occupancy with variable patches and stochasticity}
 \end{figure}
 
 \newpage
@@ -1200,7 +1200,7 @@ long-term patch occupancy.
 
 }
 
-\caption{Patch occupancy after 25 years along dispersal, disturbance (red - uniform; blue - localized, random; orange - localized, extirpation), and network gradients with variable patches and spatial-temporal correlations in stochastic recruitment.}\label{fig:patch occupancy with variable patches and space-time stochasticity}
+\caption{Patch occupancy after 25 years along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable patches and spatial-temporal correlations in stochastic recruitment.}\label{fig:patch occupancy with variable patches and space-time stochasticity}
 \end{figure}
 \newpage
 

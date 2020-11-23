@@ -132,7 +132,7 @@ dev.off()
 results$surprise_logic <- ifelse(results$surprise=="Resilient",1,1)
 results$dispersal_range <- factor(ifelse(results$dispersal>=0.001,"High","Low"),levels=c("High","Low"))
 results$network_lab <- factor(results$network,levels=levels(results$network),labels=c("Linear","Dendritic","Star","Complex"))
-results$disturb_lab <- factor(results$disturbance,levels=levels(results$disturbance),labels=c("Even","Localized, mixed","Localized, extirpation"))
+results$disturb_lab <- factor(results$disturbance,levels=levels(results$disturbance),labels=c("Even","Local, even","Local, uneven"))
 results$density_dep <- factor(results$alpha,levels=levels(results$alpha),labels=c("Identical","Diverse"))
 saveRDS(results,file="Figures/clustering_outcomes.rds")
 surprises <- data.frame(aggregate(surprise_logic~network_lab+dispersal_range+disturb_lab+density_dep+cluster_surprises,data=results,FUN=sum))
@@ -181,7 +181,7 @@ invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHul
 plot(results$longMSY,results$longOcc,pch=21,bg=plotColours,xlab="Surplus production (25 years)",ylab="Patch occupancy (25 years)")
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="longMSY",y="longOcc"),col=adjustcolor(dist_colours[z],transparency))}))
 
-legend("bottomright",c("Uniform","Local, random","Local, extirpation"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime")
+legend("bottomright",c("Even","Local, even","Local, uneven"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime")
 dev.off()
 
 tiff("Figures/Disturbance impacts on recovery regime smoothed polygon.tiff",compression="lzw",units="in",height=8,width=8,res=800)
@@ -204,7 +204,7 @@ invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){
 plot(results$longMSY,results$longOcc,pch=21,bg=plotColours,xlab="Surplus production (25 years)",ylab="Patch occupancy (25 years)")
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="longMSY",y="longOcc"),col=adjustcolor(dist_colours[z],transparency))}))
 
-legend("bottomright",c("Uniform","Local, random","Local, extirpation"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime")
+legend("bottomright",c("Even","Local, even","Local, uneven"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime")
 dev.off()
 
 
@@ -237,7 +237,7 @@ for(i in 1:length(scenarios$network))
     y_rng <- sapply(1:length(scenarios$dispersal),function(x){quantile(subResults$RecoveryRate[v_all.equal(subResults$dispersal,scenarios$dispersal[x]) & subResults$disturbance==scenarios$disturbance[z]],probs=c(0.25,0.75))});
     polygon(x=c(scenarios$dispersal,rev(scenarios$dispersal)),y=c(y_rng[1,],rev(y_rng[2,])),col=adjustcolor(dist_colours[z],transparency))}))
 }
-legend("right",c("Uniform","Local, random","Local, extirpation"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime",cex=1.2)
+legend("right",c("Even","Local, even","Local, uneven"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime",cex=1.2)
 add2plot()
 dev.off()
 
