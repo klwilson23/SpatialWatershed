@@ -1,18 +1,18 @@
 ---
 title: "Managing for ecological surprises in metapopulations"
 author: |
-  | Kyle L. Wilson$^a$^[Corresponding author - email: kl\_wilson@sfu.ca], Alex Sawyer$^a$, Anna Potapova$^a$, Colin J. Bailey$^a$,Daniella LoScerbo$^b$,
-  | Elissa Sweeney-Bergen$^{a,c}$, Emma E. Hodgson$^{a,d}$, Kara J. Pitman$^a$, Karl Seitz$^a$,
-  | Lauren Law$^{a,d}$, Luke Warkentin$^{a,d}$, Samantha M. Wilson$^a$, William I. Atlas$^{a,e}$, 
-  | Douglas C. Braun$^d$, Matthew R. Sloat$^e$, M. Tim Tinker$^f$, 
-  | and Jonathan W. Moore$^{a,b}$
+  | Kyle L. Wilson$^\textup{a}$^[Corresponding author - email: kl\_wilson@sfu.ca], Alex Sawyer$^\textup{a}$, Anna Potapova$^\textup{a}$, Colin J. Bailey$^\textup{a}$,Daniella LoScerbo$^\textup{b}$,
+  | Elissa Sweeney-Bergen$^\textup{a,c}$, Emma E. Hodgson$^\textup{a,d}$, Kara J. Pitman$^\textup{a}$, Karl Seitz$^\textup{a}$,
+  | Lauren Law$^\textup{a,d}$, Luke Warkentin$^\textup{a,d}$, Samantha M. Wilson$^\textup{a}$, William I. Atlas$^\textup{a,e}$, 
+  | Douglas C. Braun$^\textup{d}$, Matthew R. Sloat$^\textup{e}$, M. Tim Tinker$^\textup{f}$, 
+  | and Jonathan W. Moore$^\textup{a,b}$
   |
-  | $^a$Earth to Ocean Research Group, Simon Fraser University
-  | $^b$Resource and Environmental Management, Simon Fraser University
-  | $^c$Fisheries Department, Lake Babine Nation
-  | $^d$Fisheries and Oceans Canada
-  | $^e$Wild Salmon Center
-  | $^f$Ecology and Evolutionary Biology, University of California Santa Cruz
+  | $^\textup{a}$Earth to Ocean Research Group, Simon Fraser University
+  | $^\textup{b}$Resource and Environmental Management, Simon Fraser University
+  | $^\textup{c}$Fisheries Department, Lake Babine Nation
+  | $^\textup{d}$Fisheries and Oceans Canada
+  | $^\textup{e}$Wild Salmon Center
+  | $^\textup{f}$Ecology and Evolutionary Biology, University of California Santa Cruz
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
   pdf_document:
@@ -46,7 +46,6 @@ header-includes:
 - \renewcommand{\thetable}{S\arabic{table}}
 - \usepackage{fancyhdr}
 - \setlength{\parskip}{\baselineskip}
-- \renewenvironment{Shaded}{\vspace{\parskip}\begin{snugshade}}{\end{snugshade}}
 references:
 - id: igraph2006
   DOI: null
@@ -161,7 +160,7 @@ beta <- c(100,200)
 Here, recruitment compensation from local patches $\alpha_i$ gets averaged across the metapopulation leading to an average compensation ratio $\bar{\alpha}$ of `r mean(alpha)`. Likewise, the total carrying capacity of the metapopulation $\bar{\beta}$ becomes the summation of local patch carrying capacities $\sum\beta_i$, which is `r sum(beta)`. This scale of monitoring generates the following local patch and metapopulation dynamics:
 
 <br>
-```{r recruit curves, echo=FALSE,warning = F, message = F,fig.hold=TRUE,fig.width=5, fig.height = 4.5,fig.cap="Metapopulation and local patch recruitment dynamics.",fig.align="center"}
+```{r recruit curves, echo=FALSE,warning = F, message = F,fig.hold=TRUE,fig.width=4.5, fig.height = 4,fig.cap="Metapopulation and local patch recruitment dynamics.",fig.align="center"}
 
 curve((alpha[1]*x)/(1+((alpha[1]-1)/beta[1])*x),from=0,to=1.5*beta[1],lwd=2,col="orange",xlab="Adults (t-1)",ylab="Recruits (t)",ylim=1.5*c(0,sum(beta)),xlim=1.5*c(0,sum(beta)))
 curve((alpha[2]*x)/(1+((alpha[2]-1)/beta[2])*x),from=0,to=1.5*beta[2],lwd=2,col="dodgerblue",add=TRUE)
@@ -421,7 +420,7 @@ where $\hat{\alpha_t}$ is the estimated compensation ratio averaged across the m
 
 In our assessment, we weighted recent years of sampling over more distant years such that:
 
-```{r ,echo=FALSE,fig.hold=TRUE,fig.height=5.5,fig.width=6,fig.cap="Likelihood weighting for samples collected over time from current year of sampling.",fig.align="center"}
+```{r ,echo=FALSE,fig.hold=TRUE,fig.height=4,fig.width=4.5,fig.cap="Likelihood weighting for samples collected over time from current year of sampling.",fig.align="center"}
 dataWeighting <- 0.1
 curve(exp(dataWeighting*(-x))/max(exp(dataWeighting*(-x))),from=0,to=100,xlab="Years lagged",ylab="Likelihood weight")
 ```
@@ -576,7 +575,7 @@ dendriticSim3 <- metaPop(Npatches=16,networkType="dendritic",patchDistance=1,Nbu
 ### Effects of disturbance regime
 The strongest lever influencing recovery in our simulated metapopulations was, by far, the characteristics of the disturbance regime. Specifically, the degree to how locally concentrated the disturbance was on the set of patches was more influential than variable density dependence, dispersal rates, or network topology. This was surprising and not expected in our initial hypotheses. Localized disturbances increased the risk of spatial contraction, reduced recovery rates and aggregate compensation, and increased the risk of a long-term state shift. By altering aggregate compensation, localized disturbance reduced the surplus production of the metapopulation. In other words, through changes in source-sink dynamics, metapopulations under localized disturbance acted less than the sum of their parts – the more localized the impacts, the worse these effects. Uniform disturbances generally left the metapopulation dynamics unaffected with few ecological surprises. These above spatial and temporal recovery processes also appeared tied to one another such that changes to any of them had feedbacks with other recovery metrics.
 
-```{r disturbance regime, echo=FALSE,fig.height=6,fig.width=6,fig.cap="Spatial and temporal recovery patterns along disturbance regimes across all scenarios.",fig.align="center"}
+```{r disturbance regime, echo=FALSE,fig.height=5,fig.width=5.5,fig.cap="Spatial and temporal recovery patterns along disturbance regimes across all scenarios.",fig.align="center"}
 results <- readRDS("Simulations/results2019-06-30.rds")
 scenarios <- readRDS("Simulations/scenarios2019-06-30.rds")
 Nboots <- 100
