@@ -259,7 +259,7 @@ plot(network$landscape,col="dodgerblue",layout=cbind(1,seq(1,-1,length.out = gor
 
 ### Disturbance regimes
 
-In all scenarios, disturbance was applied after `50` years of equilibrating the metapopulaton at pristine conditions. We then applied the disturbance regime at year `50` (the regime varied from *even*, *localized, even*, and *localized, uneven* - see *Scenarios* below). Disturbance immediately removes a set proportion of the metapopulation adults at that time (i.e., `0.9` of $MN_{t=50}$). Once applied, the metapopulation was no longer disturbed and spatio-temporal recovery dynamics emerged naturally from these new conditions.
+In all scenarios, disturbance was applied after `50` years of equilibrating the metapopulaton at pristine conditions. We then applied the disturbance regime at year `50` (the regime varied from *uniform*, *localized, even*, and *localized, uneven* - see *Scenarios* below). Disturbance immediately removes a set proportion of the metapopulation adults at that time (i.e., `0.9` of $MN_{t=50}$). Once applied, the metapopulation was no longer disturbed and spatio-temporal recovery dynamics emerged naturally from these new conditions.
 
 ```{r example disturbance regime, echo=FALSE,warning=FALSE,message=FALSE,fig.height=4,fig.width=8,fig.cap="Recovery regime of metapopulation with linear topology through time (left) and space (right).",fig.align="center"}
 seed <- 32
@@ -379,8 +379,8 @@ Corner_text("d) - spatial-temporal","topleft")
 ## Post-disturbance outcomes
 We measured the following post-disturbance outcomes to track the temporal and spatial recovery regime of the metapopulation.
 
-1. Collapse (a) & recovery rate (b) after disturbance:
-    a. Collapse rate is defined as the number of simulations where metapopulation abundance failed to recover to `1.0` of the average pre-disturbance abundance for `5` consecutive years post-disturbance. This "collapse rate" reflects the risk of a long-term state shift in metapopulation dynamics after disturbance in the face of stochasticity. 
+1. Non-recovery (a) & recovery rate (b) after disturbance:
+    a. Non-recovery rate is defined as the number of simulations where metapopulation abundance failed to recover to `1.0` of the average pre-disturbance abundance for `5` consecutive years post-disturbance. This "non-recovery rate" reflects the risk of a long-term state shift in metapopulation dynamics after disturbance in the face of stochasticity. 
     b. Recovery rate the number of years to average pre-disturbance abundance for `5` consecutive years. The recovery rate (either in the number of generations or in the rate of recovery per year) captures how quickly the aggregate metapopulation recovers from disturbance but doesn't take into account whether any given local patches recover to their pre-disturbance capacity.
 
 2. Patch occupancy - the mean number of patches with `>0.1` local carrying capacity after disturbance in the short-term (5 years), medium-term (10 years), and long-term (25 years). This value characterizes the expected risk of spatial contractions or local patch collapses, and reflects how interactions between spatial structure, disturbance, and dispersal shape source-sink dynamics and the ability to provide (or not) rescue effects and recover local patches.
@@ -522,7 +522,7 @@ We tested all combinations of the following eight processes (below) and ran `100
 2. Homogenous and spatially variable local carrying capacity across patches, i.e. asymptote of expected recruits at high adult densities ($\beta_i$)
 
 3. Disturbances where a proportion of individuals removed from metapopulation (e.g., `0.90`) occurs.
-    a. *Even* - random individuals removed at equal vulnerability across all patches.
+    a. *uniform* - random individuals removed at equal vulnerability across all patches.
     b. *localized, even* - random individuals removed from randomly selected subset of patches (as long as the target individuals lost in the metapopulation can be achieved in that subset of patches)
     c. *localized, uneven* - total extirpation of randomly selected subset of patches (as long as the target individuals lost in the metapopulation can be achieved in that subset of patches)
 
@@ -600,7 +600,9 @@ lagTime <- 1
 
 results$StateShift <- ((1-results$recovered)+(1-results$longOcc))/2
 results$RecoveryRate <- 1-results$recovery/NyrsPost
-results$collapsed <- 1-results$recovered
+results$collapsed <- 100*(1-results$recovered)
+results$disturb_lab <- factor(results$disturbance,levels=levels(results$disturbance),labels=c("Uniform","Local, even","Local, uneven"))
+mean_res <- aggregate(cbind(RecoveryRate,collapsed,longOcc,longMSY)~disturb_lab,data=results,FUN=mean)
 
 dist_colours <- c("tomato","dodgerblue","orange")
 transparency <- 0.6
@@ -610,24 +612,32 @@ plotColours <- ifelse(results$dispersal==-1,
 
 layout(matrix(1:4,nrow=2,ncol=2,byrow=TRUE))
 par(mar=c(4,4,0.5,0.5))
-plot(results$RecoveryRate,results$longOcc,pch=21,bg=plotColours,xlab=expression('Recovery rate (yr'^-1*')'),ylab="Patch occupancy (25 years)")
+plot(results$RecoveryRate,results$longOcc,pch=21,bg=plotColours,xlab=expression('Recovery rate (yr'^-1*')'),ylab="Relative patch occupancy (25 years)",cex.lab=0.7,cex.axis=0.85)
 
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="longOcc"),col=adjustcolor(dist_colours[z],transparency))}))
+Corner_text("(a)", "topleft")
+points(mean_res$RecoveryRate,mean_res$longOcc,pch=22,cex=2,bg=dist_colours)
 
-plot(results$RecoveryRate,results$longMSY,pch=21,bg=plotColours,xlab=expression('Recovery rate (yr'^-1*')'),ylab="Surplus production (25 years)")
+plot(results$RecoveryRate,results$longMSY,pch=21,bg=plotColours,xlab=expression('Recovery rate (yr'^-1*')'),ylab="Relative surplus production (25 years)",cex.lab=0.7,cex.axis=0.85)
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="longMSY"),col=adjustcolor(dist_colours[z],transparency))}))
+Corner_text("(b)", "topleft")
+points(mean_res$RecoveryRate,mean_res$longMSY,pch=22,cex=2,bg=dist_colours)
 
-plot(results$RecoveryRate,results$collapsed,pch=21,bg=plotColours,xlab=expression('Recovery rate (yr'^-1*')'),ylab="Collapse rate (% of simulations)")
+plot(results$RecoveryRate,results$collapsed,pch=21,bg=plotColours,xlab=expression('Recovery rate (yr'^-1*')'),ylab="Rate of non-recovery (% of simulations)",cex.lab=0.7,cex.axis=0.85)
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){
   if(z<3){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="collapsed"),col=adjustcolor(dist_colours[z],transparency))}else{xMat <- unique(cbind(results[results$disturbance==scenarios$disturbance[z],"RecoveryRate"],results[results$disturbance==scenarios$disturbance[z],"collapsed"]))
   xSeq <- seq(min(xMat[,1]),max(xMat[,1]),by=0.1)
   polyMinMax <- cbind(c(xSeq,rev(xSeq)),c(sapply(xSeq,function(x){min(xMat[abs(xMat[which.min(abs(xMat[,1]-x)),1]-xMat[,1])<=0.025,2])}),sapply(rev(xSeq),function(x){max(xMat[abs(xMat[which.min(abs(xMat[,1]-x)),1]-xMat[,1])<=0.025,2])})))
   polygon(polyMinMax[,1],polyMinMax[,2],col=adjustcolor(dist_colours[z],transparency))}}))
+Corner_text("(c)", "topleft")
+points(mean_res$RecoveryRate,mean_res$collapsed,pch=22,cex=2,bg=dist_colours)
 
-plot(results$longMSY,results$longOcc,pch=21,bg=plotColours,xlab="Surplus production (25 years)",ylab="Patch occupancy (25 years)")
+plot(results$longMSY,results$longOcc,pch=21,bg=plotColours,xlab="Relative surplus production (25 years)",ylab="Relative patch occupancy (25 years)",cex.lab=0.7,cex.axis=0.85)
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="longMSY",y="longOcc"),col=adjustcolor(dist_colours[z],transparency))}))
+Corner_text("(d)", "topleft")
+points(mean_res$longMSY,mean_res$longOcc,pch=22,cex=2,bg=dist_colours)
 
-legend("bottomright",c("Uniform","Local, random","Local, extirpation"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime")
+legend("bottomright",c("Uniform","Local, even","Local, uneven"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime",cex=0.8)
 ```
 \newpage
 ### Role of network structure & dispersal
@@ -692,7 +702,7 @@ for(i in 1:length(scenarios$network))
     y_rng <- sapply(1:length(scenarios$dispersal),function(x){quantile(subResults$RecoveryRate[v_all.equal(subResults$dispersal,scenarios$dispersal[x]) & subResults$disturbance==scenarios$disturbance[z]],probs=c(0.25,0.75))});
     polygon(x=c(scenarios$dispersal,rev(scenarios$dispersal)),y=c(y_rng[1,],rev(y_rng[2,])),col=adjustcolor(dist_colours[z],transparency))}))
 }
-legend("right",c("Even","Local, random","Local, extirpation"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime",cex=1.2)
+legend("right",c("Uniform","Local, even","Local, uneven"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime",cex=1.2)
 add2plot()
 
 ```
@@ -780,7 +790,7 @@ First, lets show recovery rates for a scenario where (1) patches have the same l
 
 Below, we can see three main effects on recovery rates (number of generations to reach recovery). First, recovery gets faster with increased dispersal. Most of the action here takes place at low rates of dispersal indicating most spatial topologies don't need much dispersal to quicken their recovery. In preliminary runs, dispersal rates of `0.05-0.2` provided similar recovery patterns. Second, more localized disturbances regimes led to slower recovery. Third, linearized networks have slower recovery times than interconnected, complex networks suggesting that rescue effects take some time to cascade through the entire network of patches.
 
-```{r general results, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Recovery rates along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients without stochasticity.",fig.align="center"}
+```{r general results, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Recovery rates along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients without stochasticity.",fig.align="center"}
 
 matLayout <- matrix(0,nrow=16,ncol=16)
 matLayout[1:8,1:8] <- 1
@@ -815,7 +825,7 @@ add2plotv2(x1=1.35,x2=1.35,x3=1.35,x4=1.35)
 \newpage
 Now, lets show recovery rates for the same scenario with deterministic recruitment but allowing for patches to vary in productivity and carrying capacity. In addition to the same three main effects of dispersal, network, and disturbance noted above, we also see variable patch productivities slows recovery across all scenarios.
 
-```{r results for variables patches, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Recovery rates along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable local productivity and carrying capacities.",fig.align="center"}
+```{r results for variables patches, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Recovery rates along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable local productivity and carrying capacities.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 for(i in 1:length(scenarios$network))
@@ -839,7 +849,7 @@ add2plotv2(x1=1.35,x2=1.35,x3=1.35,x4=1.35)
 \newpage
 Now, lets show recovery rates for the same scenario but allowing for recruitment to be stochastic (but patches are identical in demographic traits). We see the same three main effects of dispersal, network, and disturbance noted above. We also see a few subtle changes: (1) stochasticity slows recovery for even and local disturbance, but (2) quickens recovery for extreme local disturbance.
 
-```{r stochastic recruitment, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Recovery rates along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with stochasticity.",fig.align="center"}
+```{r stochastic recruitment, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Recovery rates along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with stochasticity.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 for(i in 1:length(scenarios$network))
@@ -863,7 +873,7 @@ add2plotv2(x1=1.35,x2=1.35,x3=1.35,x4=1.35)
 \newpage
 Now, lets show recovery rates for the same scenarios but with spatial and temporal correlations in recruitment stochasticity. In addition to the same effects of stochasticity, we also generally see a small effect of slower recovery times for even and local disturbance, but faster recovery times for extreme localized disturbance.
 
-```{r spatiotemporal correlation, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Recovery rates along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with high spatial-temporal correlation in recruitment variation.",fig.align="center"}
+```{r spatiotemporal correlation, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Recovery rates along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with high spatial-temporal correlation in recruitment variation.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 for(i in 1:length(scenarios$network))
@@ -895,7 +905,7 @@ We will show 25-year MSY patterns for a scenario where (1) patches have the same
 
 Below, we can see two main effects on surplus production. First, spatial disturbance is a strong driver of surplus production with more localized disturbance reducing the surplus. Second, dispersal rates are only limiting in scenarios with localized disturbance. This suggests that (1) evenly disturbed metapopulations operate as the "sum of their parts" but (2) localized disturbances affect metapopulation surplus production leading to slower internal recovery and/or reduced rescue effects from neighboring patches.
 
-```{r MSY, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Maximum surplus production along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with deterministic recruitment and the same patches.",fig.align="center"}
+```{r MSY, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Maximum surplus production along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with deterministic recruitment and the same patches.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 for(i in 1:length(scenarios$network))
@@ -922,7 +932,7 @@ add2plotv2(x1=1.35,x2=1.35,x3=1.35,x4=1.35)
 
 Now, we illustrate how variable patch demography affects the 25-year average MSY.
 
-```{r MSY with variable patches, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Maximum surplus production along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable patches.",fig.align="center"}
+```{r MSY with variable patches, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Maximum surplus production along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable patches.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 for(i in 1:length(scenarios$network))
@@ -948,7 +958,7 @@ add2plotv2(x1=1.35,x2=1.35,x3=1.35,x4=1.35)
 
 Now, we illustrate how variable patch demography affects the 25-year average MSY.
 
-```{r MSY with variable patches and stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Maximum surplus production along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable patches and stochasticity.",fig.align="center"}
+```{r MSY with variable patches and stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Maximum surplus production along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable patches and stochasticity.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 for(i in 1:length(scenarios$network))
@@ -974,7 +984,7 @@ add2plotv2(x1=1.35,x2=1.35,x3=1.35,x4=1.35)
 
 Now, we illustrate how variable patch demography and high spatial-temporal correlations in stochastic recruitment affects the 25-year average MSY.
 
-```{r MSY with variable patches and space-time stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Maximum surplus production along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with high spatial-temporal correlation in recruitment stochasticity and variable patches.",fig.align="center"}
+```{r MSY with variable patches and space-time stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Maximum surplus production along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with high spatial-temporal correlation in recruitment stochasticity and variable patches.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 for(i in 1:length(scenarios$network))
@@ -1002,7 +1012,7 @@ add2plotv2(x1=1.35,x2=1.35,x3=1.35,x4=1.35)
 
 We now show similar patterns in the rate of long-term collapse across the metapopulation after $100$ generations post-disturbance. Collapse rate % is defined as the number of simulations where metapopulation abundance failed to reach at least `1.0` of the average pre-disturbance abundance for `5` consecutive years after disturbance. This "collapse rate" reflects the risk of a long-term state shift in metapopulation dynamics after disturbance in the face of stochasticity. We start with a scenario with deterministic recruitment where patches are the same.
 
-```{r collapsed, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Risk of state shift after 100 generations along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with high spatial-temporal correlation in recruitment variation.",fig.align="center"}
+```{r collapsed, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with high spatial-temporal correlation in recruitment variation.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 for(i in 1:length(scenarios$network))
@@ -1028,7 +1038,7 @@ add2plotv2(x1=1.35,x2=1.35,x3=1.35,x4=1.35)
 
 Now, we illustrate how variable patch demography affects the risk of a state shift.
 
-```{r collapsed with variable patches, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Risk of state shift after 100 generations along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable patches.",fig.align="center"}
+```{r collapsed with variable patches, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable patches.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 for(i in 1:length(scenarios$network))
@@ -1054,7 +1064,7 @@ add2plotv2(x1=1.35,x2=1.35,x3=1.35,x4=1.35)
 
 Now, we illustrate how variable patch demography and stochastic recruitment affects the risk of state shift.
 
-```{r state shift with variable patches and stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Risk of state shift after 100 generations along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable patches and stochastic recruitment.",fig.align="center"}
+```{r state shift with variable patches and stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable patches and stochastic recruitment.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 for(i in 1:length(scenarios$network))
@@ -1080,7 +1090,7 @@ add2plotv2(x1=1.35,x2=1.35,x3=1.35,x4=1.35)
 
 Now, we illustrate how variable patch demography and high spatial-temporal correlations in stochastic recruitment affects the risk of a state shift.
 
-```{r state shifts with variable patches and space-time stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Risk of state shift (lack of recovery or spatial contraction) after 100 generations along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable patches, and spatial-temporal correlations in stochastic recruitment.",fig.align="center"}
+```{r state shifts with variable patches and space-time stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Risk of state shift (lack of recovery or spatial contraction) after 100 generations along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable patches, and spatial-temporal correlations in stochastic recruitment.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 for(i in 1:length(scenarios$network))
@@ -1107,7 +1117,7 @@ add2plotv2(x1=1.35,x2=1.35,x3=1.35,x4=1.35)
 
 We now show similar patterns in patch occupancy after $25$ years post-disturbance. Patch occupancy is defined as the average number of patches that fail to recover above `0.1` pre-disturbance abundance for scenario with deterministic recruitment where patches are the same. Patch occupancy characterizes the expected risk of spatial contractions or local patch collapses, and reflects how interactions between spatial structure, disturbance, and dispersal affect source-sink dynamics and the provisioning of rescue effects to local patches.
 
-```{r patch occupancy, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Patch occupancy after 25 years along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with deterministic recruitment and homogeouns patches.",fig.align="center"}
+```{r patch occupancy, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Patch occupancy after 25 years along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with deterministic recruitment and homogeouns patches.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 for(i in 1:length(scenarios$network))
@@ -1133,7 +1143,7 @@ add2plotv2(x1=1.35,x2=1.35,x3=1.35,x4=1.35)
 
 Now, we illustrate how variable patch demography affects patch occupancy.
 
-```{r patch occupancy with variable patches, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Patch occupancy after 25 years along  dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable patches.",fig.align="center"}
+```{r patch occupancy with variable patches, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Patch occupancy after 25 years along  dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable patches.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 for(i in 1:length(scenarios$network))
@@ -1158,7 +1168,7 @@ add2plotv2(x1=1.35,x2=1.35,x3=1.35,x4=1.35)
 
 Now, we illustrate how variable patch demography and stochastic recruitment affects long-term patch occupancy.
 
-```{r patch occupancy with variable patches and stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Patch occupancy after 25 years along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable patches and stochastic recruitment.",fig.align="center"}
+```{r patch occupancy with variable patches and stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Patch occupancy after 25 years along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable patches and stochastic recruitment.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 for(i in 1:length(scenarios$network))
@@ -1185,7 +1195,7 @@ add2plotv2(x1=1.35,x2=1.35,x3=1.35,x4=1.35)
 
 Now, we illustrate how variable patch demography and high spatial-temporal correlations in stochastic recrtuitment affects long-term patch occupancy.
 
-```{r patch occupancy with variable patches and space-time stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Patch occupancy after 25 years along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable patches and spatial-temporal correlations in stochastic recruitment.",fig.align="center"}
+```{r patch occupancy with variable patches and space-time stochasticity, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Patch occupancy after 25 years along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable patches and spatial-temporal correlations in stochastic recruitment.",fig.align="center"}
 layout(matLayout)
 par(mar=c(5,4,1,1))
 for(i in 1:length(scenarios$network))

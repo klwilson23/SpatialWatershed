@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.6.20)  23 NOV 2020 19:47
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.6.20)  11 JAN 2021 15:23
 entering extended mode
 **./Managing_for_ecological_surprises_in_metapopulations.tex
 (Managing_for_ecological_surprises_in_metapopulations.tex
@@ -1649,11 +1649,11 @@ Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 1240.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1240.
  ) 
 Here is how much of TeX's memory you used:
- 14813 strings out of 493319
- 225476 string characters out of 3138935
- 426668 words of memory out of 3000000
+ 14815 strings out of 493319
+ 225500 string characters out of 3138935
+ 426715 words of memory out of 3000000
  17867 multiletter control sequences out of 15000+200000
- 71134 words of font info for 104 fonts, out of 3000000 for 9000
+ 71217 words of font info for 105 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  34i,15n,43p,948b,505s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ec.enc}{C:/Program Files/M
@@ -1677,7 +1677,7 @@ C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmtk10.pfb><C:/Program Files/
 MiKTeX 2.9/fonts/type1/public/lm/lmtt10.pfb><C:/Program Files/MiKTeX 2.9/fonts/
 type1/public/lm/lmtti10.pfb>
 Output written on Managing_for_ecological_surprises_in_metapopulations.pdf (39 
-pages, 3226103 bytes).
+pages, 3226413 bytes).
 PDF statistics:
  698 PDF objects out of 1000 (max. 8388607)
  170 named destinations out of 1000 (max. 500000)

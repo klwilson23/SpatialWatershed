@@ -138,7 +138,7 @@ University\\
 \(^\textup{e}\)Wild Salmon Center\\
 \(^\textup{f}\)Ecology and Evolutionary Biology, University of
 California Santa Cruz}
-\date{23 November 2020}
+\date{11 January 2021}
 
 \begin{document}
 \maketitle
@@ -328,8 +328,8 @@ patch (i.e., \(j\neq i\). With \(\bar{d}= 1\), \(m=0.5\),
 In all scenarios, disturbance was applied after \texttt{50} years of
 equilibrating the metapopulaton at pristine conditions. We then applied
 the disturbance regime at year \texttt{50} (the regime varied from
-\emph{even}, \emph{localized, even}, and \emph{localized, uneven} - see
-\emph{Scenarios} below). Disturbance immediately removes a set
+\emph{uniform}, \emph{localized, even}, and \emph{localized, uneven} -
+see \emph{Scenarios} below). Disturbance immediately removes a set
 proportion of the metapopulation adults at that time (i.e., \texttt{0.9}
 of \(MN_{t=50}\)). Once applied, the metapopulation was no longer
 disturbed and spatio-temporal recovery dynamics emerged naturally from
@@ -400,16 +400,16 @@ temporal and spatial recovery regime of the metapopulation.
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
-  Collapse (a) \& recovery rate (b) after disturbance:
+  Non-recovery (a) \& recovery rate (b) after disturbance:
 
   \begin{enumerate}
   \def\labelenumii{\alph{enumii}.}
   \tightlist
   \item
-    Collapse rate is defined as the number of simulations where
+    Non-recovery rate is defined as the number of simulations where
     metapopulation abundance failed to recover to \texttt{1.0} of the
     average pre-disturbance abundance for \texttt{5} consecutive years
-    post-disturbance. This ``collapse rate'' reflects the risk of a
+    post-disturbance. This ``non-recovery rate'' reflects the risk of a
     long-term state shift in metapopulation dynamics after disturbance
     in the face of stochasticity.
   \item
@@ -663,7 +663,7 @@ of the above outcomes.
   \def\labelenumii{\alph{enumii}.}
   \tightlist
   \item
-    \emph{Even} - random individuals removed at equal vulnerability
+    \emph{uniform} - random individuals removed at equal vulnerability
     across all patches.
   \item
     \emph{localized, even} - random individuals removed from randomly
@@ -905,7 +905,7 @@ through the entire network of patches.
 
 }
 
-\caption{Recovery rates along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients without stochasticity.}\label{fig:general results}
+\caption{Recovery rates along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients without stochasticity.}\label{fig:general results}
 \end{figure}
 \newpage
 
@@ -921,7 +921,7 @@ patch productivities slows recovery across all scenarios.
 
 }
 
-\caption{Recovery rates along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable local productivity and carrying capacities.}\label{fig:results for variables patches}
+\caption{Recovery rates along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable local productivity and carrying capacities.}\label{fig:results for variables patches}
 \end{figure}
 \newpage
 
@@ -938,7 +938,7 @@ quickens recovery for extreme local disturbance.
 
 }
 
-\caption{Recovery rates along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with stochasticity.}\label{fig:stochastic recruitment}
+\caption{Recovery rates along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with stochasticity.}\label{fig:stochastic recruitment}
 \end{figure}
 \newpage
 
@@ -954,7 +954,7 @@ recovery times for extreme localized disturbance.
 
 }
 
-\caption{Recovery rates along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with high spatial-temporal correlation in recruitment variation.}\label{fig:spatiotemporal correlation}
+\caption{Recovery rates along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with high spatial-temporal correlation in recruitment variation.}\label{fig:spatiotemporal correlation}
 \end{figure}
 \newpage
 
@@ -994,7 +994,7 @@ neighboring patches.
 
 }
 
-\caption{Maximum surplus production along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with deterministic recruitment and the same patches.}\label{fig:MSY}
+\caption{Maximum surplus production along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with deterministic recruitment and the same patches.}\label{fig:MSY}
 \end{figure}
 
 \newpage
@@ -1011,7 +1011,7 @@ average MSY.
 
 }
 
-\caption{Maximum surplus production along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable patches.}\label{fig:MSY with variable patches}
+\caption{Maximum surplus production along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable patches.}\label{fig:MSY with variable patches}
 \end{figure}
 \newpage
 
@@ -1028,7 +1028,7 @@ average MSY.
 
 }
 
-\caption{Maximum surplus production along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable patches and stochasticity.}\label{fig:MSY with variable patches and stochasticity}
+\caption{Maximum surplus production along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable patches and stochasticity.}\label{fig:MSY with variable patches and stochasticity}
 \end{figure}
 \newpage
 
@@ -1046,7 +1046,7 @@ spatial-temporal correlations in stochastic recruitment affects the
 
 }
 
-\caption{Maximum surplus production along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with high spatial-temporal correlation in recruitment stochasticity and variable patches.}\label{fig:MSY with variable patches and space-time stochasticity}
+\caption{Maximum surplus production along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with high spatial-temporal correlation in recruitment stochasticity and variable patches.}\label{fig:MSY with variable patches and space-time stochasticity}
 \end{figure}
 
 \newpage
@@ -1071,7 +1071,7 @@ where patches are the same.
 
 }
 
-\caption{Risk of state shift after 100 generations along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with high spatial-temporal correlation in recruitment variation.}\label{fig:collapsed}
+\caption{Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with high spatial-temporal correlation in recruitment variation.}\label{fig:collapsed}
 \end{figure}
 \newpage
 
@@ -1088,7 +1088,7 @@ state shift.
 
 }
 
-\caption{Risk of state shift after 100 generations along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable patches.}\label{fig:collapsed with variable patches}
+\caption{Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable patches.}\label{fig:collapsed with variable patches}
 \end{figure}
 \newpage
 
@@ -1105,7 +1105,7 @@ recruitment affects the risk of state shift.
 
 }
 
-\caption{Risk of state shift after 100 generations along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable patches and stochastic recruitment.}\label{fig:state shift with variable patches and stochasticity}
+\caption{Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable patches and stochastic recruitment.}\label{fig:state shift with variable patches and stochasticity}
 \end{figure}
 \newpage
 
@@ -1124,7 +1124,7 @@ of a state shift.
 
 }
 
-\caption{Risk of state shift (lack of recovery or spatial contraction) after 100 generations along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable patches, and spatial-temporal correlations in stochastic recruitment.}\label{fig:state shifts with variable patches and space-time stochasticity}
+\caption{Risk of state shift (lack of recovery or spatial contraction) after 100 generations along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable patches, and spatial-temporal correlations in stochastic recruitment.}\label{fig:state shifts with variable patches and space-time stochasticity}
 \end{figure}
 
 \newpage
@@ -1148,7 +1148,7 @@ dynamics and the provisioning of rescue effects to local patches.
 
 }
 
-\caption{Patch occupancy after 25 years along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with deterministic recruitment and homogeouns patches.}\label{fig:patch occupancy}
+\caption{Patch occupancy after 25 years along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with deterministic recruitment and homogeouns patches.}\label{fig:patch occupancy}
 \end{figure}
 \newpage
 
@@ -1165,7 +1165,7 @@ occupancy.
 
 }
 
-\caption{Patch occupancy after 25 years along  dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable patches.}\label{fig:patch occupancy with variable patches}
+\caption{Patch occupancy after 25 years along  dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable patches.}\label{fig:patch occupancy with variable patches}
 \end{figure}
 \newpage
 
@@ -1182,7 +1182,7 @@ recruitment affects long-term patch occupancy.
 
 }
 
-\caption{Patch occupancy after 25 years along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable patches and stochastic recruitment.}\label{fig:patch occupancy with variable patches and stochasticity}
+\caption{Patch occupancy after 25 years along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable patches and stochastic recruitment.}\label{fig:patch occupancy with variable patches and stochasticity}
 \end{figure}
 
 \newpage
@@ -1202,7 +1202,7 @@ long-term patch occupancy.
 
 }
 
-\caption{Patch occupancy after 25 years along dispersal, disturbance (red - even; blue - localized, even; orange - localized, uneven), and network gradients with variable patches and spatial-temporal correlations in stochastic recruitment.}\label{fig:patch occupancy with variable patches and space-time stochasticity}
+\caption{Patch occupancy after 25 years along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable patches and spatial-temporal correlations in stochastic recruitment.}\label{fig:patch occupancy with variable patches and space-time stochasticity}
 \end{figure}
 \newpage
 
