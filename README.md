@@ -1,12 +1,14 @@
 # Ecological surprises in at-risk metapopulations
 This project folder contains the code and analyses for a simulation model on understanding the recovery dynamics in heavily disturbed metapopulations governed by local density dependence, dispersal, spatial habitat networks, and disturbance regimes.
 
-## an example
+## Walking through an example
 
 For illustration, we show two example recovery regimes for metapopulations that varied only in network topology when disturbance was localized and uneven. We first examine a metapopulation with linear topology composed of 16 identical patches, a dispersal rate of 1%, and low stochasticity (0.1%). This lower dispersal limits the strength of the “rescue regime” from dominating patterns in recovery. As shown in the below figure (upper panels), the linear network has a slowed and modular recovery pattern where recovery cascades outwards from the last remaining patch (e.g., California sea otters – see Case Studies below). In contrast, the dendritic network recovered sub-regions within the whole network as dispersal more quickly spread rescue effects to neighboring patches (below figure – lower panels).
 
 ![example model](https://github.com/klwilson23/SpatialWatershed/blob/master/Figures/example%20landscape%20results.jpeg?raw=true)
 
-## Some common outcomes can be shown here
+## Highlights
+
+Metapopulation recovery regimes emerged from a complex interplay of density-dependent productivity (shown in below), network structure (see .pdf file in the Markdown folder), dispersal, and disturbance regimes. Overall, clustering analyses of our model results found evidence for six common outcomes: (1) resilient recovery – metapopulation recovery <10 years, (2) slow recovery – metapopulation recovery >10 years and no other surprise, (3) lost capacity – long-term maximum surplus production <50% before disturbance, (4) hidden collapses – metapopulation recovered (or was recovering) but 50% of patches remain unoccupied, (5) spatial contraction – >25% of patches remain unoccupied and (6) critical risk – metapopulation abundance remains <10% of pre-disturbance. Resilient recovery regimes were most common when disturbance was evenly applied across the network and local patches were identical. Any localized disturbances could create ecological surprises, and the frequency of these surprises were often exacerbated when patches were diverse. Localized, even disturbances tended to reduce recovery by 50% compared to even disturbances (from 16 years to 24 years on average). The riskiest recovery outcomes emerged when disturbance was localized and allowed for extirpation. In these scenarios, recovery was slowed by >100% (from 16 years to >32 years on average), surplus production was often reduced by >50%, long-term patch occupancy was reduced by >35%. Last, note that linear networks tended to have higher risks for long-term spatial contractions.
 
 ![Some common outcomes can be shown here](https://github.com/klwilson23/SpatialWatershed/blob/master/Figures/surprising%20outcomes.jpeg?raw=true)
