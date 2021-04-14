@@ -139,24 +139,33 @@ surprises <- data.frame(aggregate(surprise_logic~network_lab+dispersal_range+dis
 saveRDS(surprises,file="Figures/gg_clustering_outcomes.rds")
 
 gradColour <- colorRampPalette(rev(c("black","#bd0026","tomato","#fdae61","dodgerblue","forestgreen")))
-margins <- c(0.1,1,0.1,0.1)
+n_id <- sum(surprises$surprise_logic)
+n_resilient <- sum(surprises$surprise_logic[surprises$cluster_surprises=='Resilient'])
+surprises$surprise_index <- ifelse(surprises$cluster_surprises=="Resilient","Expected","Surprised")
+n_outcomes <- (sapply(unique(surprises$cluster_surprises),function(x){sum(surprises$surprise_logic[surprises$cluster_surprises==x])}))
+n_cumul <- c(0,cumsum(n_outcomes))
+n_cumul <- sapply(2:length(n_cumul),function(x){median(c(n_cumul[x],n_cumul[x-1]))})
+margins <- c(0.1,0.1,0.1,0.1)
 p1 <- ggplot(surprises,aes(y = surprise_logic,axis1 = density_dep, axis2 = dispersal_range,axis3=disturb_lab,axis4=cluster_surprises)) +
       geom_alluvium(aes(fill = cluster_surprises),width = 1/6,reverse=FALSE) +
-      guides(fill = FALSE) +
+      #guides(fill = FALSE) +
       geom_stratum(width = 1/6,fill="grey",color="white", reverse = FALSE) +
-      geom_text(stat = "stratum",size=3.5, infer.label = TRUE, reverse = FALSE) +
-      scale_x_discrete(limits = c("Patch productivity", "Dispersal","Disturbance","Outcome"),expand=c(0.05,0.05)) +
-      scale_fill_manual(values=gradColour(n=length(unique(surprises$cluster_surprises)))) +
+      geom_text(stat = "stratum",size=2.5,aes(label = after_stat(stratum)), reverse = FALSE) +
+      scale_x_discrete(limits = c("Patch productivity", "Dispersal","Disturbance","Outcome"),expand=c(0.075,0.075)) +
+      scale_fill_manual("Outcome",values=gradColour(n=length(unique(surprises$cluster_surprises)))) +
       #scale_fill_brewer(type="div",palette="RdYlBu",direction=-1) +
       theme_minimal() +
-      ylab("Frequency of outcome") +
+      scale_y_continuous(breaks = seq(0,n_id,length.out=5),label = scales::percent_format(scale = 100 / n_id),sec.axis=sec_axis(~./1,breaks = n_cumul,label = paste(round(100*n_outcomes/n_id),"%",sep=""))) +
+      #scale_y_continuous(breaks = seq(0,n_id,length.out=5),label = scales::percent_format(scale = 100 / n_id)) +
+      #scale_y_continuous(breaks = NULL,label = NULL,sec.axis=sec_axis(~./1,breaks = n_cumul,label = paste(round(100*n_outcomes/n_id),"%",sep=""),name="Frequency of outcomes")) +
+      ylab("Risk of outcomes (% of simulations)") +
       coord_cartesian(clip = "off") +
-      theme(legend.position="none",strip.text.x=element_blank(),plot.margin=unit(margins,"line")) +
-      ggtitle("Ecological surprises in metapopulations")
+      theme(legend.position="bottom",strip.text.x=element_blank(),plot.margin=unit(margins,"line"),text=element_text(size=7),axis.text=element_text(size=7),axis.title=element_text(size=9),legend.text = element_text(size=7))
+p1
 pAnnotated <- annotate_figure(p1,bottom=text_grob(wrapper("Interplay between density-dependent productivity, disturbance, and dispersal can lead to suprising recovery outcomes.",width=115),color="black",hjust=0,x=0.01,face="italic",size=10))
 pAnnotated
-wid_height <- 16/10
-height <- 14
+wid_height <- 14/10
+height <- 10
 ggsave("Figures/surprising outcomes.jpeg",p1,units="cm",dpi=800,width=height*wid_height,height=height)
 
 results$collapsed <- 100*(1-results$recovered)
@@ -244,7 +253,18 @@ par(mar=c(4,4.45,0.5,0.5))
 for(i in 1:length(scenarios$network))
 {
   subResults <- results[results$network==scenarios$network[i],]
-  plot(subResults$dispersal,subResults$RecoveryRate,col=0,lty=0,type="b",lwd=0,pch=0,ylab=expression('Recovery rate (yr'^-1*')'),xlab="Dispersal rate",ylim=1.0*range(c(0,results$RecoveryRate)),cex.lab=1.2)
+  if(i==1){
+    plot(subResults$dispersal,subResults$RecoveryRate,col=0,lty=0,type="b",lwd=0,pch=0,ylab=expression('Recovery rate (yr'^-1*')'),xlab="",ylim=1.05*range(c(0,results$RecoveryRate)),cex.lab=1.2)
+  }
+  if(i==2){
+    plot(subResults$dispersal,subResults$RecoveryRate,col=0,lty=0,type="b",lwd=0,pch=0,ylab="",xlab="",ylim=1.05*range(c(0,results$RecoveryRate)),cex.lab=1.2)
+  }
+  if(i==3){
+    plot(subResults$dispersal,subResults$RecoveryRate,col=0,lty=0,type="b",lwd=0,pch=0,ylab=expression('Recovery rate (yr'^-1*')'),xlab="Dispersal rate",ylim=1.05*range(c(0,results$RecoveryRate)),cex.lab=1.2)
+  }
+  if(i==4){
+    plot(subResults$dispersal,subResults$RecoveryRate,col=0,lty=0,type="b",lwd=0,pch=0,ylab="",xlab="Dispersal rate",ylim=1.05*range(c(0,results$RecoveryRate)),cex.lab=1.2)
+  }
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
     #points(distResults$dispersal,distResults$recovery,bg=dist_colours[j],pch=21)
@@ -253,6 +273,18 @@ for(i in 1:length(scenarios$network))
   invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){
     y_rng <- sapply(1:length(scenarios$dispersal),function(x){quantile(subResults$RecoveryRate[v_all.equal(subResults$dispersal,scenarios$dispersal[x]) & subResults$disturbance==scenarios$disturbance[z]],probs=c(0.25,0.75))});
     polygon(x=c(scenarios$dispersal,rev(scenarios$dispersal)),y=c(y_rng[1,],rev(y_rng[2,])),col=adjustcolor(dist_colours[z],transparency))}))
+  if(i==1){
+    Corner_text("(a)","topleft")
+  }
+  if(i==2){
+    Corner_text("(b)","topleft")
+  }
+  if(i==3){
+    Corner_text("(c)","topleft")
+  }
+  if(i==4){
+    Corner_text("(d)","topleft")
+  }
 }
 legend("right",c("Uniform","Local, even","Local, uneven"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime",cex=1.2)
 add2plot()

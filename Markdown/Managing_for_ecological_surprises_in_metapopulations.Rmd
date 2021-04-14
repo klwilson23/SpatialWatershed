@@ -1,17 +1,19 @@
 ---
 title: "Managing for ecological surprises in metapopulations"
 author: |
-  | Kyle L. Wilson$^\textup{a}$^[Corresponding author - email: kl\_wilson@sfu.ca], Alex Sawyer$^\textup{a}$, Anna Potapova$^\textup{a}$, Colin J. Bailey$^\textup{a}$,Daniella LoScerbo$^\textup{b}$,
-  | Elissa Sweeney-Bergen$^\textup{a,c}$, Emma E. Hodgson$^\textup{a,d}$, Kara J. Pitman$^\textup{a}$, Karl Seitz$^\textup{a}$,
-  | Lauren Law$^\textup{a,d}$, Luke Warkentin$^\textup{a,d}$, Samantha M. Wilson$^\textup{a}$, William I. Atlas$^\textup{a,e}$, 
-  | Douglas C. Braun$^\textup{d}$, Matthew R. Sloat$^\textup{e}$, M. Tim Tinker$^\textup{f}$, 
+  | Kyle L. Wilson$^\textup{a}$^[Corresponding author - email: kl\_wilson@sfu.ca], Alexandra C. Sawyer$^\textup{a}$, Anna Potapova$^\textup{a}$, Colin J. Bailey$^\textup{a}$,Daniella LoScerbo$^\textup{b}$,
+  | Elissa K. Sweeney-Bergen$^\textup{a,c}$, Emma E. Hodgson$^\textup{a,d}$, Kara J. Pitman$^\textup{a}$, Karl M. Seitz$^\textup{a}$,
+  | Lauren Law$^\textup{a,e}$, Luke Warkentin$^\textup{a,f}$, Samantha M. Wilson$^\textup{a}$, William I. Atlas$^\textup{a,g}$, 
+  | Douglas C. Braun$^\textup{d}$, Matthew R. Sloat$^\textup{g}$, M. Tim Tinker$^\textup{h}$, 
   | and Jonathan W. Moore$^\textup{a,b}$
   |
   | $^\textup{a}$Earth to Ocean Research Group, Simon Fraser University
   | $^\textup{b}$Resource and Environmental Management, Simon Fraser University
-  | $^\textup{c}$Fisheries Department, Lake Babine Nation
-  | $^\textup{d}$Fisheries and Oceans Canada
-  | $^\textup{e}$Wild Salmon Center
+  | $^\textup{c}$Ministry of Forests, Lands, Natural Resource Operations, and Rural Development, Smithers, BC
+  | $^\textup{d}$Fisheries & Oceans Canada, Cultus Lake Laboratory, Cultus Lake, BC
+  | $^\textup{d}$Fisheries & Oceans Canada, Salmonid Enhancement Program, Nanaimo, BC
+  | $^\textup{d}$Fisheries & Oceans Canada, Stock Assessment & Research, Delta, BC
+  | $^\textup{e}$Wild Salmon Center, Portland, OR
   | $^\textup{f}$Ecology and Evolutionary Biology, University of California Santa Cruz
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
@@ -247,7 +249,7 @@ plot(network$landscape,col="dodgerblue",layout=cbind(1,seq(1,-1,length.out = gor
 
 In all scenarios, disturbance was applied after `50` years of equilibrating the metapopulaton at pristine conditions. We then applied the disturbance regime at year `50` (the regime varied from *uniform*, *localized, even*, and *localized, uneven* - see *Scenarios* below). Disturbance immediately removes a set proportion of the metapopulation adults at that time (i.e., `0.9` of $MN_{t=50}$). Once applied, the metapopulation was no longer disturbed and spatio-temporal recovery dynamics emerged naturally from these new conditions.
 
-```{r example disturbance regime, echo=FALSE,warning=FALSE,message=FALSE,fig.height=4,fig.width=8,fig.cap="Recovery regime of metapopulation with linear topology through time (left) and space (right).",fig.align="center"}
+```{r example disturbance regime, echo=FALSE,warning=FALSE,message=FALSE,fig.height=4,fig.width=8,fig.cap="Recovery regime of metapopulation with linear topology through time (a) and space (b).",fig.align="center"}
 seed <- 32
 set.seed(seed)
 source("Functions/Linear network.R")
@@ -272,7 +274,7 @@ matLayout[9:12,13:15] <- 7
 matLayout[4:9,16:17] <- 8
 layout(matLayout)
 linearSim <- metaPop(Npatches=16,networkType="linear",patchDistance=1,Nburnin=50,NyrsPost=100,omega=0.01,m=100,alpha=2,metaK=1600,cv=1e-6,DistScenario="uniform",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=FALSE,kVariable=FALSE,spatialPlots=FALSE)
-spatialRecoveryPlotv2(textSize=1,linearSim$popDyn,linearSim$MetaPop,linearSim$k_p,Nlevels=10,linearSim$recovery,Nburnin,Nyears,nodeScalar=35,linearSim$network,networkType="linear",Npatches=Npatches)
+spatialRecoveryPlotv2(textSize=1,linearSim$popDyn,linearSim$MetaPop,linearSim$k_p,Nlevels=10,linearSim$recovery,Nburnin,Nyears,nodeScalar=35,linearSim$network,networkType="linear",Npatches=Npatches,panel_text=c("(a)","(b)"),year_seq=(Nburnin+seq(0,15,by=3)))
 Nlevels <- 10
 textSize <- 1
 par(mar=c(1,1,1,1))
@@ -749,17 +751,24 @@ Metapopulation recovery regimes emerged from a complex interplay of density-depe
 library(ggalluvial)
 surprises <- readRDS(file="Figures/gg_clustering_outcomes.rds")
 gradColour <- colorRampPalette(rev(c("black","#bd0026","tomato","#fdae61","dodgerblue","forestgreen")))
-margins <- c(0.1,1,0.1,0.1)
+n_id <- sum(surprises$surprise_logic)
+n_resilient <- sum(surprises$surprise_logic[surprises$cluster_surprises=='Resilient'])
+surprises$surprise_index <- ifelse(surprises$cluster_surprises=="Resilient","Expected","Surprised")
+n_outcomes <- (sapply(unique(surprises$cluster_surprises),function(x){sum(surprises$surprise_logic[surprises$cluster_surprises==x])}))
+n_cumul <- c(0,cumsum(n_outcomes))
+n_cumul <- sapply(2:length(n_cumul),function(x){median(c(n_cumul[x],n_cumul[x-1]))})
+margins <- c(0.1,0.1,1,0.1)
 p1 <- ggplot(surprises,aes(y = surprise_logic,axis1 = network_lab, axis2 = dispersal_range,axis3=disturb_lab,axis4=cluster_surprises)) +
       geom_alluvium(aes(fill = cluster_surprises),width = 1/6,reverse=FALSE) +
       guides(fill = FALSE) +
       geom_stratum(width = 1/6,fill="grey",color="white", reverse = FALSE) +
       geom_text(stat = "stratum",size=3.5, aes(label = after_stat(stratum)), reverse = FALSE) +
-      scale_x_discrete(limits = c("Network structure", "Dispersal","Disturbance","Outcome"),expand=c(0.05,0.05)) +
+      scale_x_discrete(limits = c("Network structure", "Dispersal","Disturbance","Outcome"),expand=c(0.1,0.1)) +
+        scale_y_continuous(breaks = seq(0,n_id,length.out=5),label = scales::percent_format(scale = 100 / n_id),sec.axis=sec_axis(~./1,breaks = n_cumul,label = paste(round(100*n_outcomes/n_id),"%",sep=""))) +
       scale_fill_manual(values=gradColour(n=length(unique(surprises$cluster_surprises)))) +
       #scale_fill_brewer(type="div",palette="RdYlBu",direction=-1) +
       theme_minimal() +
-      ylab("Frequency of outcome") +
+      ylab("Risk of outcomes (% of simulations)") +
       coord_cartesian(clip = "off") +
       theme(legend.position="none",strip.text.x=element_blank(),plot.margin=unit(margins,"line")) +
       ggtitle("Ecological surprises in metapopulations")
