@@ -757,20 +757,20 @@ surprises$surprise_index <- ifelse(surprises$cluster_surprises=="Resilient","Exp
 n_outcomes <- (sapply(unique(surprises$cluster_surprises),function(x){sum(surprises$surprise_logic[surprises$cluster_surprises==x])}))
 n_cumul <- c(0,cumsum(n_outcomes))
 n_cumul <- sapply(2:length(n_cumul),function(x){median(c(n_cumul[x],n_cumul[x-1]))})
-margins <- c(0.1,0.1,1,0.1)
+margins <- c(0.1,0.1,0.1,0.1)
 p1 <- ggplot(surprises,aes(y = surprise_logic,axis1 = network_lab, axis2 = dispersal_range,axis3=disturb_lab,axis4=cluster_surprises)) +
       geom_alluvium(aes(fill = cluster_surprises),width = 1/6,reverse=FALSE) +
-      guides(fill = FALSE) +
+      #guides(fill = FALSE) +
       geom_stratum(width = 1/6,fill="grey",color="white", reverse = FALSE) +
-      geom_text(stat = "stratum",size=3.5, aes(label = after_stat(stratum)), reverse = FALSE) +
-      scale_x_discrete(limits = c("Network structure", "Dispersal","Disturbance","Outcome"),expand=c(0.1,0.1)) +
-        scale_y_continuous(breaks = seq(0,n_id,length.out=5),label = scales::percent_format(scale = 100 / n_id),sec.axis=sec_axis(~./1,breaks = n_cumul,label = paste(round(100*n_outcomes/n_id),"%",sep=""))) +
+      geom_text(stat = "stratum",size=2.5, aes(label = after_stat(stratum)), reverse = FALSE) +
+      scale_x_discrete(limits = c("Network structure", "Dispersal","Disturbance","Outcome"),expand=c(0.075,0.075)) +
+      scale_y_continuous(breaks = seq(0,n_id,length.out=5),label = scales::percent_format(scale = 100 / n_id),sec.axis=sec_axis(~./1,breaks = n_cumul,label = paste(round(100*n_outcomes/n_id),"%",sep=""))) +
       scale_fill_manual(values=gradColour(n=length(unique(surprises$cluster_surprises)))) +
       #scale_fill_brewer(type="div",palette="RdYlBu",direction=-1) +
       theme_minimal() +
-      ylab("Risk of outcomes (% of simulations)") +
+      ylab("Frequency of strata (% of simulations)") +
       coord_cartesian(clip = "off") +
-      theme(legend.position="none",strip.text.x=element_blank(),plot.margin=unit(margins,"line")) +
+      theme(legend.position="bottom",strip.text.x=element_blank(),plot.margin=unit(margins,"line"),text=element_text(size=7),axis.text=element_text(size=7),axis.title=element_text(size=9),legend.text = element_text(size=7)) +
       ggtitle("Ecological surprises in metapopulations")
 p1
 

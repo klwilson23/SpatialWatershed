@@ -158,7 +158,7 @@ p1 <- ggplot(surprises,aes(y = surprise_logic,axis1 = density_dep, axis2 = dispe
       scale_y_continuous(breaks = seq(0,n_id,length.out=5),label = scales::percent_format(scale = 100 / n_id),sec.axis=sec_axis(~./1,breaks = n_cumul,label = paste(round(100*n_outcomes/n_id),"%",sep=""))) +
       #scale_y_continuous(breaks = seq(0,n_id,length.out=5),label = scales::percent_format(scale = 100 / n_id)) +
       #scale_y_continuous(breaks = NULL,label = NULL,sec.axis=sec_axis(~./1,breaks = n_cumul,label = paste(round(100*n_outcomes/n_id),"%",sep=""),name="Frequency of outcomes")) +
-      ylab("Risk of outcomes (% of simulations)") +
+      ylab("Frequency of strata (% of simulations)") +
       coord_cartesian(clip = "off") +
       theme(legend.position="bottom",strip.text.x=element_blank(),plot.margin=unit(margins,"line"),text=element_text(size=7),axis.text=element_text(size=7),axis.title=element_text(size=9),legend.text = element_text(size=7))
 p1
