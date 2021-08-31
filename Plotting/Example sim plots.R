@@ -28,6 +28,7 @@ matLayout[22:25,13:15] <- 15
 jpeg("Figures/example landscape results.jpeg",units="in",height=5.5,width=6,res=800)
 layout(matLayout)
 set.seed(32)
+Nburnin<-50
 linearSim <- metaPop(Npatches=16,networkType="linear",patchDistance=1,Nburnin=50,NyrsPost=50,omega=0.01,m=100,alpha=2,metaK=1600,cv=1e-2,DistScenario="random_patch",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=FALSE,kVariable=FALSE,spatialPlots=FALSE)
 metaK <- 1600
 spatialRecoveryPlotv2(textSize=1,linearSim$popDyn,linearSim$MetaPop,linearSim$k_p,Nlevels=10,linearSim$recovery,50,50+50,nodeScalar=35,linearSim$network,networkType="linear",Npatches=Npatches,panel_text=c("(a)","(b)"),year_seq=(Nburnin+seq(0,50,by=10)))
