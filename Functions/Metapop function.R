@@ -106,7 +106,7 @@ metaPop <- function(Npatches=16,
     
     # part ivb - stochastic recruitment
     # function dvSpaceTime adds spatial & temporal correlation
-    rec.dev <- dvSpaceTime(mnSig=sqrt(log(cv^2+1)),lastDV=var.rec[Iyear-lagTime,],rhoTime=rho.time,rhoSpa=rho.dist,distMatrix = distance_matrix)
+    rec.dev <- dvSpaceTime(mnSig=(log(cv^2+1)),lastDV=var.rec[Iyear-lagTime,],rhoTime=rho.time,rhoSpa=rho.dist,distMatrix = distance_matrix) # mnSig is the variance terms for the variance-covariance matrix, adjusted on the scale of variance (not standard deviation)
     var.rec[Iyear,] <- rec.dev
     meta.rec[Iyear] <- rho.time*meta.rec[Iyear-1]+(sqrt(log(cv^2+1))*(1-rho.time^2))
     rec.obs <- pmax(0,patch_rec*exp(rec.dev-(log(cv^2+1))/2))

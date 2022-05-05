@@ -40,7 +40,7 @@ dvSpaceTime <- function(mnSig,lastDV,rhoTime,rhoSpace,distMatrix)
 {
   # function to calculate recruitment deviations correlated through space and time
   ar1 <- rhoTime*lastDV
-  dvST <- ar1 + rmvnorm(1,mean=rep(0,ncol(distMatrix)),sigma=(mnSig*(1-rhoTime^2)*(exp(-rhoSpace*distMatrix))))
+  dvST <- ar1 + rmvnorm(1,mean=rep(0,ncol(distMatrix)),sigma=(mnSig*(1-rhoTime^2)*(exp(-rhoSpace*distMatrix)))) # sigma is variance-covariance matrix, adjusted to reflect space-time correlations affect on variance (not standard deviation)
   return(dvST)
 }
 
