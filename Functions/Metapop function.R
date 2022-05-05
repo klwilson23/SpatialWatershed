@@ -59,6 +59,7 @@ metaPop <- function(Npatches=16,
   # patch-specific dynamics to track
   popDyn <- array(NA,dim=c(Nyears,Npatches,2),dimnames=list("Year"=1:Nyears,"Patch No."=1:Npatches,"Stage"=c("Recruits","Spawners")))
   # ecological metrics to track over time:
+  meta.rec <- rep(NA,Nyears)
   sink <- source <- pseudoSink <- var.rec <- array(NA,dim=c(Nyears,Npatches),dimnames=list("Year"=1:Nyears,"Patch No."=1:Npatches))
   compensationBias <- rep(NA,Nyears)
   lostCapacity <- rep(NA,Nyears)
@@ -72,15 +73,19 @@ metaPop <- function(Npatches=16,
   # dispersal information to track
   dispersing <- array(NA,dim=c(Nyears,Npatches,3),dimnames=list("Year"=1:Nyears,"Patch No."=1:Npatches,"Disersing"=c("Residents","Immigrants","Emigrants")))
   # metapopulation dynamics to track
-  MetaPop <- matrix(NA,nrow=Nyears,ncol=2,dimnames=list("Year"=1:Nyears,"Stage"=c("Recruits","Spawners")))
+  MetaPop <- matrix(NA,nrow=Nyears,ncol=3,dimnames=list("Year"=1:Nyears,"Stage"=c("Recruits","Spawners","Spawners_Contiguous")))
   # part ii - initialize populations
   rec.dev <- rnorm(Npatches,mean=0,sd=sqrt(log(cv^2+1)))
+  meta.dev <- rnorm(1,mean=0,sd=sqrt(log(cv^2+1)))
+  
   popDyn[1:lagTime,,"Spawners"] <- k_p
   popDyn[1:lagTime,,"Recruits"] <- k_p*exp(rec.dev-(log(cv^2+1))/2)
   MetaPop[1:lagTime,"Recruits"] <- sum(popDyn[1:lagTime,,"Recruits"])
   MetaPop[1:lagTime,"Spawners"] <- sum(popDyn[1:lagTime,,"Spawners"])
-  var.rec[1:lagTime,] <- rec.dev
+  MetaPop[1:lagTime,"Spawners_Contiguous"] <- metaK
   
+  var.rec[1:lagTime,] <- rec.dev
+  meta.rec[1:lagTime] <- meta.dev
   alphaLstYr <- alphaYr[1] <- alpha
   metaKLstYr <- metaKYr[1] <- metaK
   
@@ -103,6 +108,7 @@ metaPop <- function(Npatches=16,
     # function dvSpaceTime adds spatial & temporal correlation
     rec.dev <- dvSpaceTime(mnSig=sqrt(log(cv^2+1)),lastDV=var.rec[Iyear-lagTime,],rhoTime=rho.time,rhoSpa=rho.dist,distMatrix = distance_matrix)
     var.rec[Iyear,] <- rec.dev
+    meta.rec[Iyear] <- rho.time*meta.rec[Iyear-1]+(sqrt(log(cv^2+1))*(1-rho.time^2))
     rec.obs <- pmax(0,patch_rec*exp(rec.dev-(log(cv^2+1))/2))
     popDyn[Iyear,,"Recruits"] <- rec.obs
     
@@ -123,7 +129,7 @@ metaPop <- function(Npatches=16,
     
     MetaPop[Iyear,"Recruits"] <- sum(popDyn[Iyear,,"Recruits"])
     MetaPop[Iyear,"Spawners"] <- sum(popDyn[Iyear,,"Spawners"])
-    
+    MetaPop[Iyear,"Spawners_Contiguous"] <- pmax(0,popDynamics(alpha=alpha,beta=metaK,Nadults=sum(popDyn[Iyear-lagTime,,"Spawners"]),model=prodType)$recruits*exp(meta.rec[Iyear]-(log(cv^2+1))/2))
     spawnRec <- data.frame("recruits"=MetaPop[(1+lagTime):Iyear,"Recruits"],"spawners"=MetaPop[1:(Iyear-lagTime),"Spawners"],weights=exp(dataWeighting*((1+lagTime):Iyear-Iyear))/max(exp(dataWeighting*((1+lagTime):Iyear-Iyear))))
     
     # part vii - resource assessment after disturbance
@@ -216,18 +222,21 @@ metaPop <- function(Npatches=16,
   shortTermCap <- mean(metaKYr[distYear:(distYear+5)]/sum(k_p),na.rm=TRUE)
   shortTermMSY <- mean(MSYYr[distYear:(distYear+5)],na.rm=TRUE)
   shortTermOcc <- mean(patchOccupancy[distYear:(distYear+5)],na.rm=TRUE)
-  
+  shortTermSurp <- mean(MetaPop[distYear:(distYear+5),"Spawners"]/MetaPop[distYear:(distYear+5),"Spawners_Contiguous"],na.rm=TRUE)
+
   medTermProd <- mean(compensationBias[distYear:(distYear+10)],na.rm=TRUE)
   medTermComp <- mean(alphaYr[distYear:(distYear+10)]/alpha,na.rm=TRUE)
   medTermCap <- mean(metaKYr[distYear:(distYear+10)]/sum(k_p),na.rm=TRUE)
   medTermMSY <- mean(MSYYr[distYear:(distYear+10)],na.rm=TRUE)
   medTermOcc <- mean(patchOccupancy[distYear:(distYear+10)],na.rm=TRUE)
+  medTermSurp <- mean(MetaPop[distYear:(distYear+10),"Spawners"]/MetaPop[distYear:(distYear+10),"Spawners_Contiguous"],na.rm=TRUE)
   
   longTermProd <- mean(compensationBias[distYear:(distYear+25)],na.rm=TRUE)
   longTermComp <- mean(alphaYr[distYear:(distYear+25)]/alpha,na.rm=TRUE)
   longTermCap <- mean(metaKYr[distYear:(distYear+25)]/sum(k_p),na.rm=TRUE)
   longTermMSY <- mean(MSYYr[distYear:(distYear+25)],na.rm=TRUE)
   longTermOcc <- mean(patchOccupancy[distYear:(distYear+25)],na.rm=TRUE)
+  longTermSurp <- mean(MetaPop[distYear:(distYear+25),"Spawners"]/MetaPop[distYear:(distYear+25),"Spawners_Contiguous"],na.rm=TRUE)
   
   mnNMSY <- mean(NMSY_y[distYear:(Nburnin+recovery)],na.rm=TRUE)
   
@@ -237,5 +246,5 @@ metaPop <- function(Npatches=16,
     spatialRecoveryPlot(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recovery,Nburnin,Nyears,alpha,metaK,alphaYr,metaKYr,lostCapacity,compensationBias,MSYYr,nodeScalar=35,network=network,networkType=networkType,Npatches=Npatches,NMsy=c(sum(NMSY_p),mnNMSY)) 
   }
 
-  return(list("MetaPop"=MetaPop,"popDyn"=popDyn,"sink"=sink,"source"=source,"pseudoSink"=pseudoSink,"dispersing"=dispersing,"shortTermProd"=shortTermProd,"shortTermComp"=shortTermComp,"shortTermCap"=shortTermCap,"medTermProd"=medTermProd,"medTermComp"=medTermComp,"medTermCap"=medTermCap,"longTermProd"=longTermProd,"longTermComp"=longTermComp,"longTermCap"=longTermCap,"recovery"=recovery,"extinction"=extinction,"shortTermOcc"=shortTermOcc,"medTermOcc"=medTermOcc,"longTermOcc"=longTermOcc,"shortTermMSY"=shortTermMSY,"medTermMSY"=medTermMSY,"longTermMSY"=longTermMSY,"shortTermCV"=shortTermCV,"medTermCV"=medTermCV,"longTermCV"=longTermCV,"k_p"=k_p,"network"=network))
+  return(list("MetaPop"=MetaPop,"popDyn"=popDyn,"sink"=sink,"source"=source,"pseudoSink"=pseudoSink,"dispersing"=dispersing,"shortTermProd"=shortTermProd,"shortTermComp"=shortTermComp,"shortTermCap"=shortTermCap,"medTermProd"=medTermProd,"medTermComp"=medTermComp,"medTermCap"=medTermCap,"longTermProd"=longTermProd,"longTermComp"=longTermComp,"longTermCap"=longTermCap,"recovery"=recovery,"extinction"=extinction,"shortTermOcc"=shortTermOcc,"medTermOcc"=medTermOcc,"longTermOcc"=longTermOcc,"shortTermMSY"=shortTermMSY,"medTermMSY"=medTermMSY,"longTermMSY"=longTermMSY,"shortTermCV"=shortTermCV,"medTermCV"=medTermCV,"longTermCV"=longTermCV,"shortTermSurp"=shortTermSurp,"medTermSurp"=medTermSurp,"longTermSurp"=longTermSurp,"k_p"=k_p,"network"=network))
 }

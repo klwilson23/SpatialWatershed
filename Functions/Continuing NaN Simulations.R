@@ -42,8 +42,8 @@ magnitude_of_decline <- 0.9
 # what is the lag time between recruits and spawners
 lagTime <- 1
 
-results <- readRDS("Simulations/results2019-05-19.rds")
-scenarios <- readRDS("Simulations/scenarios2019-05-19.rds")
+results <- readRDS("Simulations/results2022-05-04.rds")
+scenarios <- readRDS("Simulations/scenarios2022-05-04.rds")
 
 NaNsims <- which(apply(apply(results[,-(1:8)],2,is.nan),1,any))
 
@@ -123,6 +123,11 @@ for(Isim in NaNsims)
   results$long_capacity[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="longTermCap"),]))
   
   results$long_compensation[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="longTermComp"),]))
+  results$short_surp[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="shortTermSurp"),]))
+  
+  results$med_surp[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="medTermSurp"),]))
+  
+  results$long_surp[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="longTermSurp"),]))
   
   results$metaAbund[Isim] <- mean(unlist(lapply(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="MetaPop"),],function(x){x[Nburnin+NyrsPost,"Spawners"]})))/metaK
   counter <- counter + 1
@@ -131,4 +136,4 @@ for(Isim in NaNsims)
 endtime <- Sys.time()-ptm
 endtime
 
-saveRDS(results,"Simulations/results2019-05-19_fixed.rds")
+saveRDS(results,"Simulations/results2022-05-04_fixed.rds")

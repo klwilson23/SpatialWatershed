@@ -99,7 +99,10 @@ results <- data.frame(results,
                       "shortMSY"=rep(NA,nrow(results)),
                       "longCV"=rep(NA,nrow(results)),
                       "medCV"=rep(NA,nrow(results)),
-                      "shortCV"=rep(NA,nrow(results)))
+                      "shortCV"=rep(NA,nrow(results)),
+                      "short_surp"=rep(NA,nrow(results)),
+                      "med_surp"=rep(NA,nrow(results)),
+                      "long_surp"=rep(NA,nrow(results)))
 progBar <- txtProgressBar(min = 0,  max = nScenarios, style = 3, initial = 0)
 ptm <- Sys.time()
 
@@ -172,6 +175,12 @@ for(Isim in 1:nrow(results))
   results$long_capacity[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="longTermCap"),]))
   
   results$long_compensation[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="longTermComp"),]))
+  
+  results$short_surp[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="shortTermSurp"),]))
+  
+  results$med_surp[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="medTermSurp"),]))
+  
+  results$long_surp[Isim] <- mean(unlist(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="longTermSurp"),]))
   
   results$metaAbund[Isim] <- mean(unlist(lapply(boatyMcboot[which(dimnames(boatyMcboot)[[1]]=="MetaPop"),],function(x){x[Nburnin+NyrsPost,"Spawners"]})))/metaK
   counter <- counter + 1
