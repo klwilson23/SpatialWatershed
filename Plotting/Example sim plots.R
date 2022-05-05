@@ -24,12 +24,12 @@ matLayout[18:21,10:12] <- 12
 matLayout[18:21,13:15] <- 13
 matLayout[22:25,10:12] <- 14
 matLayout[22:25,13:15] <- 15
-
+seed_no <- 535
 jpeg("Figures/example landscape results.jpeg",units="in",height=5.5,width=6,res=800)
 layout(matLayout)
-set.seed(32)
+set.seed(seed_no)
 Nburnin<-50
-linearSim <- metaPop(Npatches=16,networkType="linear",patchDistance=1,Nburnin=50,NyrsPost=50,omega=0.01,m=100,alpha=2,metaK=1600,cv=1e-2,DistScenario="random_patch",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=FALSE,kVariable=FALSE,spatialPlots=FALSE)
+linearSim <- metaPop(Npatches=16,networkType="linear",patchDistance=1,Nburnin=50,NyrsPost=50,omega=0.01,m=100,alpha=2,metaK=1600,cv=1e-1,DistScenario="random_patch",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=FALSE,kVariable=FALSE,spatialPlots=FALSE)
 metaK <- 1600
 spatialRecoveryPlotv2(textSize=1,linearSim$popDyn,linearSim$MetaPop,linearSim$k_p,Nlevels=10,linearSim$recovery,50,50+50,nodeScalar=35,linearSim$network,networkType="linear",Npatches=Npatches,panel_text=c("(a)","(b)"),year_seq=(Nburnin+seq(0,50,by=10)))
 Nlevels <- 10
@@ -38,7 +38,7 @@ par(mar=c(1,1,1,1))
 plot(NA,xlim=c(-1,1),ylim=c(-1,1),xaxt="n",yaxt="n",xlab="",ylab="",frame.plot=FALSE,xpd=NA)
 colorlegend(rev(colfunc(Nlevels)),zlevels=Nlevels,zlim=c(0,1),dz=0.1,posx=c(0.35,0.5),posy=c(0.1,0.95),digit=2)
 title(main=expression('N'[t]*'/K'),line=0.5,font.main=1,cex.main=1.5*textSize,xpd=NA)
-set.seed(32)
-dendriticSim <- metaPop(Npatches=16,networkType="dendritic",patchDistance=1,Nburnin=50,NyrsPost=50,omega=0.01,m=100,alpha=2,metaK=1600,cv=1e-2,DistScenario="random_patch",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=FALSE,kVariable=FALSE,spatialPlots=FALSE)
+set.seed(seed_no)
+dendriticSim <- metaPop(Npatches=16,networkType="dendritic",patchDistance=1,Nburnin=50,NyrsPost=50,omega=0.01,m=100,alpha=2,metaK=1600,cv=1e-1,DistScenario="random_patch",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=FALSE,kVariable=FALSE,spatialPlots=FALSE)
 spatialRecoveryPlotv2(textSize=1,dendriticSim$popDyn,dendriticSim$MetaPop,dendriticSim$k_p,Nlevels=10,dendriticSim$recovery,50,50+50,nodeScalar=35,dendriticSim$network,networkType="dendritic",Npatches=Npatches,panel_text=c("(c)","(d)"),year_seq=(Nburnin+seq(0,50,by=10)))
 dev.off()

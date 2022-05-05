@@ -67,6 +67,50 @@ results$surprise <- factor(ifelse(grepl("Wide collapse",results$outcome),"Critic
                                          ifelse(grepl("Hidden",results$outcome),"Hidden collapses",
                                                 ifelse(grepl("Lost capacity",results$outcome),"Lost capacity",
                                                        ifelse(grepl("Fast",results$outcome) & grepl("Recover",results$outcome),"Resilient","Slow recovery"))))),levels=c("Resilient","Slow recovery","Lost capacity","Hidden collapses","Spatial contraction","Critical risk"))
+results$dispersal_range <- factor(ifelse(results$dispersal>=0.001,"High","Low"),levels=c("High","Low"))
+results$network_lab <- factor(results$network,levels=levels(results$network),labels=c("Linear","Dendritic","Star","Complex"))
+results$disturb_lab <- factor(results$disturbance,levels=levels(results$disturbance),labels=c("Uniform","Local, even","Local, uneven"))
+results$density_dep <- factor(results$alpha,levels=levels(results$alpha),labels=c("Identical","Diverse"))
+results$collapsed <- 100*(1-results$recovered)
+
+# http://www.sthda.com/english/wiki/ggplot2-violin-plot-quick-start-guide-r-software-and-data-visualization
+results$patchScen <- paste(results$alpha,"\u03B1","\n",results$beta,"\u03B2")
+results$stochasticity <- as.character(results$stochastic)
+p <- ggplot(data=results, aes(x=patchScen, y=RecoveryRate, fill=stochasticity))+ 
+  geom_violin(trim=FALSE,scale = "width")+
+  facet_wrap(~stochasticity)+
+  geom_boxplot(width=0.1,colour="grey90",outlier.shape=NA,fill="grey50")+
+  scale_fill_brewer(palette="Dark2") +
+  labs(x="Patch variation",y=expression('Recovery rate (yr'^-1*')'),fill="Stochasticity") +
+  theme_minimal() +
+  theme(legend.position="top",strip.text.x = element_blank())
+p
+ggsave("Figures/Recovery along variable local productivities.tiff",plot=p,compression="lzw",units="in",height=4,width=6,dpi=800)
+
+
+sub_res <- results[results$variance_scen %in% c("High spatial\nHigh temporal\nLow variance","High spatial\nHigh temporal\nHigh variance","Low spatial\nLow temporal\nLow variance","Low spatial\nLow temporal\nHigh variance") & results$dispersal!=0,]
+
+sub_res$variance_scen <- factor(sub_res$variance_scen,
+                                levels=c("Low spatial\nLow temporal\nLow variance",
+                                         "Low spatial\nLow temporal\nHigh variance",
+                                         "High spatial\nHigh temporal\nLow variance",
+                                         "High spatial\nHigh temporal\nHigh variance"),
+                                labels=c("Low space-time \U03C1, Low variance",
+                                         "Low space-time \U03C1, High variance",
+                                         "High space-time \U03C1, Low variance",
+                                         "High space-time \U03C1, High variance"))
+sub_res$dispersal_range <- factor(sub_res$dispersal_range,levels=c("Low","High"))
+p <- ggplot(data=sub_res, aes(x=dispersal_range, y=collapsed, fill=network_lab))+ 
+  geom_violin(trim=TRUE,scale = "width")+
+  geom_boxplot(width=0.3,colour="grey90",outlier.shape=NA,position=position_dodge(0.9))+
+  geom_jitter(pch=21,width=0.1)+
+  facet_grid(rows=vars(disturb_lab),cols=vars(variance_scen),labeller=label_wrap_gen(width=45,multi_line = TRUE)) +
+  scale_fill_brewer(palette="BrBG") +
+  labs(x="Dispersal rate",y="Rate of non-recovery (% of simulations)",fill="Habitat network") +
+  theme_minimal() +
+  theme(legend.position="top",strip.text.y = element_text(size=6.5),strip.text.x = element_text(size=8,hjust=0),axis.text.x=element_text(size=7),axis.text.y=element_text(size=7),legend.text=element_text(size=6),legend.title=element_text(size=7),axis.title=element_text(size=8),legend.key.size = unit(0.9, "line"),panel.spacing.y = unit(0.75, "lines"))
+p
+ggsave("Figures/risk of collapse along stochastic network and disturbance cline.tiff",plot=p,compression="lzw",units="in",height=6,width=8,dpi=800)
 
 # do some hierarchical clustering analyses
 head(results)
@@ -133,10 +177,6 @@ jpeg("Figures/surprises clustering.jpeg",res=800,width=6,height=6,units="in")
 clusplot(results_clust, results$cluster_surprises, color=TRUE, shade=FALSE, labels=4, lines=0, main="", plotchar=FALSE)
 dev.off()
 results$surprise_logic <- ifelse(results$surprise=="Resilient",1,1)
-results$dispersal_range <- factor(ifelse(results$dispersal>=0.001,"High","Low"),levels=c("High","Low"))
-results$network_lab <- factor(results$network,levels=levels(results$network),labels=c("Linear","Dendritic","Star","Complex"))
-results$disturb_lab <- factor(results$disturbance,levels=levels(results$disturbance),labels=c("Uniform","Local, even","Local, uneven"))
-results$density_dep <- factor(results$alpha,levels=levels(results$alpha),labels=c("Identical","Diverse"))
 saveRDS(results,file="Figures/clustering_outcomes.rds")
 surprises <- data.frame(aggregate(surprise_logic~network_lab+dispersal_range+disturb_lab+density_dep+cluster_surprises,data=results,FUN=sum))
 saveRDS(surprises,file="Figures/gg_clustering_outcomes.rds")
@@ -170,8 +210,6 @@ pAnnotated
 wid_height <- 14/10
 height <- 10
 ggsave("Figures/surprising outcomes.jpeg",p1,units="cm",dpi=800,width=height*wid_height,height=height)
-
-results$collapsed <- 100*(1-results$recovered)
 
 mean_res <- aggregate(cbind(RecoveryRate,collapsed,longOcc,long_surp)~disturb_lab,data=results,FUN=mean)
 mean_res_network <- aggregate(cbind(RecoveryRate,collapsed,longOcc,long_surp)~disturb_lab+network_lab,data=results,FUN=mean)
@@ -307,44 +345,6 @@ for(i in 1:length(scenarios$network))
 }
 add2plot()
 
-# http://www.sthda.com/english/wiki/ggplot2-violin-plot-quick-start-guide-r-software-and-data-visualization
-results$patchScen <- paste(results$alpha,"\u03B1","\n",results$beta,"\u03B2")
-results$stochasticity <- as.character(results$stochastic)
-p <- ggplot(data=results, aes(x=patchScen, y=RecoveryRate, fill=stochasticity))+ 
-  geom_violin(trim=FALSE,scale = "width")+
-  facet_wrap(~stochasticity)+
-  geom_boxplot(width=0.1,colour="grey90",outlier.shape=NA,fill="grey50")+
-  scale_fill_brewer(palette="Dark2") +
-  labs(x="Patch variation",y=expression('Recovery rate (yr'^-1*')'),fill="Stochasticity") +
-  theme_minimal() +
-  theme(legend.position="top",strip.text.x = element_blank())
-p
-ggsave("Figures/Recovery along variable local productivities.tiff",plot=p,compression="lzw",units="in",height=4,width=6,dpi=800)
-
-
-sub_res <- results[results$variance_scen %in% c("High spatial\nHigh temporal\nLow variance","High spatial\nHigh temporal\nHigh variance","Low spatial\nLow temporal\nLow variance","Low spatial\nLow temporal\nHigh variance") & results$dispersal!=0,]
-
-sub_res$variance_scen <- factor(sub_res$variance_scen,
-                                levels=c("Low spatial\nLow temporal\nLow variance",
-                                         "Low spatial\nLow temporal\nHigh variance",
-                                         "High spatial\nHigh temporal\nLow variance",
-                                         "High spatial\nHigh temporal\nHigh variance"),
-                                labels=c("Low space-time \U03C1, Low variance",
-                                         "Low space-time \U03C1, High variance",
-                                         "High space-time \U03C1, Low variance",
-                                         "High space-time \U03C1, High variance"))
-sub_res$dispersal_range <- factor(sub_res$dispersal_range,levels=c("Low","High"))
-p <- ggplot(data=sub_res, aes(x=dispersal_range, y=RecoveryRate, fill=network_lab))+ 
-  geom_violin(trim=TRUE,scale = "width")+
-  geom_boxplot(width=0.3,colour="grey90",outlier.shape=NA,position=position_dodge(0.9))+
-  #geom_jitter(pch=21,width=0.1)+
-  facet_grid(rows=vars(disturb_lab),cols=vars(variance_scen),labeller=label_wrap_gen(width=45,multi_line = TRUE)) +
-  scale_fill_brewer(palette="BrBG") +
-  labs(x="Dispersal rate",y=expression('Recovery rate (yr'^-1*')'),fill="Habitat network") +
-  theme_minimal() +
-  theme(legend.position="top",strip.text.y = element_text(size=6.5),strip.text.x = element_text(size=8,hjust=0),axis.text.x=element_text(size=7),axis.text.y=element_text(size=7),legend.text=element_text(size=6),legend.title=element_text(size=7),axis.title=element_text(size=8),legend.key.size = unit(0.9, "line"),panel.spacing.y = unit(0.75, "lines"))
-p
-ggsave("Figures/Recovery rate along stochastic network and disturbance cline.tiff",plot=p,compression="lzw",units="in",height=6,width=8,dpi=800)
 layout(matLayout)
 par(mar=c(5,4,1,1))
 for(i in 1:length(scenarios$network))
