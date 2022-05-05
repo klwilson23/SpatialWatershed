@@ -10,7 +10,8 @@ p1 <- ggplot(otters,aes(x=Year_Seq,y=Abundance,fill=Region,colour=Region)) +
   geom_point(data=otters[otters$Method=='Observed',],pch=21,col="black",size=0.75) +
   xlab("Years since initation of recovery") + ylab("Sea otter abundances") +
   theme_minimal() +
-  annotate("text",label="California recovery target",x=55,y=4100,size=2.5)+
+  annotate("text",label="California recovery target",x=10,y=15000,size=2.5)+
+  geom_curve(x= 5, y = 14500,xend = 10, yend = 3500, color = 'black',arrow = arrow(length=unit(0.05,'inches'),type='closed'),lwd=0.5)+
   scale_fill_brewer(type="qual",palette=2) +
   scale_colour_brewer(type="qual",palette=2) +
   theme(legend.position="top")+
@@ -41,4 +42,4 @@ otter_inset <- ggdraw(p1) +
     width = 0.35, 
     height = 0.25)
 otter_inset
-ggsave(plot=otter_inset,"Figures/Sea otter comparisons.jpeg",dpi=600,units='in',height=4,width=4)
+ggsave(plot=otter_inset,"Figures/Sea otter comparisons.jpeg",dpi=600,units='in',height=4.5,width=4.5)
