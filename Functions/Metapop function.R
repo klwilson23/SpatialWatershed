@@ -32,7 +32,7 @@ metaPop <- function(Npatches=16,
                     spatialPlots=TRUE,
                     patchID=NA)
 {
-
+  log_sig <- sqrt(log(cv^2+1))
   # make the spatial network
   network <- makeNetworks(network=networkType,Npatches=Npatches,patchDist=patchDistance)
   distance_matrix <- network$distanceMatrix
@@ -75,11 +75,11 @@ metaPop <- function(Npatches=16,
   # metapopulation dynamics to track
   MetaPop <- matrix(NA,nrow=Nyears,ncol=3,dimnames=list("Year"=1:Nyears,"Stage"=c("Recruits","Spawners","Spawners_Contiguous")))
   # part ii - initialize populations
-  rec.dev <- rnorm(Npatches,mean=0,sd=sqrt(log(cv^2+1)))
-  meta.dev <- rnorm(1,mean=0,sd=sqrt(log(cv^2+1)))
+  rec.dev <- rnorm(Npatches,mean=0,sd=log_sig)
+  meta.dev <- rnorm(1,mean=0,sd=log_sig)
   
   popDyn[1:lagTime,,"Spawners"] <- k_p
-  popDyn[1:lagTime,,"Recruits"] <- k_p*exp(rec.dev-(log(cv^2+1))/2)
+  popDyn[1:lagTime,,"Recruits"] <- k_p*exp(rec.dev-log_sig^2/2)
   MetaPop[1:lagTime,"Recruits"] <- sum(popDyn[1:lagTime,,"Recruits"])
   MetaPop[1:lagTime,"Spawners"] <- sum(popDyn[1:lagTime,,"Spawners"])
   MetaPop[1:lagTime,"Spawners_Contiguous"] <- metaK
@@ -106,10 +106,10 @@ metaPop <- function(Npatches=16,
     
     # part ivb - stochastic recruitment
     # function dvSpaceTime adds spatial & temporal correlation
-    rec.dev <- dvSpaceTime(mnSig=(log(cv^2+1)),lastDV=var.rec[Iyear-lagTime,],rhoTime=rho.time,rhoSpa=rho.dist,distMatrix = distance_matrix) # mnSig is the variance terms for the variance-covariance matrix, adjusted on the scale of variance (not standard deviation)
+    rec.dev <- dvSpaceTime(mnSig=log_sig^2,lastDV=var.rec[Iyear-lagTime,],rhoTime=rho.time,rhoSpa=rho.dist,distMatrix = distance_matrix) # mnSig is the variance terms for the variance-covariance matrix, adjusted on the scale of variance (not standard deviation)
     var.rec[Iyear,] <- rec.dev
-    meta.rec[Iyear] <- rho.time*meta.rec[Iyear-1]+(sqrt(log(cv^2+1))*(1-rho.time^2))
-    rec.obs <- pmax(0,patch_rec*exp(rec.dev-(log(cv^2+1))/2))
+    meta.rec[Iyear] <- rho.time*meta.rec[Iyear-1]+log_sig^2*(1-rho.time^2)
+    rec.obs <- pmax(0,patch_rec*exp(rec.dev-log_sig^2/2))
     popDyn[Iyear,,"Recruits"] <- rec.obs
     
     # part v - dispersal between patches
@@ -129,7 +129,7 @@ metaPop <- function(Npatches=16,
     
     MetaPop[Iyear,"Recruits"] <- sum(popDyn[Iyear,,"Recruits"])
     MetaPop[Iyear,"Spawners"] <- sum(popDyn[Iyear,,"Spawners"])
-    MetaPop[Iyear,"Spawners_Contiguous"] <- pmax(0,popDynamics(alpha=alpha,beta=metaK,Nadults=sum(popDyn[Iyear-lagTime,,"Spawners"]),model=prodType)$recruits*exp(meta.rec[Iyear]-(log(cv^2+1))/2))
+    MetaPop[Iyear,"Spawners_Contiguous"] <- pmax(0,popDynamics(alpha=alpha,beta=metaK,Nadults=sum(popDyn[Iyear-lagTime,,"Spawners"]),model=prodType)$recruits*exp(meta.rec[Iyear]-log_sig^2/2))
     spawnRec <- data.frame("recruits"=MetaPop[(1+lagTime):Iyear,"Recruits"],"spawners"=MetaPop[1:(Iyear-lagTime),"Spawners"],weights=exp(dataWeighting*((1+lagTime):Iyear-Iyear))/max(exp(dataWeighting*((1+lagTime):Iyear-Iyear))))
     
     # part vii - resource assessment after disturbance
