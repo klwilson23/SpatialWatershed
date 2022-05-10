@@ -133,7 +133,7 @@ metaPop <- function(Npatches=16,
     spawnRec <- data.frame("recruits"=MetaPop[(1+lagTime):Iyear,"Recruits"],"spawners"=MetaPop[1:(Iyear-lagTime),"Spawners"],weights=exp(dataWeighting*((1+lagTime):Iyear-Iyear))/max(exp(dataWeighting*((1+lagTime):Iyear-Iyear))))
     
     # part vii - resource assessment after disturbance
-    if(Iyear > (Nburnin) & (MetaPop[Iyear,"Recruits"] > 0))
+    if(Iyear > (Nburnin) & (MetaPop[Iyear,"Recruits"] > 0)) #Iyear > (Nburnin) & (MetaPop[Iyear,"Recruits"] > 0)
     {
       if(prodType=="Beverton-Holt"){
         alphaHat <- max(1.01,alphaLstYr,na.rm=TRUE) # initial values must be positive

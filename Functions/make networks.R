@@ -104,6 +104,8 @@ makeNetworks <- function(network,Npatches,patchDist,colors=c("royalblue4","dodge
     V(complexLandscape)$color <- colfunc(Npatches)
     dist_matrix <- distances(complexLandscape,v=V(complexLandscape),to=V(complexLandscape))
     landscape <- complexLandscape
+    landscape <- simplify(landscape,remove.multiple = TRUE,
+                                  remove.loops = TRUE,edge.attr.comb = igraph_opt("edge.attr.comb"))
   }
   
   return(list("distanceMatrix"=dist_matrix,"landscape"=landscape,"node.size"=node.size))

@@ -4,14 +4,53 @@
 %
 \documentclass[
 ]{article}
+\title{Managing emergent recovery dynamics in at-risk metapopulations}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{Supplemental materials: Model details \& results}
+\author{Kyle L. Wilson\(^\textup{1,2}\)\footnote{Corresponding author -
+  email:
+  \href{mailto:klwilson.ccira@gmail.com}{\nolinkurl{klwilson.ccira@gmail.com}}},
+Alexandra C. Sawyer\(^\textup{1}\), Anna Potapova\(^\textup{1}\), Colin
+J. Bailey\(^\textup{1}\),Daniella LoScerbo\(^\textup{3,4}\),\\
+Elissa K. Sweeney-Bergen\(^\textup{1,5}\), Emma E.
+Hodgson\(^\textup{1,4}\), Kara J. Pitman\(^\textup{1}\), Karl M.
+Seitz\(^\textup{1}\),\\
+Lauren Law\(^\textup{1,6}\), Luke Warkentin\(^\textup{1,7}\), Samantha
+M. Wilson\(^\textup{1}\), William I. Atlas\(^\textup{1,8}\),\\
+Douglas C. Braun\(^\textup{3,5}\), Matthew R. Sloat\(^\textup{8}\), M.
+Tim Tinker\(^\textup{9}\),\\
+and Jonathan W. Moore\(^\textup{1,3}\)\\
+\strut \\
+\(^\textup{1}\)Earth to Ocean Research Group, Simon Fraser University\\
+\(^\textup{2}\)Central Coast Indigenous Resource Alliance, Campbell
+River, BC\\
+\(^\textup{3}\)Resource and Environmental Management, Simon Fraser
+University\\
+\(^\textup{4}\)Fisheries \& Oceans Canada, Cultus Lake Laboratory,
+Cultus Lake, BC\\
+\(^\textup{5}\)Ministry of Forests, Lands, Natural Resource Operations,
+and Rural Development, Smithers, BC\\
+\(^\textup{6}\)Fisheries \& Oceans Canada, Salmonid Enhancement Program,
+Nanaimo, BC\\
+\(^\textup{7}\)Fisheries \& Oceans Canada, North Coast Stock Assessment,
+Smithers, BC\\
+\(^\textup{8}\)Wild Salmon Center, Portland, OR\\
+\(^\textup{9}\)Ecology and Evolutionary Biology, University of
+California Santa Cruz}
+\date{06 May 2022}
+
+\usepackage{amsmath,amssymb}
 \usepackage{lmodern}
-\usepackage{amsmath}
-\usepackage{ifxetex,ifluatex}
-\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+\usepackage{iftex}
+\ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
-  \usepackage{amssymb}
 \else % if luatex or xetex
   \usepackage{unicode-math}
   \defaultfontfeatures{Scale=MatchLowercase}
@@ -37,7 +76,7 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \hypersetup{
-  pdftitle={Managing for ecological surprises in metapopulations},
+  pdftitle={Managing emergent recovery dynamics in at-risk metapopulations},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
@@ -99,6 +138,29 @@
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newlength{\cslentryspacingunit} % times entry-spacing
+\setlength{\cslentryspacingunit}{\parskip}
+\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
+ {% don't indent paragraphs
+  \setlength{\parindent}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+  \let\oldpar\par
+  \def\par{\hangindent=\cslhangindent\oldpar}
+  \fi
+  % set entry spacing
+  \setlength{\parskip}{#2\cslentryspacingunit}
+ }%
+ {}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{#1\hfill\break}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 \usepackage{setspace}
 \singlespacing
 \usepackage{wrapfig}
@@ -109,70 +171,14 @@
 \linenumbers
 \renewcommand{\thefigure}{S\arabic{figure}}
 \renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\theequation}{S.\arabic{equation}}
 \usepackage{fancyhdr}
 \setlength{\parskip}{\baselineskip}
 \usepackage{tocloft}
 \setlength{\cftbeforesecskip}{6pt}
-\ifluatex
+\ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
-\newlength{\cslhangindent}
-\setlength{\cslhangindent}{1.5em}
-\newlength{\csllabelwidth}
-\setlength{\csllabelwidth}{3em}
-\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
- {% don't indent paragraphs
-  \setlength{\parindent}{0pt}
-  % turn on hanging indent if param 1 is 1
-  \ifodd #1 \everypar{\setlength{\hangindent}{\cslhangindent}}\ignorespaces\fi
-  % set entry spacing
-  \ifnum #2 > 0
-  \setlength{\parskip}{#2\baselineskip}
-  \fi
- }%
- {}
-\usepackage{calc}
-\newcommand{\CSLBlock}[1]{#1\hfill\break}
-\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
-\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
-\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
-
-\title{Managing for ecological surprises in metapopulations}
-\usepackage{etoolbox}
-\makeatletter
-\providecommand{\subtitle}[1]{% add subtitle to \maketitle
-  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
-}
-\makeatother
-\subtitle{Supplemental materials: Model details \& results}
-\author{Kyle L. Wilson\(^\textup{a}\)\footnote{Corresponding author -
-  email: kl\_\href{mailto:wilson@sfu.ca}{\nolinkurl{wilson@sfu.ca}}},
-Alexandra C. Sawyer\(^\textup{a}\), Anna Potapova\(^\textup{a}\), Colin
-J. Bailey\(^\textup{a}\),Daniella LoScerbo\(^\textup{b}\),\\
-Elissa K. Sweeney-Bergen\(^\textup{a,c}\), Emma E.
-Hodgson\(^\textup{a,d}\), Kara J. Pitman\(^\textup{a}\), Karl M.
-Seitz\(^\textup{a}\),\\
-Lauren Law\(^\textup{a,e}\), Luke Warkentin\(^\textup{a,f}\), Samantha
-M. Wilson\(^\textup{a}\), William I. Atlas\(^\textup{a,g}\),\\
-Douglas C. Braun\(^\textup{d}\), Matthew R. Sloat\(^\textup{g}\), M. Tim
-Tinker\(^\textup{h}\),\\
-and Jonathan W. Moore\(^\textup{a,b}\)\\
-~\\
-\(^\textup{a}\)Earth to Ocean Research Group, Simon Fraser University\\
-\(^\textup{b}\)Resource and Environmental Management, Simon Fraser
-University\\
-\(^\textup{c}\)Ministry of Forests, Lands, Natural Resource Operations,
-and Rural Development, Smithers, BC\\
-\(^\textup{d}\)Fisheries \& Oceans Canada, Cultus Lake Laboratory,
-Cultus Lake, BC\\
-\(^\textup{d}\)Fisheries \& Oceans Canada, Salmonid Enhancement Program,
-Nanaimo, BC\\
-\(^\textup{d}\)Fisheries \& Oceans Canada, Stock Assessment \& Research,
-Delta, BC\\
-\(^\textup{e}\)Wild Salmon Center, Portland, OR\\
-\(^\textup{f}\)Ecology and Evolutionary Biology, University of
-California Santa Cruz}
-\date{20 April 2021}
 
 \begin{document}
 \maketitle
@@ -195,50 +201,59 @@ California Santa Cruz}
 \subsubsection{Local \& metapopulation
 dynamics}\label{local-metapopulation-dynamics}}
 
-Our metapopulation is defined by a set of local populations \(N_p\) for
-a species with a one year generation time with time-dynamics that
-follows birth (i.e., recruitment \emph{R}), immigration, death, and
-emigration (BIDE) processes typical in metapopulation theory (Hanski
-1998):
+Our metapopulation was defined by a set of \(P\) local populations for a
+species with a one year generation time with time-dynamics that follows
+birth (i.e., recruitment \emph{R}), immigration, death, and emigration
+processes typical to metapopulation theory and tested the role of
+multiple spatial, temporal, and density-dependent processes (Anderson et
+al. 2015; Okamoto et al. 2020):
 
 \begin{align}
-N_{i{t+1}}= R_{it}\epsilon_{it}+I_{it}-D_{it}-E_{it}
+N_{i,t}= R_{i,t}+{\sum\limits_{\substack{j=1 \\ j\neq i}}^{P} \omega p_{i,j}R_{j,t}}-d_{i,t}R_{i,t}-\omega R_{i,t}
 \end{align}
 
-where \(N_{it+1}\) is the number of adults in patch \emph{i} at time
-\emph{t+1}, \(R_{it}\) is number of recruits at time \emph{t},
-\(I_{it}\) is number of recruits immigrating into patch \emph{i} from
-any other patch, \(D_{it}\) is number of recruits that die due to
-disturbance regime, \(E_{it}\) is the number of recruits emigrating from
-patch \emph{i} into any other patch, and \(\epsilon_{it}\) is
-stochasticity in recruitment.
+where \(N_{i,t}\) was the number of adults in patch \emph{i} at time
+\emph{t}, \(R_{i,t}\) was the number of recruits at time \emph{t},
+\({\sum\limits_{\substack{j=1 \\ j\neq i}}^{P} \omega p_{i,j}R_{j,t}}\)
+was the number of recruits immigrating into patch \emph{i} from any
+other patch, \(\omega\) was the proportion of local recruits to
+disperse, \(p_{i,j}\) was a distance-dependent dispersal function, and
+\(d_{i,t}\) was the proportion of recruits that die due to disturbance
+regime.
 
-Resoure monitoring often occurs at the scale of the metapopulation
-(Anderson et al. 2015), hence we define metapopulation adults as:
+Local patch recruitment at time \emph{t} depended on adult densities at
+\emph{t-1} and followed a reparameterized Beverton-Holt function
+(Walters \& Martell 2004; Forrest et al. 2010):
 
 \begin{align}
-{MN}_t = \sum_{i=1}^{N_p} N_{it}
+R_{i,t}=\cfrac{\alpha_iN_{i,t-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{i,t-1}}\epsilon_{i,t}
+\end{align}
+
+where \(\alpha_i\) was the recruitment compensation ratio, \(\beta_i\)
+was local patch carrying capacity, and \(\epsilon_{i,t}\) was
+lognormally distributed deviates to introduce stochastic recruitment
+dynamics.
+
+Resource monitoring often occurs at the scale of the whole
+metapopulation by aggregating abundances among local populations to
+(Anderson et al. 2015; Moore et al. 2021), hence we define
+metapopulation adults as:
+
+\begin{align}
+{A}_t = \sum_{i=1}^{P} N_{i,t}
 \end{align}
 
 with metapopulation recruits:
 
 \begin{align}
-MR_t = \sum_{i=1}^{N_p} R_{it}
+K_t = \sum_{i=1}^{P} R_{i,t}
 \end{align}
 
-Local patch recruitment at time \emph{t} depended on adult densities at
-\emph{t-1} and followed a reparameterized Beverton-Holt function:
-
-\begin{align}
-R_{it}=\cfrac{\alpha_iN_{it-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{it-1}}
-\end{align}
-
-where \(\alpha_i\) is the recruitment compensation ratio and \(\beta_i\)
-is local patch carrying capacity.
-
-Management often monitors metapopulation resources as the aggregate of
-all local populations. For example, take a two patch metapopulation
-model that varies \(\alpha_i\) and \(\beta_i\) parameters where:
+Monitoring at the scale of the whole metapopulation can produce
+productivity relationships that aggregates the population dynamics and
+productivity among all local populations. For example, take a two patch
+metapopulation model that varies \(\alpha_i\) and \(\beta_i\) parameters
+where:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -251,7 +266,7 @@ Here, recruitment compensation from local patches \(\alpha_i\) gets
 averaged across the metapopulation leading to an average compensation
 ratio \(\bar{\alpha}\) of 3. Likewise, the total carrying capacity of
 the metapopulation \(\bar{\beta}\) becomes the summation of local patch
-carrying capacities \(\sum\beta_i\), which is 300. This scale of
+carrying capacities \(\sum\beta_i\), which was 300. This scale of
 monitoring generates the following local patch and metapopulation
 dynamics:
 
@@ -268,7 +283,7 @@ dynamics:
 \subsubsection{Creating the spatial
 networks}\label{creating-the-spatial-networks}}
 
-The next aspect to our metapopulation model is connecting the set of
+The next aspect to our metapopulation model was connecting the set of
 patches to one another (Yeakel et al. 2014). We need to specify the
 number of patches, their arrangements (i.e., connections), and how far
 apart they are from one another. We followed some classic metapopulation
@@ -276,12 +291,12 @@ and source-sink arrangements to create four networks that generalize
 across a few real-world topologies: a linear habitat network (e.g.,
 coastline), a dendritic or branching network (e.g., coastal rivers), a
 star network (e.g., mountain \& valley, or lake with inlet tributaries),
-and a complex network (e.g., grasslands).
+and a grid network (e.g., grasslands).
 
 To make networks comparable, each spatial network type needs the same
-leading parameters (e.g., number of patches \(N_p\) and mean distance
-between neighboring patches \(\bar{d}\)). In this case, we set \(N_p\)
-to \texttt{16} and \(\bar{d}\) to \texttt{1} unit (distance units are
+leading parameters (e.g., number of patches \(P\) and mean distance
+between neighboring patches \(\bar{d}\)). In this case, we set \(P\) to
+\texttt{16} and \(\bar{d}\) to \texttt{1} unit (distance units are
 arbitrary). We used the \texttt{igraph} package (Csardi \& Nepusz 2006)
 and some custom code to arrange our spatial networks as the following:
 
@@ -299,7 +314,7 @@ equal.
 
 \newpage
 
-An example dispersal matrix for the complex network:
+An example dispersal matrix for the grid network:
 
 \begin{verbatim}
 ##   A B E F C G D H I J K L M N O P
@@ -331,24 +346,24 @@ between \emph{i} and \emph{j} with distance cost to dispersal \(m\)
 following Anderson et al. (2015):
 
 \begin{align}
-E_{ij(t)}=\omega R_{it}p_{ij}
+E_{i,j,t}=\omega R_{i,t}p_{i,j}
 \end{align}
 
-where \(E_{ij}\) is the total dispersing animals from patch \emph{i}
+where \(E_{i,j}\) was the total dispersing animals from patch \emph{i}
 into patch \emph{j} resulting from dispersal rate \(\omega\), total
-number of local recruits \(R_{it}\), and probability of dispersal
-between patches \(p_{ij}\):
+number of local recruits \(R_{i,t}\), and probability of dispersal
+between patches \(p_{i,j}\):
 
 \begin{align}
-p_{ij}=\dfrac{e^{-md_{ij}}}{\sum\limits_{\substack{j=1 \\ j\neq i}}^{N_p} e^{-md_{ij}}}
+p_{i,j}=\dfrac{e^{-md_{i,j}}}{\sum\limits_{\substack{j=1 \\ j\neq i}}^{P} e^{-md_{i,j}}}
 \end{align}
 
-where \(d_{ij}\) is the pairwise distance between patches, \(m\) is the
-distance cost to dispersal. The summation term in the denominator
+where \(d_{i,j}\) was the pairwise distance between patches, \(m\) was
+the distance cost to dispersal. The summation term in the denominator
 normalizes the probability of moving to any patch to between 0 and 1
 with the constraint that dispersers cannot move back into their home
 patch (i.e., \(j\neq i\). With \(\bar{d}= 1\), \(m=0.5\),
-\(\omega=0.1\), \(R_{it}=100\) in a linear network:
+\(\omega=0.1\), \(R_{i,t}=100\) in a linear network:
 
 \begin{figure}[H]
 
@@ -368,7 +383,7 @@ the disturbance regime at year \texttt{50} (the regime varied from
 \emph{uniform}, \emph{localized, even}, and \emph{localized, uneven} -
 see \emph{Scenarios} below). Disturbance immediately removes a set
 proportion of the metapopulation adults at that time (i.e., \texttt{0.9}
-of \(MN_{t=50}\)). Once applied, the metapopulation was no longer
+of \(A_{t=50}\)). Once applied, the metapopulation was no longer
 disturbed and spatio-temporal recovery dynamics emerged naturally from
 these new conditions.
 
@@ -387,37 +402,38 @@ stochasticity}\label{recruitment-stochasticity}}
 
 Our model allowed for stochastic recruitment that followed a lognormal
 distribution with average variation in recruitment of \(\sigma_R\). In
-cases of stochastic recruitment, the expected recruitment:
+cases with stochastic recruitment, the deterministic recruitment in eq.
+S.4 becomes:
 
 \begin{align}
-R_{it}=\cfrac{\alpha_iN_{it-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{it-1}}
-\end{align}
-
-becomes:
-
-\begin{align}
-R_{it}=\cfrac{\alpha_iN_{it-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{it-1}}e^{(\epsilon_{it}-\cfrac{ln(\sigma_{R}^2+1)}{2})}
+R_{i,t}=\cfrac{\alpha_iN_{i,t-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{i,t-1}}e^{(\epsilon_{i,t}-\cfrac{\sigma_{R}^2}{2})}
 \end{align}
 
 where lognormal deviates for each patch \emph{i} at time \emph{t} are
-drawn from a multivariate normal distribution (\emph{MVN}) If
-\(\sigma_R\) is low, then metapopulation dynamics approach the
-deterministic case. In some scenarios, we evaluated the role of
-spatially and/or temporally correlated deviates across local patches to
-model potential common drivers affecting metapopulation dynamics (e.g.,
-Moran effects). Expected recruitment deviates followed a first-order
-autoregression model such that:
+drawn from a multivariate normal distribution (\emph{MVN}) with bias
+correction \(\cfrac{\sigma_{R}^2}{2}\). If \(\sigma_R\) was low, then
+metapopulation dynamics approach the deterministic case. In some
+scenarios, we evaluated the role of spatially and/or temporally
+correlated deviates among local patches to model potential common
+drivers affecting metapopulation dynamics (e.g., Moran effects).
+Expected recruitment deviates followed a first-order autoregression
+model such that:
 
 \begin{align}
-\epsilon_{it}=\rho_T\epsilon_{t-1}+MVN(\mu=0,\Sigma=\sigma_R(1-\rho_T^2)e^{(-\rho_SD_{ij})})
+\epsilon_{i,t}=\rho_T\epsilon_{t-1}+MVN(\mu=0,\Sigma=\sigma_R^2(1-\rho_T^2)e^{(-\rho_SD_{i,j})})
 \end{align}
 
-where \(\rho_T\) is temporal correlation (bounded \(0-1\)) \(\rho_S\) is
-rate of distance-decay in spatial correlation (bounded \(0-\infty\) with
-higher values leading to independent patches). If \(\rho_T\) is 0 and
-\(\rho_S\) is high, then annual recruitment deviates are independent. We
-illustrate the effects of four kinds of recruitment deviates below using
-the same random number generator seed:
+where \(\rho_T\) was temporal correlation (bounded \(0-1\)) \(\rho_S\)
+was rate of distance-decay in spatial correlation (bounded \(0-\infty\)
+with higher values leading to independent patches). If \(\rho_T\) was 0
+and \(\rho_S\) was high, then annual recruitment deviates are
+independent. We modelled the initial conditions for autoregressive
+recruitment deviates \(\epsilon_{i,1}\) by drawing from a stationary
+normal distribution with mean \(\mu=0\) and variance \(\sigma_R^2\) such
+that: \begin{align}
+\epsilon_{i,1} \sim N(\mu=0,\sigma=\sigma_R)
+\end{align} We illustrate the effects of four kinds of recruitment
+deviates below using the same random number generator seed:
 
 \begin{figure}[H]
 
@@ -443,7 +459,7 @@ temporal and spatial recovery regime of the metapopulation.
   \def\labelenumii{\alph{enumii}.}
   \tightlist
   \item
-    Non-recovery rate is defined as the \% of simulations where
+    Non-recovery rate was defined as the \% of simulations where
     metapopulation abundance failed to recover to \texttt{1.0} of the
     average pre-disturbance abundance for \texttt{5} consecutive years
     post-disturbance. This ``non-recovery rate'' reflects the risk of a
@@ -477,14 +493,14 @@ temporal and spatial recovery regime of the metapopulation.
   fitted stock-recruitment model to aggregate across metapopulation such
   that:\\
   \begin{align}
-  \Delta_{MSY}=\cfrac{\hat{MSY_M}}{\sum_{i=1}^{N_p} MSY_{i}}
+  \Delta_{MSY}=\cfrac{\hat{MSY_M}}{\sum_{i=1}^{P} MSY_{i}}
   \end{align}\\
   A value of 1.0 would indicate that the disturbed metapopulation can
   sustain itself against the same disturbance regime as the sum of each
-  patch independently. In other words, is the metapopulation more than
+  patch independently. In other words, was the metapopulation more than
   (\(\Delta_{MSY}\)\textgreater1.0), less than
   (\(\Delta_{MSY}\)\textless1.0), or equal to the sum of its parts
-  (\(\Delta_{MSY}\)=1.0). We detail how \emph{MSY} is estimated further
+  (\(\Delta_{MSY}\)=1.0). We detail how \emph{MSY} was estimated further
   below.
 \end{enumerate}
 
@@ -492,36 +508,18 @@ temporal and spatial recovery regime of the metapopulation.
 \subsubsection{Monitoring \& management at
 aggregate-scale}\label{monitoring-management-at-aggregate-scale}}
 
-While true metapopulation dynamics are controlled by local patch
-dynamics and dispersal such that:
+While true metapopulation dynamics emerge from local patch dynamics and
+dispersal in S.1, natural resource managers often monitor and manage at
+the scale of the metapopulation. Hence, management at this scale
+inherently defines the stock-recruitment dynamics of the aggregate
+complex of patches (i.e., metapopulation) as:
 
 \begin{align}
-N_{it}= R_{it}\epsilon_{it}+I_{it}-D_{it}-E_{it}
+{K}_{t}=\cfrac{\hat{\alpha_t}{A}_{t-1}}{1+\cfrac{\hat{\alpha_t}-1}{\hat{\beta_t}}{A}_{i,t-1}}
 \end{align}
 
-\begin{align}
-R_{it}=\cfrac{\alpha_iN_{it-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{it-1}}
-\end{align}
-
-\begin{align}
-{MN}_t = \sum_{i=1}^{N_p} N_{it}
-\end{align}
-
-\begin{align}
-{MR}_t = \sum_{i=1}^{N_p} R_{it}
-\end{align}
-
-Natural resoure managers often monitors and manages at the scale of the
-metapopulation. Hence, management at this scale inherently defines the
-stock-recruitment dynamics of the aggregate complex of patches (i.e.,
-metapopulation) as:
-
-\begin{align}
-{MR}_{t}=\cfrac{\hat{\alpha_t}{MN}_{t-1}}{1+\cfrac{\hat{\alpha_t}-1}{\hat{\beta_t}}{MN}_{it-1}}
-\end{align}
-
-where \(\hat{\alpha_t}\) is the estimated compensation ratio averaged
-across the metapopulation at time \emph{t} and \(\hat{\beta_t}\) is the
+where \(\hat{\alpha_t}\) was the estimated compensation ratio averaged
+across the metapopulation at time \emph{t} and \(\hat{\beta_t}\) was the
 estimated carrying capacity of the entire metapopulation. Necessarily,
 these estimates emerge from monitoring data collected across all patches
 and are sensitive to the quality of the data and how local patches
@@ -580,7 +578,7 @@ the following function and fitted to the below \(\theta\) parameters
 \NormalTok{    sd.hat }\OtherTok{\textless{}{-}} \FunctionTok{exp}\NormalTok{(theta[}\DecValTok{3}\NormalTok{])}
 \NormalTok{    rec.mean }\OtherTok{\textless{}{-}}\NormalTok{ (a.hat }\SpecialCharTok{*}\NormalTok{ data}\SpecialCharTok{$}\NormalTok{spawners)}\SpecialCharTok{/}\NormalTok{(}\DecValTok{1} \SpecialCharTok{+}\NormalTok{ ((a.hat }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{)}\SpecialCharTok{/}\NormalTok{b.hat) }\SpecialCharTok{*}\NormalTok{ data}\SpecialCharTok{$}\NormalTok{spawners)}
     \CommentTok{\# negative log likelihood on recruitment parameters}
-\NormalTok{    nll }\OtherTok{\textless{}{-}} \SpecialCharTok{{-}}\DecValTok{1} \SpecialCharTok{*} \FunctionTok{sum}\NormalTok{(}\FunctionTok{dlnorm}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{recruits, }\AttributeTok{meanlog =} \FunctionTok{log}\NormalTok{(rec.mean), }\AttributeTok{sdlog =}\NormalTok{ sd.hat, }
+\NormalTok{    nll }\OtherTok{\textless{}{-}} \SpecialCharTok{{-}}\DecValTok{1} \SpecialCharTok{*} \FunctionTok{sum}\NormalTok{(}\FunctionTok{dlnorm}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{recruits, }\AttributeTok{meanlog =} \FunctionTok{log}\NormalTok{(rec.mean), }\AttributeTok{sdlog =}\NormalTok{ sd.hat,}
         \AttributeTok{log =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{*}\NormalTok{ data}\SpecialCharTok{$}\NormalTok{weights, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
     \CommentTok{\# penalized likelihood on estimated alpha}
 \NormalTok{    penalty1 }\OtherTok{\textless{}{-}} \SpecialCharTok{{-}}\FunctionTok{dnorm}\NormalTok{(a.hat, lastYr}\SpecialCharTok{$}\NormalTok{alphaLstYr, }\DecValTok{4} \SpecialCharTok{*}\NormalTok{ lastYr}\SpecialCharTok{$}\NormalTok{alphaLstYr, }\AttributeTok{log =} \ConstantTok{TRUE}\NormalTok{)}
@@ -593,8 +591,8 @@ the following function and fitted to the below \(\theta\) parameters
 \end{Shaded}
 
 This above function allows us to assess the bias in \(\hat{\alpha_t}\),
-\(\hat{\beta_t}\), and \(\hat{MR_t}\) compared to true \(\bar{\alpha}\),
-\(\bar{\beta}\), and \({MR}_t\) across the metapopulation. This then
+\(\hat{\beta_t}\), and \(\hat{K_t}\) compared to true \(\bar{\alpha}\),
+\(\bar{\beta}\), and \({K}_t\) across the metapopulation. This then
 allows us to see how much information management \& monitoring programs
 are missing when they assess metapopulations at the aggregate (rather
 than local) scales.
@@ -645,7 +643,8 @@ and the recruits that result from this (termed \(R_{MSY}\)).
 \NormalTok{        yield }\OtherTok{\textless{}{-}}\NormalTok{ recruits }\SpecialCharTok{{-}}\NormalTok{ adults}
 \NormalTok{    \}}
     \ControlFlowTok{if}\NormalTok{ (model }\SpecialCharTok{==} \StringTok{"Ricker"}\NormalTok{) \{}
-        \CommentTok{\# population model is R \textasciitilde{} CR * S * e({-}log(CR)/K * S): reparameterized Ricker}
+        \CommentTok{\# population model is R \textasciitilde{} CR * S * e({-}log(CR)/K * S): reparameterized}
+        \CommentTok{\# Ricker}
 \NormalTok{        adults }\OtherTok{\textless{}{-}}\NormalTok{ beta }\SpecialCharTok{*} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{Fcur)}
 \NormalTok{        recruits }\OtherTok{\textless{}{-}}\NormalTok{ alpha }\SpecialCharTok{*}\NormalTok{ adults }\SpecialCharTok{*} \FunctionTok{exp}\NormalTok{((}\SpecialCharTok{{-}}\FunctionTok{log}\NormalTok{(alpha)}\SpecialCharTok{/}\NormalTok{beta) }\SpecialCharTok{*}\NormalTok{ adults)}
 \NormalTok{        yield }\OtherTok{\textless{}{-}}\NormalTok{ recruits }\SpecialCharTok{{-}}\NormalTok{ adults}
@@ -667,7 +666,7 @@ and the recruits that result from this (termed \(R_{MSY}\)).
     \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{Npatches) \{}
 \NormalTok{        a\_p }\OtherTok{\textless{}{-}}\NormalTok{ alpha[i]}
 \NormalTok{        b\_p }\OtherTok{\textless{}{-}}\NormalTok{ beta[i]}
-\NormalTok{        F\_msy[i] }\OtherTok{\textless{}{-}} \FunctionTok{uniroot}\NormalTok{(fun\_yield, }\AttributeTok{interval =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{), }\AttributeTok{extendInt =} \StringTok{"yes"}\NormalTok{, }\AttributeTok{alpha =}\NormalTok{ a\_p, }
+\NormalTok{        F\_msy[i] }\OtherTok{\textless{}{-}} \FunctionTok{uniroot}\NormalTok{(fun\_yield, }\AttributeTok{interval =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{), }\AttributeTok{extendInt =} \StringTok{"yes"}\NormalTok{, }\AttributeTok{alpha =}\NormalTok{ a\_p,}
             \AttributeTok{beta =}\NormalTok{ b\_p, }\AttributeTok{delta =} \FloatTok{1e{-}04}\NormalTok{, }\AttributeTok{model =}\NormalTok{ model)}\SpecialCharTok{$}\NormalTok{root}
 \NormalTok{    \}}
 \NormalTok{    MSY }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\NormalTok{Npatches, }\ControlFlowTok{function}\NormalTok{(x) \{}
@@ -715,12 +714,12 @@ of the above outcomes.
     metapopulation can be achieved in that subset of patches)
   \end{enumerate}
 \item
-  Density-independent dispersal rates \(\omega\) from 0 to 20\% of
+  Density-independent dispersal rates \(\omega\) from 0 to 5\% of
   individuals within a patch will disperse.
 \item
   Topology of the spatial networks with linear, dendritic, star, and
-  complex networks. Each network with \(N_p\) of \texttt{16} and
-  distance between patches \(\bar{d}\) of \texttt{1}.
+  grid networks. Each network with \(P=16\) and distance between patches
+  \(\bar{d}=1\).
 \item
   Stochastic recruitment deviates from low, medium, high coefficient of
   variation on lognormal error. Generate stochasticity in time-dynamics
@@ -917,353 +916,22 @@ networks tended to have higher risks for long-term spatial contractions.
 \caption{Interplay between network structure, disturbance, and dispersal can lead to suprising recovery outcomes.}\label{fig:cluster results}
 \end{figure}
 
-\newpage
-
-\hypertarget{patterns-in-recovery-rates}{%
-\subsubsection{Patterns in recovery
-rates}\label{patterns-in-recovery-rates}}
-
-First, we show recovery rates for a scenario where (1) patches have the
-same local productivity and carrying capacities, (2) patches have
-different productivity and carrying capacities, (3) recruitment is
-deterministic and patches are different, and (4) spatial-temporal
-correlation in stochastic recruitment.
-
-Below, we can see three main effects on recovery rates (number of
-generations to reach recovery). First, recovery gets faster with
-increased dispersal. Most of the action here takes place at low rates of
-dispersal indicating most spatial topologies don't need much dispersal
-to quicken their recovery. In preliminary runs, dispersal rates of
-\texttt{0.05-0.2} provided similar recovery patterns. Second, more
-localized disturbances regimes led to slower recovery. Third, linear
-networks have slower recovery times than interconnected, complex
-networks suggesting that rescue effects take some time to cascade
-through the entire network of patches.
-
-\begin{figure}[H]
-
-{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/general results-1} 
-
-}
-
-\caption{Recovery rates along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients without stochasticity.}\label{fig:general results}
-\end{figure}
-\newpage
-
-Now, lets show recovery rates for the same scenario with deterministic
-recruitment but allowing for patches to vary in productivity and
-carrying capacity. In addition to the same three main effects of
-dispersal, network, and disturbance noted above, we also see variable
-patch productivities slows recovery across all scenarios.
-
-\begin{figure}[H]
-
-{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/results for variables patches-1} 
-
-}
-
-\caption{Recovery rates along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable local productivity and carrying capacities.}\label{fig:results for variables patches}
-\end{figure}
-\newpage
-
-Now, lets show recovery rates for the same scenario but allowing for
-recruitment to be stochastic (but patches are identical in demographic
-traits). We see the same three main effects of dispersal, network, and
-disturbance noted above. We also see a few subtle changes: (1)
-stochasticity slows recovery for even and local disturbance, but (2)
-quickens recovery for extreme local disturbance.
-
-\begin{figure}[H]
-
-{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/stochastic recruitment-1} 
-
-}
-
-\caption{Recovery rates along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with stochasticity.}\label{fig:stochastic recruitment}
-\end{figure}
-\newpage
-
-Now, lets show recovery rates for the same scenarios but with spatial
-and temporal correlations in recruitment stochasticity. In addition to
-the same effects of stochasticity, we also generally see a small effect
-of slower recovery times for even and local disturbance, but faster
-recovery times for extreme localized disturbance.
-
-\begin{figure}[H]
-
-{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/spatiotemporal correlation-1} 
-
-}
-
-\caption{Recovery rates along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with high spatial-temporal correlation in recruitment variation.}\label{fig:spatiotemporal correlation}
-\end{figure}
-\newpage
-
-\hypertarget{patterns-in-msy}{%
-\subsubsection{Patterns in MSY}\label{patterns-in-msy}}
-
-\hypertarget{msy-with-deterministic-recruitment-where-patches-are-the-same}{%
-\paragraph{MSY with deterministic recruitment where patches are the
-same}\label{msy-with-deterministic-recruitment-where-patches-are-the-same}}
-
-We now show similar patterns in how the maximum surplus production of
-the whole metapopulation (i.e., MSY) shifts in the first 25 years
-post-disturbance compared to the sum of MSY for each patch. A value of
-1.0 would indicate that the disturbed metapopulation can sustain itself
-against the same disturbance regime as the sum of each patch
-independently. In other words, is the metapopulation more, less, or
-equal to the sum of its parts.
-
-We will show 25-year MSY patterns for a scenario where (1) patches have
-the same local productivity and carrying capacities, (2) patches have
-different productivity and carrying capacities, (3) recruitment is
-deterministic and patches are different, (4) spatial-temporal
-correlation in stochastic recruitment.
-
-Below, we can see two main effects on surplus production. First, spatial
-disturbance is a strong driver of surplus production with more localized
-disturbance reducing the surplus. Second, dispersal rates are only
-limiting in scenarios with localized disturbance. This suggests that (1)
-evenly disturbed metapopulations operate as the ``sum of their parts''
-but (2) localized disturbances affect metapopulation surplus production
-leading to slower internal recovery and/or reduced rescue effects from
-neighboring patches.
-
-\begin{figure}[H]
-
-{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/MSY-1} 
-
-}
-
-\caption{Maximum surplus production along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with deterministic recruitment and homogenous patches.}\label{fig:MSY}
-\end{figure}
-
-\newpage
-
-\hypertarget{msy-with-variable-patches}{%
-\paragraph{MSY with variable patches}\label{msy-with-variable-patches}}
-
-Now, we illustrate how variable patch demography affects the 25-year
-average MSY.
-
-\begin{figure}[H]
-
-{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/MSY with variable patches-1} 
-
-}
-
-\caption{Maximum surplus production along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable patches.}\label{fig:MSY with variable patches}
-\end{figure}
-\newpage
-
-\hypertarget{msy-with-variable-patches-and-stochasticity}{%
-\paragraph{MSY with variable patches and
-stochasticity}\label{msy-with-variable-patches-and-stochasticity}}
-
-Now, we illustrate how variable patch demography affects the 25-year
-average MSY.
-
-\begin{figure}[H]
-
-{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/MSY with variable patches and stochasticity-1} 
-
-}
-
-\caption{Maximum surplus production along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable patches and stochasticity.}\label{fig:MSY with variable patches and stochasticity}
-\end{figure}
-\newpage
-
-\hypertarget{msy-with-variable-patches-and-spatio-temporally-correlated-stochasticity}{%
-\paragraph{MSY with variable patches, and spatio-temporally correlated
-stochasticity}\label{msy-with-variable-patches-and-spatio-temporally-correlated-stochasticity}}
-
-Now, we illustrate how variable patch demography and high
-spatial-temporal correlations in stochastic recruitment affects the
-25-year average MSY.
-
-\begin{figure}[H]
-
-{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/MSY with variable patches and space-time stochasticity-1} 
-
-}
-
-\caption{Maximum surplus production along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with high spatial-temporal correlation in recruitment stochasticity and variable patches.}\label{fig:MSY with variable patches and space-time stochasticity}
-\end{figure}
-
-\newpage
-
-\hypertarget{patterns-in-long-term-collapse-i.e.-state-shift}{%
-\subsubsection{Patterns in long-term collapse (i.e., state
-shift)}\label{patterns-in-long-term-collapse-i.e.-state-shift}}
-
-We now show similar patterns in the rate of long-term collapse across
-the metapopulation after \(100\) generations post-disturbance. Collapse
-rate \% was defined as the percent of simulations where metapopulation
-abundance failed to reach at least \texttt{1.0} of the average
-pre-disturbance abundance for \texttt{5} consecutive years after
-disturbance. This ``collapse rate'' may reflect the risk of a long-term
-state shift in metapopulation dynamics after disturbance in the face of
-stochasticity. We start with a scenario with deterministic recruitment
-where patches are the same.
-
-\begin{figure}[H]
-
-{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/collapsed-1} 
-
-}
-
-\caption{Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with high spatial-temporal correlation in recruitment variation.}\label{fig:collapsed}
-\end{figure}
-\newpage
-
-\hypertarget{state-shifts-with-variable-patches}{%
-\paragraph{State shifts with variable
-patches}\label{state-shifts-with-variable-patches}}
-
-Now, we illustrate how variable patch demography affects the risk of a
-state shift.
-
-\begin{figure}[H]
-
-{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/collapsed with variable patches-1} 
-
-}
-
-\caption{Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable patches.}\label{fig:collapsed with variable patches}
-\end{figure}
-\newpage
-
-\hypertarget{state-shifts-with-variable-patches-and-stochasticity}{%
-\paragraph{State shifts with variable patches and
-stochasticity}\label{state-shifts-with-variable-patches-and-stochasticity}}
-
-Now, we illustrate how variable patch demography and stochastic
-recruitment affects the risk of state shift.
-
-\begin{figure}[H]
-
-{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/state shift with variable patches and stochasticity-1} 
-
-}
-
-\caption{Risk of state shift after 100 generations along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable patches and stochastic recruitment.}\label{fig:state shift with variable patches and stochasticity}
-\end{figure}
-\newpage
-
-\hypertarget{state-shifts-with-variable-patches-and-spatio-temporally-correlated-stochasticity}{%
-\paragraph{State shifts with variable patches, and spatio-temporally
-correlated
-stochasticity}\label{state-shifts-with-variable-patches-and-spatio-temporally-correlated-stochasticity}}
-
-Now, we illustrate how variable patch demography and high
-spatial-temporal correlations in stochastic recruitment affects the risk
-of a state shift.
-
-\begin{figure}[H]
-
-{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/state shifts with variable patches and space-time stochasticity-1} 
-
-}
-
-\caption{Risk of state shift (lack of recovery or spatial contraction) after 100 generations along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable patches, and spatial-temporal correlations in stochastic recruitment.}\label{fig:state shifts with variable patches and space-time stochasticity}
-\end{figure}
-
-\newpage
-
-\hypertarget{patterns-in-the-risk-of-spatial-contraction}{%
-\subsubsection{Patterns in the risk of spatial
-contraction}\label{patterns-in-the-risk-of-spatial-contraction}}
-
-We now show similar patterns in patch occupancy after \(25\) years
-post-disturbance. Patch occupancy is defined as the average number of
-patches that fail to recover above \texttt{0.1} pre-disturbance
-abundance for scenarios with deterministic recruitment where patches are
-the same. Patch occupancy characterizes the expected risk of spatial
-contractions or local patch collapses, and reflects how interactions
-between spatial structure, disturbance, and dispersal affect source-sink
-dynamics and the provisioning of rescue effects to local patches.
-
-\begin{figure}[H]
-
-{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/patch occupancy-1} 
-
-}
-
-\caption{Patch occupancy after 25 years along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with deterministic recruitment and homogenous patches.}\label{fig:patch occupancy}
-\end{figure}
-\newpage
-
-\hypertarget{patch-occupancy-with-variable-patches}{%
-\paragraph{Patch occupancy with variable
-patches}\label{patch-occupancy-with-variable-patches}}
-
-Now, we illustrate how variable patch demography affects patch
-occupancy.
-
-\begin{figure}[H]
-
-{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/patch occupancy with variable patches-1} 
-
-}
-
-\caption{Patch occupancy after 25 years along  dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable patches.}\label{fig:patch occupancy with variable patches}
-\end{figure}
-\newpage
-
-\hypertarget{patch-occupancy-with-variable-patches-and-stochasticity}{%
-\paragraph{Patch occupancy with variable patches and
-stochasticity}\label{patch-occupancy-with-variable-patches-and-stochasticity}}
-
-Now, we illustrate how variable patch demography and stochastic
-recruitment affects long-term patch occupancy.
-
-\begin{figure}[H]
-
-{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/patch occupancy with variable patches and stochasticity-1} 
-
-}
-
-\caption{Patch occupancy after 25 years along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable patches and stochastic recruitment.}\label{fig:patch occupancy with variable patches and stochasticity}
-\end{figure}
-
-\newpage
-
-\hypertarget{patch-occupancy-with-variable-patches-and-spatio-temporally-correlated-stochasticity-in-recruitment}{%
-\paragraph{Patch occupancy with variable patches and spatio-temporally
-correlated stochasticity in
-recruitment}\label{patch-occupancy-with-variable-patches-and-spatio-temporally-correlated-stochasticity-in-recruitment}}
-
-Now, we illustrate how variable patch demography and high
-spatial-temporal correlations in stochastic recruitment affects
-long-term patch occupancy.
-
-\begin{figure}[H]
-
-{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/patch occupancy with variable patches and space-time stochasticity-1} 
-
-}
-
-\caption{Patch occupancy after 25 years along dispersal, disturbance (red - uniform; blue - localized, even; orange - localized, uneven), and network gradients with variable patches and spatial-temporal correlations in stochastic recruitment.}\label{fig:patch occupancy with variable patches and space-time stochasticity}
-\end{figure}
-\newpage
-
 \hypertarget{references}{%
 \subsection*{References}\label{references}}
 \addcontentsline{toc}{subsection}{References}
 
 \hypertarget{refs}{}
 \begin{CSLReferences}{1}{0}
-\leavevmode\hypertarget{ref-Anderson2015}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-Anderson2015}{}}%
 Anderson, S.C., Moore, J.W., McClure, M.M., Dulvy, N.K. \& Cooper, A.B.
-(2015). {Portfolio conservation of metapopulations under climate change.
-Ecological Applications 25 (2), 559-572.} \emph{Ecological
-Applications}, 25, 559--572.
+(2015). {Portfolio conservation of metapopulations under climate
+change.} \emph{Ecological Applications}, 25, 559--572.
 
-\leavevmode\hypertarget{ref-igraph2006}{}%
-Csardi, G. \& Nepusz, T. (2006). The igraph software package for complex
-network research. \emph{InterJournal}, Complex Systems, 1695.
+\leavevmode\vadjust pre{\hypertarget{ref-Csardi2006}{}}%
+Csardi, G. \& Nepusz, T. (2006). {The igraph software package for
+complex network research}. \emph{InterJournal}, Complex Sy, 1695.
 
-\leavevmode\hypertarget{ref-Forrest2010}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-Forrest2010}{}}%
 Forrest, R.E., McAllister, M.K., Dorn, M.W., Martell, S.J.D. \& Stanley,
 R.D. (2010). {Hierarchical Bayesian estimation of recruitment parameters
 and reference points for Pacific rockfishes (Sebastes spp.) under
@@ -1271,11 +939,22 @@ alternative assumptions about the stock--recruit function}.
 \emph{Canadian Journal of Fisheries and Aquatic Sciences}, 67,
 1611--1634.
 
-\leavevmode\hypertarget{ref-Hanski1998}{}%
-Hanski, I. (1998). {Metapopulation dynamics}. \emph{Nature}, 396,
-41--49.
+\leavevmode\vadjust pre{\hypertarget{ref-Moore2021}{}}%
+Moore, J.W., Connors, B.M. \& Hodgson, E.E. (2021). {Conservation risks
+and portfolio effects in mixed‐stock fisheries}. \emph{Fish and
+Fisheries}, faf.12567.
 
-\leavevmode\hypertarget{ref-Yeakel2014}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-Okamoto2020}{}}%
+Okamoto, D.K., Hessing‐Lewis, M., Samhouri, J.F., Shelton, A.O., Stier,
+A.C., Levin, P.S. \& Salomon, A.K. (2020). {Spatial variation in
+exploited metapopulations obscures risk of collapse}. \emph{Ecological
+Applications}, 30, e02051.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Walters2004}{}}%
+Walters, C.J. \& Martell, S.J.D. (2004). \emph{{Fisheries ecology and
+management}}. Princeton University Press.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Yeakel2014}{}}%
 Yeakel, J.D., Moore, J.W., Guimarães, P.R. \& Aguiar, M.A.M. de. (2014).
 {Synchronisation and stability in river metapopulation networks}.
 \emph{Ecology Letters}, 17, 273--283.

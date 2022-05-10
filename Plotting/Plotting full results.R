@@ -1,6 +1,11 @@
 results <- readRDS("Simulations/results2022-05-04.rds")
 scenarios <- readRDS("Simulations/scenarios2022-05-04.rds")
+re_runresults <- readRDS("Simulations/results2022-05-05.rds")
+results[8997:9000,]
+re_runresults[8997:9000,]
 
+pairs(results[8997:9000,-c(1:8)],re_runresults[8997:9000,-c(1:8)])
+cbind(results[8997:9000,],re_runresults[8997:9000,-c(1:8)])
 library(mvtnorm)
 library(vioplot)
 library(ggplot2)
@@ -49,9 +54,9 @@ lagTime <- 1
 results$StateShift <- ((1-results$recovered)+(1-results$longOcc))/2
 results$RecoveryRate <- 1-results$recovery/NyrsPost
 results$collapsed <- 1-results$recovered
-results$space_var <- factor(results$spatial,labels=c("Low spatial","Medium spatial","High spatial"))
-results$temporal_var <- factor(results$temporal,labels=c("Low temporal","Medium temporal","High temporal"))
-results$stochastic_lab <- factor(results$stochastic,labels=c("Low variance","High variance"))
+results$space_var <- factor(results$spatial,levels=unique(results$spatial),labels=c("Low spatial","Medium spatial","High spatial"))
+results$temporal_var <- factor(results$temporal,levels=unique(results$temporal),labels=c("Low temporal","Medium temporal","High temporal"))
+results$stochastic_lab <- factor(results$stochastic,levels=unique(results$stochastic),labels=c("Low variance","High variance"))
 results$variance_scen <- paste(results$space_var,results$temporal_var,results$stochastic_lab,sep="\n")
 results$unrecovered <- factor(ifelse(results$metaAbund >=0.9,"Recovered",ifelse(results$metaAbund>=0.7,"Recovering","Collapsed")),levels=c("Recovered","Recovering","Collapsed"))
 results$recovery_pace <- factor(ifelse(results$recovery <=10,"Fast",ifelse(results$recovery<=25,"Moderate","Slow")),levels=c("Fast","Moderate","Slow"))
@@ -100,10 +105,11 @@ sub_res$variance_scen <- factor(sub_res$variance_scen,
                                          "High space-time \U03C1, Low variance",
                                          "High space-time \U03C1, High variance"))
 sub_res$dispersal_range <- factor(sub_res$dispersal_range,levels=c("Low","High"))
-p <- ggplot(data=sub_res, aes(x=dispersal_range, y=collapsed, fill=network_lab))+ 
+head(sub_res[sub_res$variance_scen=="High space-time \U03C1, High variance",],12)
+p <- ggplot(data=sub_res, aes(x=dispersal_range, y=RecoveryRate, fill=network_lab))+ 
   geom_violin(trim=TRUE,scale = "width")+
   geom_boxplot(width=0.3,colour="grey90",outlier.shape=NA,position=position_dodge(0.9))+
-  geom_jitter(pch=21,width=0.1)+
+  #geom_jitter(pch=21,width=0.1)+
   facet_grid(rows=vars(disturb_lab),cols=vars(variance_scen),labeller=label_wrap_gen(width=45,multi_line = TRUE)) +
   scale_fill_brewer(palette="BrBG") +
   labs(x="Dispersal rate",y="Rate of non-recovery (% of simulations)",fill="Habitat network") +

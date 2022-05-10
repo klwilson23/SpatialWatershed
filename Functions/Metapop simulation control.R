@@ -106,7 +106,7 @@ results <- data.frame(results,
 progBar <- txtProgressBar(min = 0,  max = nScenarios, style = 3, initial = 0)
 ptm <- Sys.time()
 
-for(Isim in 1:nrow(results))
+for(Isim in 1:nrow(results)) # 1:nrow(results) #8997:9000
 {
   # call function to get the among patch variability in demographic traits
   alphaVariable <- ifelse(results$alpha[Isim]=="same",FALSE,TRUE)
