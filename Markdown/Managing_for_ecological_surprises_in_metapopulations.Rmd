@@ -222,7 +222,7 @@ where $E_{i,j}$ was the total dispersing animals from patch *i* into patch *j* r
 p_{i,j}=\dfrac{e^{-md_{i,j}}}{\sum\limits_{\substack{j=1 \\ j\neq i}}^{P} e^{-md_{i,j}}}
 \end{align}
 
-where $d_{i,j}$ was the pairwise distance between patches, $m$ was the distance cost to dispersal. The summation term in the denominator normalizes the probability of moving to any patch to between 0 and 1 with the constraint that dispersers cannot move back into their home patch (i.e., $j\neq i$. With $\bar{d}= 1$, $m=0.5$, $\omega=0.1$, $R_{i,t}=100$ in a linear network:
+where $d_{i,j}$ was the pairwise distance between patches, $m$ was the distance cost to dispersal. The summation term in the denominator normalizes the probability of moving to any patch to between 0 and 1 with the constraint that dispersers cannot move back into their home patch (i.e., $j\neq i$. With $\bar{d}= 1$, $m=0.5$, $\omega=0.1$, $R_{i,t}=100$ in a linear network):
 
 <br>
 
@@ -249,7 +249,7 @@ plot(network$landscape,col="dodgerblue",layout=cbind(1,seq(1,-1,length.out = gor
 
 ### Disturbance regimes
 
-In all scenarios, disturbance was applied after `50` years of equilibrating the metapopulaton at pristine conditions. We then applied the disturbance regime at year `50` (the regime varied from *uniform*, *localized, even*, and *localized, uneven* - see *Scenarios* below). Disturbance immediately removes a set proportion of the metapopulation adults at that time (i.e., `0.9` of $A_{t=50}$). Once applied, the metapopulation was no longer disturbed and spatio-temporal recovery dynamics emerged naturally from these new conditions.
+In all scenarios, disturbance was applied after `50` years of equilibrating the metapopulation at pristine conditions. We then applied the disturbance regime at year `50` (the regime varied from *uniform*, *localized, even*, and *localized, uneven* - see *Scenarios* below). Disturbance immediately removed a fixed proportion of the metapopulation adults at that time (i.e., `0.9` of $A_{t=50}$). Once applied, the metapopulation was no longer disturbed and spatio-temporal recovery dynamics emerged from these conditions given the ecological scenarios of network complexity, dispersal rate, spatio-temporal correlations, local patch demographies, and magnitude of stochastic variance.
 
 ```{r example disturbance regime, echo=FALSE,warning=FALSE,message=FALSE,fig.height=4,fig.width=8,fig.cap="Recovery regime of metapopulation with linear topology through time (a) and space (b).",fig.align="center"}
 seed <- 535
@@ -293,14 +293,14 @@ Our model allowed for stochastic recruitment that followed a lognormal distribut
 R_{i,t}=\cfrac{\alpha_iN_{i,t-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{i,t-1}}e^{(\epsilon_{i,t}-\cfrac{\sigma_{R}^2}{2})}
 \end{align}
 
-where lognormal deviates for each patch *i* at time *t* are drawn from a multivariate normal distribution (*MVN*) with bias correction $\cfrac{\sigma_{R}^2}{2}$. If $\sigma_R$ was low, then metapopulation dynamics approach the deterministic case. In some scenarios, we evaluated the role of spatially and/or temporally correlated deviates among local patches to model potential common drivers affecting metapopulation dynamics (e.g., Moran effects). Expected recruitment deviates followed a first-order autoregression model such that:
+where lognormal deviates for each patch *i* at time *t* were drawn from a multivariate normal distribution (*MVN*) with bias correction $\cfrac{\sigma_{R}^2}{2}$. If $\sigma_R$ was low, then metapopulation dynamics approach the deterministic case. In some scenarios, we evaluated the role of spatially and/or temporally correlated deviates among local patches to model potential common drivers affecting metapopulation dynamics (e.g., Moran effects). Expected recruitment deviates followed a first-order autoregression model such that:
 
 \begin{align}
 \epsilon_{i,t}=\rho_T\epsilon_{t-1}+MVN(\mu=0,\Sigma=\sigma_R^2(1-\rho_T^2)e^{(-\rho_SD_{i,j})})
 \end{align}
 
 
-where $\rho_T$ was temporal correlation (bounded $0-1$) $\rho_S$ was rate of distance-decay in spatial correlation (bounded $0-\infty$ with higher values leading to independent patches). If $\rho_T$ was 0 and $\rho_S$ was high, then annual recruitment deviates are independent. We modelled the initial conditions for autoregressive recruitment deviates $\epsilon_{i,1}$ by drawing from a stationary normal distribution with mean $\mu=0$ and variance $\sigma_R^2$ such that:
+where $\rho_T$ was temporal correlation (bounded $0-1$) $\rho_S$ was rate of distance-decay in spatial correlation (bounded $0-\infty$ with higher values leading to independent patches). If $\rho_T$ was 0 and $\rho_S$ was high, then annual recruitment deviates were independent. We modelled the initial conditions for autoregressive recruitment deviates $\epsilon_{i,1}$ by drawing from a stationary normal distribution with mean $\mu=0$ and variance $\sigma_R^2$ such that:
 \begin{align}
 \epsilon_{i,1} \sim N(\mu=0,\sigma=\sigma_R)
 \end{align}
@@ -430,7 +430,7 @@ SRfn <- function(theta,data,lastYr){
 ```
 
 
-This above function allows us to assess the bias in $\hat{\alpha_t}$, $\hat{\beta_t}$, and $\hat{K_t}$ compared to true $\bar{\alpha}$, $\bar{\beta}$, and ${K}_t$ across the metapopulation. This then allows us to see how much information management & monitoring programs are missing when they assess metapopulations at the aggregate (rather than local) scales.
+This above function allows us to assess the bias in $\hat{\alpha_t}$, $\hat{\beta_t}$, and $\hat{K_t}$ compared to true $\bar{\alpha}$, $\bar{\beta}$, and ${K}_t$ across the metapopulation. This then allows us to see how much information management & monitoring programs were missing when they assess metapopulations at the aggregate (rather than local) scales.
 
 ### Finding maximum sustainable yield
 

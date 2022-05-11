@@ -4,46 +4,6 @@
 %
 \documentclass[
 ]{article}
-\title{Managing emergent recovery dynamics in at-risk metapopulations}
-\usepackage{etoolbox}
-\makeatletter
-\providecommand{\subtitle}[1]{% add subtitle to \maketitle
-  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
-}
-\makeatother
-\subtitle{Supplemental materials: Model details \& results}
-\author{Kyle L. Wilson\(^\textup{1,2}\)\footnote{Corresponding author -
-  email:
-  \href{mailto:klwilson.ccira@gmail.com}{\nolinkurl{klwilson.ccira@gmail.com}}},
-Alexandra C. Sawyer\(^\textup{1}\), Anna Potapova\(^\textup{1}\), Colin
-J. Bailey\(^\textup{1}\),Daniella LoScerbo\(^\textup{3,4}\),\\
-Elissa K. Sweeney-Bergen\(^\textup{1,5}\), Emma E.
-Hodgson\(^\textup{1,4}\), Kara J. Pitman\(^\textup{1}\), Karl M.
-Seitz\(^\textup{1}\),\\
-Lauren Law\(^\textup{1,6}\), Luke Warkentin\(^\textup{1,7}\), Samantha
-M. Wilson\(^\textup{1}\), William I. Atlas\(^\textup{1,8}\),\\
-Douglas C. Braun\(^\textup{3,5}\), Matthew R. Sloat\(^\textup{8}\), M.
-Tim Tinker\(^\textup{9}\),\\
-and Jonathan W. Moore\(^\textup{1,3}\)\\
-\strut \\
-\(^\textup{1}\)Earth to Ocean Research Group, Simon Fraser University\\
-\(^\textup{2}\)Central Coast Indigenous Resource Alliance, Campbell
-River, BC\\
-\(^\textup{3}\)Resource and Environmental Management, Simon Fraser
-University\\
-\(^\textup{4}\)Fisheries \& Oceans Canada, Cultus Lake Laboratory,
-Cultus Lake, BC\\
-\(^\textup{5}\)Ministry of Forests, Lands, Natural Resource Operations,
-and Rural Development, Smithers, BC\\
-\(^\textup{6}\)Fisheries \& Oceans Canada, Salmonid Enhancement Program,
-Nanaimo, BC\\
-\(^\textup{7}\)Fisheries \& Oceans Canada, North Coast Stock Assessment,
-Smithers, BC\\
-\(^\textup{8}\)Wild Salmon Center, Portland, OR\\
-\(^\textup{9}\)Ecology and Evolutionary Biology, University of
-California Santa Cruz}
-\date{06 May 2022}
-
 \usepackage{amsmath,amssymb}
 \usepackage{lmodern}
 \usepackage{iftex}
@@ -179,6 +139,46 @@ California Santa Cruz}
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
+
+\title{Managing emergent recovery dynamics in at-risk metapopulations}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{Supplemental materials: Model details \& results}
+\author{Kyle L. Wilson\(^\textup{1,2}\)\footnote{Corresponding author -
+  email:
+  \href{mailto:klwilson.ccira@gmail.com}{\nolinkurl{klwilson.ccira@gmail.com}}},
+Alexandra C. Sawyer\(^\textup{1}\), Anna Potapova\(^\textup{1}\), Colin
+J. Bailey\(^\textup{1}\),Daniella LoScerbo\(^\textup{3,4}\),\\
+Elissa K. Sweeney-Bergen\(^\textup{1,5}\), Emma E.
+Hodgson\(^\textup{1,4}\), Kara J. Pitman\(^\textup{1}\), Karl M.
+Seitz\(^\textup{1}\),\\
+Lauren Law\(^\textup{1,6}\), Luke Warkentin\(^\textup{1,7}\), Samantha
+M. Wilson\(^\textup{1}\), William I. Atlas\(^\textup{1,8}\),\\
+Douglas C. Braun\(^\textup{3,5}\), Matthew R. Sloat\(^\textup{8}\), M.
+Tim Tinker\(^\textup{9}\),\\
+and Jonathan W. Moore\(^\textup{1,3}\)\\
+\strut \\
+\(^\textup{1}\)Earth to Ocean Research Group, Simon Fraser University\\
+\(^\textup{2}\)Central Coast Indigenous Resource Alliance, Campbell
+River, BC\\
+\(^\textup{3}\)Resource and Environmental Management, Simon Fraser
+University\\
+\(^\textup{4}\)Fisheries \& Oceans Canada, Cultus Lake Laboratory,
+Cultus Lake, BC\\
+\(^\textup{5}\)Ministry of Forests, Lands, Natural Resource Operations,
+and Rural Development, Smithers, BC\\
+\(^\textup{6}\)Fisheries \& Oceans Canada, Salmonid Enhancement Program,
+Nanaimo, BC\\
+\(^\textup{7}\)Fisheries \& Oceans Canada, North Coast Stock Assessment,
+Smithers, BC\\
+\(^\textup{8}\)Wild Salmon Center, Portland, OR\\
+\(^\textup{9}\)Ecology and Evolutionary Biology, University of
+California Santa Cruz}
+\date{10 May 2022}
 
 \begin{document}
 \maketitle
@@ -619,7 +619,7 @@ number of reproducing individuals. At this point, there is the maximum
 surplus of individuals produced above replacement that can help to
 withstand disturbance or harvest regimes and contribute to future
 recovery, either through increasing local patch densities or by
-emigrating neighboring patches providing ``rescue effects.''
+emigrating neighboring patches providing ``rescue effects''.
 
 Under Beverton-Holt or Ricker density-dependent recuitment, however,
 there exists no analytical solution for calculating \(MSY\). Therefore,
@@ -928,26 +928,29 @@ Anderson, S.C., Moore, J.W., McClure, M.M., Dulvy, N.K. \& Cooper, A.B.
 change.} \emph{Ecological Applications}, 25, 559--572.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Csardi2006}{}}%
-Csardi, G. \& Nepusz, T. (2006). {The igraph software package for
-complex network research}. \emph{InterJournal}, Complex Sy, 1695.
+Csardi, G. \& Nepusz, T. (2006). \href{https://igraph.org}{{The igraph
+software package for complex network research}}. \emph{InterJournal},
+Complex Sy, 1695.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Forrest2010}{}}%
 Forrest, R.E., McAllister, M.K., Dorn, M.W., Martell, S.J.D. \& Stanley,
-R.D. (2010). {Hierarchical Bayesian estimation of recruitment parameters
-and reference points for Pacific rockfishes (Sebastes spp.) under
-alternative assumptions about the stock--recruit function}.
-\emph{Canadian Journal of Fisheries and Aquatic Sciences}, 67,
-1611--1634.
+R.D. (2010). \href{https://doi.org/10.1139/f10-077}{{Hierarchical
+Bayesian estimation of recruitment parameters and reference points for
+Pacific rockfishes (Sebastes spp.) under alternative assumptions about
+the stock--recruit function}}. \emph{Canadian Journal of Fisheries and
+Aquatic Sciences}, 67, 1611--1634.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Moore2021}{}}%
-Moore, J.W., Connors, B.M. \& Hodgson, E.E. (2021). {Conservation risks
-and portfolio effects in mixed‐stock fisheries}. \emph{Fish and
-Fisheries}, faf.12567.
+Moore, J.W., Connors, B.M. \& Hodgson, E.E. (2021).
+\href{https://doi.org/10.1111/faf.12567}{{Conservation risks and
+portfolio effects in mixed‐stock fisheries}}. \emph{Fish and Fisheries},
+faf.12567.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Okamoto2020}{}}%
 Okamoto, D.K., Hessing‐Lewis, M., Samhouri, J.F., Shelton, A.O., Stier,
-A.C., Levin, P.S. \& Salomon, A.K. (2020). {Spatial variation in
-exploited metapopulations obscures risk of collapse}. \emph{Ecological
+A.C., Levin, P.S. \& Salomon, A.K. (2020).
+\href{https://doi.org/10.1002/eap.2051}{{Spatial variation in exploited
+metapopulations obscures risk of collapse}}. \emph{Ecological
 Applications}, 30, e02051.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Walters2004}{}}%
@@ -956,8 +959,9 @@ management}}. Princeton University Press.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Yeakel2014}{}}%
 Yeakel, J.D., Moore, J.W., Guimarães, P.R. \& Aguiar, M.A.M. de. (2014).
-{Synchronisation and stability in river metapopulation networks}.
-\emph{Ecology Letters}, 17, 273--283.
+\href{https://doi.org/10.1111/ele.12228}{{Synchronisation and stability
+in river metapopulation networks}}. \emph{Ecology Letters}, 17,
+273--283.
 
 \end{CSLReferences}
 
