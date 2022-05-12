@@ -110,7 +110,7 @@ source("Functions/finding MSY.R")
 
 \pagestyle{fancy}
 \fancyhead[LO,LE]{Wilson \textit{et al.}}
-\fancyhead[RO,RE]{\textbf{Appendix A}: Managing ecological surprises}
+\fancyhead[RO,RE]{\textbf{Appendix A}: Emergent spatial recoveries}
 
 ## Metapopulation model
 ### Local & metapopulation dynamics
