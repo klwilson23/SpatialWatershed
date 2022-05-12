@@ -1,5 +1,5 @@
-results <- readRDS("Simulations/results2022-05-04.rds")
-scenarios <- readRDS("Simulations/scenarios2022-05-04.rds")
+results <- readRDS("Simulations/results2022-05-11.rds")
+scenarios <- readRDS("Simulations/scenarios2022-05-11.rds")
 re_runresults <- readRDS("Simulations/results2022-05-05.rds")
 results[8997:9000,]
 re_runresults[8997:9000,]
@@ -166,15 +166,15 @@ plot(k_vec,separat, xlab=xlabel, ylab="Separation Index", type="l")
 points(opt_k,separat[opt_k-1],pch=21,bg=(opt_k))
 
 layout(matrix(1,nrow=1,ncol=1))
-fitted <- clustering(results_clust,n=5,type="hier",standard=F)
+fitted <- clustering(results_clust,n=4,type="hier",standard=F)
 clusplot(results_clust, fitted$groups, color=TRUE, shade=TRUE, labels=4, lines=1, main="", plotchar=TRUE)
 results_clust$cluster_surprises <- results$cluster_surprises <- as.factor(fitted$groups)
 
 aggregate(cbind(recovery,collapsed,medOcc,med_surp,longOcc,long_surp,metaAbund)~cluster_surprises,data=results,FUN=mean)
 
-results$cluster_surprises <- factor(results$cluster_surprises,labels=c("Resilient","Critical risk","Spatial contraction","Hidden collapses","Slow recovery"))
+results$cluster_surprises <- factor(results$cluster_surprises,levels=1:4,labels=c("Resilient","Critical risk","Hidden collapses","Slow recovery"))
 
-results$cluster_surprises <- factor(results$cluster_surprises,levels=c("Resilient","Slow recovery","Hidden collapses","Spatial contraction","Critical risk"))
+results$cluster_surprises <- factor(results$cluster_surprises,levels=c("Resilient","Slow recovery","Hidden collapses","Critical risk"))
 
 aggregate(cbind(recovery,RecoveryRate,collapsed,medOcc,med_surp,longOcc,long_surp,metaAbund)~cluster_surprises,data=results,FUN=mean)
 table(results$cluster_surprises)/nrow(results)
