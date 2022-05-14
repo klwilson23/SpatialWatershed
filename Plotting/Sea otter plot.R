@@ -15,7 +15,8 @@ p1 <- ggplot(otters,aes(x=Year_Seq,y=Abundance,fill=Region,colour=Region)) +
   scale_fill_brewer(type="qual",palette=2) +
   scale_colour_brewer(type="qual",palette=2) +
   theme(legend.position="top")+
-  geom_rect(aes(xmin=36,xmax=73,ymin=0,ymax=5000),col='black',lwd=0.25,fill=NA)
+  geom_rect(aes(xmin=36,xmax=73,ymin=0,ymax=4800),col='black',lwd=0.25,fill=NA)+
+  annotate("text",label="(see inset)",x=68,y=500,size=2.0)
 p1
 sub_ott <- otters[otters$Region=='California' & otters$Year>=1983,]
 ca <- ggplot(sub_ott,aes(x=Year_Seq,y=Abundance,fill=Region,colour=Region)) +
@@ -35,11 +36,11 @@ otter_inset <- ggdraw(p1) +
   draw_plot({
     ca},
     # The distance along a (0,1) x-axis to draw the left edge of the plot
-    x = 0.65, 
+    x = 0.10, 
     # The distance along a (0,1) y-axis to draw the bottom edge of the plot
-    y = 0.60,
+    y = 0.55,
     # The width and height of the plot expressed as proportion of the entire ggdraw object
-    width = 0.35, 
-    height = 0.25)
+    width = 0.42, 
+    height = 0.32)
 otter_inset
 ggsave(plot=otter_inset,"Figures/Sea otter comparisons.jpeg",dpi=600,units='in',height=4.5,width=4.5)

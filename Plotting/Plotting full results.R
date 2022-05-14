@@ -106,7 +106,7 @@ sub_res$variance_scen <- factor(sub_res$variance_scen,
                                          "High space-time \U03C1, High variance"))
 sub_res$dispersal_range <- factor(sub_res$dispersal_range,levels=c("Low","High"))
 head(sub_res[sub_res$variance_scen=="High space-time \U03C1, High variance",],12)
-p <- ggplot(data=sub_res, aes(x=dispersal_range, y=RecoveryRate, fill=network_lab))+ 
+p <- ggplot(data=sub_res, aes(x=dispersal_range, y=collapsed, fill=network_lab))+ 
   geom_violin(trim=TRUE,scale = "width")+
   geom_boxplot(width=0.3,colour="grey90",outlier.shape=NA,position=position_dodge(0.9))+
   #geom_jitter(pch=21,width=0.1)+
@@ -117,6 +117,19 @@ p <- ggplot(data=sub_res, aes(x=dispersal_range, y=RecoveryRate, fill=network_la
   theme(legend.position="top",strip.text.y = element_text(size=6.5),strip.text.x = element_text(size=8,hjust=0),axis.text.x=element_text(size=7),axis.text.y=element_text(size=7),legend.text=element_text(size=6),legend.title=element_text(size=7),axis.title=element_text(size=8),legend.key.size = unit(0.9, "line"),panel.spacing.y = unit(0.75, "lines"))
 p
 ggsave("Figures/risk of collapse along stochastic network and disturbance cline.tiff",plot=p,compression="lzw",units="in",height=6,width=8,dpi=800)
+
+p <- ggplot(data=sub_res, aes(x=dispersal_range, y=RecoveryRate, fill=network_lab))+ 
+  geom_violin(trim=TRUE,scale = "width")+
+  geom_boxplot(width=0.3,colour="grey90",outlier.shape=NA,position=position_dodge(0.9))+
+  #geom_jitter(pch=21,width=0.1)+
+  facet_grid(rows=vars(disturb_lab),cols=vars(variance_scen),labeller=label_wrap_gen(width=45,multi_line = TRUE)) +
+  scale_fill_brewer(palette="BrBG") +
+  labs(x="Dispersal rate",y="Rate of non-recovery (% of simulations)",fill="Habitat network") +
+  theme_minimal() +
+  theme(legend.position="top",strip.text.y = element_text(size=6.5),strip.text.x = element_text(size=8,hjust=0),axis.text.x=element_text(size=7),axis.text.y=element_text(size=7),legend.text=element_text(size=6),legend.title=element_text(size=7),axis.title=element_text(size=8),legend.key.size = unit(0.9, "line"),panel.spacing.y = unit(0.75, "lines"))
+p
+ggsave("Figures/recovery rates along stochastic network and disturbance cline.tiff",plot=p,compression="lzw",units="in",height=6,width=8,dpi=800)
+
 
 # do some hierarchical clustering analyses
 head(results)
@@ -187,7 +200,7 @@ saveRDS(results,file="Figures/clustering_outcomes.rds")
 surprises <- data.frame(aggregate(surprise_logic~network_lab+dispersal_range+disturb_lab+density_dep+cluster_surprises,data=results,FUN=sum))
 saveRDS(surprises,file="Figures/gg_clustering_outcomes.rds")
 
-gradColour <- colorRampPalette(rev(c("black","#bd0026","tomato","#fdae61","dodgerblue","forestgreen")))
+gradColour <- colorRampPalette(rev(c("black","#bd0026","#fdae61","dodgerblue","forestgreen")))
 n_id <- sum(surprises$surprise_logic)
 n_resilient <- sum(surprises$surprise_logic[surprises$cluster_surprises=='Resilient'])
 surprises$surprise_index <- ifelse(surprises$cluster_surprises=="Resilient","Expected","Surprised")
@@ -195,12 +208,12 @@ n_outcomes <- (sapply(unique(surprises$cluster_surprises),function(x){sum(surpri
 n_cumul <- c(0,cumsum(n_outcomes))
 n_cumul <- sapply(2:length(n_cumul),function(x){median(c(n_cumul[x],n_cumul[x-1]))})
 margins <- c(0.1,0.1,0.1,0.1)
-p1 <- ggplot(surprises,aes(y = surprise_logic,axis1 = density_dep, axis2 = dispersal_range,axis3=disturb_lab,axis4=cluster_surprises)) +
+p1 <- ggplot(surprises,aes(y = surprise_logic,axis1 = network_lab, axis2 = dispersal_range,axis3=disturb_lab,axis4=cluster_surprises)) +
       geom_alluvium(aes(fill = cluster_surprises),width = 1/6,reverse=FALSE) +
       #guides(fill = FALSE) +
       geom_stratum(width = 1/6,fill="grey",color="white", reverse = FALSE) +
       geom_text(stat = "stratum",size=2.5,aes(label = after_stat(stratum)), reverse = FALSE) +
-      scale_x_discrete(limits = c("Patch productivity", "Dispersal","Disturbance","Outcome"),expand=c(0.075,0.075)) +
+      scale_x_discrete(limits = c("Network", "Dispersal","Disturbance","Outcome"),expand=c(0.075,0.075)) +
       scale_fill_manual("Outcome",values=gradColour(n=length(unique(surprises$cluster_surprises)))) +
       #scale_fill_brewer(type="div",palette="RdYlBu",direction=-1) +
       theme_minimal() +
@@ -243,7 +256,7 @@ plot(results$RecoveryRate,results$collapsed,pch=21,bg=plotColours,xlab=expressio
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="collapsed"),col=adjustcolor(dist_colours[z],transparency))}))
 points(mean_res$RecoveryRate,mean_res$collapsed,pch=22,cex=2,bg=dist_colours)
 
-plot(results$long_surp,results$longOcc,pch=21,bg=plotColours,xlab="Relative production (25 years)",ylab="Relative patch occupancy (25 years)")
+plot(results$long_surp,results$longOcc,pch=21,bg=plotColours,xlab="Relative production (25 years)",ylab="Patch occupancy (25 years)")
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="long_surp",y="longOcc"),col=adjustcolor(dist_colours[z],transparency))}))
 points(mean_res$long_surp,mean_res$longOcc,pch=22,cex=2,bg=dist_colours)
 
@@ -253,7 +266,7 @@ dev.off()
 tiff("Figures/Disturbance impacts on recovery regime smoothed polygon.tiff",compression="lzw",units="in",height=8,width=8,res=800)
 layout(matrix(1:4,nrow=2,ncol=2,byrow=TRUE))
 par(mar=c(4,4,0.5,0.5))
-plot(results$RecoveryRate,results$longOcc,pch=21,bg=plotColours,xlab=expression('Recovery rate (yr'^-1*')'),ylab="Relative patch occupancy (25 years)")
+plot(results$RecoveryRate,results$longOcc,pch=21,bg=plotColours,xlab=expression('Recovery rate (yr'^-1*')'),ylab="Patch occupancy (25 years)")
 
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="longOcc"),col=adjustcolor(dist_colours[z],transparency))}))
 Corner_text("(a)", "topleft")
@@ -273,7 +286,7 @@ invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){
 Corner_text("(c)", "topleft")
 points(mean_res$RecoveryRate,mean_res$collapsed,pch=22,cex=2,bg=dist_colours)
 
-plot(results$long_surp,results$longOcc,pch=21,bg=plotColours,xlab="Relative production (25 years)",ylab="Relative patch occupancy (25 years)")
+plot(results$long_surp,results$longOcc,pch=21,bg=plotColours,xlab="Relative production (25 years)",ylab="Patch occupancy (25 years)")
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="long_surp",y="longOcc"),col=adjustcolor(dist_colours[z],transparency))}))
 Corner_text("(d)", "topleft")
 points(mean_res$long_surp,mean_res$longOcc,pch=22,cex=2,bg=dist_colours)
