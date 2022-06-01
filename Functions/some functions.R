@@ -77,7 +77,7 @@ plottingFunc <- function(network,type,nodeScalar,Npatches,plotID=NA){
   }
 }
 
-spatialRecoveryPlot <- function(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recovery,Nburnin,Nyears,alpha,metaK,alphaYr,metaKYr,lostCapacity,compensationBias,MSY,nodeScalar=35,network,networkType=networkType,Npatches=Npatches,NMsy,patchID=NA)
+spatialRecoveryPlot <- function(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recovery,Nburnin,Nyears,alpha,metaK,alphaYr,metaKYr,lostCapacity,compensationBias,MSY,surp_prod,patch_occ,nodeScalar=35,network,networkType=networkType,Npatches=Npatches,NMsy,patchID=NA)
 {
   colfunc <- colorRampPalette(c("royalblue4","dodgerblue","lightblue","darkorange1","firebrick"))
   
@@ -131,15 +131,20 @@ spatialRecoveryPlot <- function(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recover
   
   
   legend("bottomright",c("Recruitment - pristine","Recruitment - disturbed"),pch=c(NA,NA),pt.bg=c("dodgerblue","orange"),lwd=c(1,1),lty=c(1,1),col=c("dodgerblue","orange"),bty="n",cex=textSize)
-  ylims <- range(c(lostCapacity[Nburnin:Nyears],alphaYr[Nburnin:Nyears]/alpha,compensationBias[Nburnin:Nyears],MSY[Nburnin:Nyears]),na.rm=TRUE)
+  #ylims <- range(c(lostCapacity[Nburnin:Nyears],alphaYr[Nburnin:Nyears]/alpha,compensationBias[Nburnin:Nyears],MSY[Nburnin:Nyears]),na.rm=TRUE)
+  ylims <- range(c(0.8,1.2)*c(surp_prod[Nburnin:Nyears],patch_occ[Nburnin:Nyears]),na.rm=TRUE)
+  
   par(mar=c(5,3,0.1,0.1))
-  plot(lostCapacity[Nburnin:Nyears],xlab="Years after disturbance",ylab="",type="l",ylim=ylims,lwd=2,col="dodgerblue",xpd=NA,cex.lab=textSize)
-  mtext("Proportional bias",side=2,line=2.5,cex=0.65*textSize)
-  lines(alphaYr[Nburnin:Nyears]/alpha,lwd=2,col="orange")
-  lines(compensationBias[Nburnin:Nyears],lwd=2,col="grey50")
-  lines(MSY[Nburnin:Nyears],lwd=2,col="black")
+  plot(surp_prod[Nburnin:Nyears],xlab="Years after disturbance",ylab="",type="l",ylim=ylims,lwd=2,col="black",xpd=NA,cex.lab=textSize)
+  mtext("Relative change in metric",side=2,line=2.5,cex=0.65*textSize)
+  lines(patch_occ[Nburnin:Nyears],lwd=2,col="orange")
+  #lines(alphaYr[Nburnin:Nyears]/alpha,lwd=2,col="orange")
+  #lines(compensationBias[Nburnin:Nyears],lwd=2,col="grey50")
+  #lines(MSY[Nburnin:Nyears],lwd=2,col="black")
+  #ines(lostCapacity[Nburnin:Nyears],lwd=2,col="dodgerblue")
   #legend("topright",c("capacity","compensation","production","MSY"),lty=1,col=c("dodgerblue","orange","grey50","black"),lwd=2,bty="n",cex=0.7*textSize,xpd=NA)
-  legend(x=0.5*length(Nburnin:Nyears),y=ylims[2]+0.1*abs(ylims[2]-ylims[1]),c("capacity","compensation","production","MSY"),lty=1,col=c("dodgerblue","orange","grey50","black"),lwd=2,bty="n",cex=0.75*textSize,xpd=NA,xjust=0.5,yjust=0.5,horiz=TRUE)
+  #legend(x=0.5*length(Nburnin:Nyears),y=ylims[2]+0.1*abs(ylims[2]-ylims[1]),c("capacity","compensation","production","MSY"),lty=1,col=c("dodgerblue","orange","grey50","black"),lwd=2,bty="n",cex=0.75*textSize,xpd=NA,xjust=0.5,yjust=0.5,horiz=TRUE)
+  legend(x=0.7*length(Nburnin:Nyears),y=ylims[2]+0.1*abs(ylims[2]-ylims[1]),c("production","occupancy"),lty=1,col=c("black","orange"),lwd=2,bty="n",cex=0.75*textSize,xpd=NA,xjust=0.5,yjust=0.5,horiz=TRUE)
 }
 
 

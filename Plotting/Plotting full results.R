@@ -134,10 +134,10 @@ ggsave("Figures/recovery rates along stochastic network and disturbance cline.ti
 # do some hierarchical clustering analyses
 head(results)
 results_clust <- data.frame(scale(results[,c("RecoveryRate","collapsed","medOcc","med_surp","longOcc","long_surp","metaAbund")],center = TRUE,scale = TRUE))
-fitted <- clustering(results_clust,n=4,type="hier",standard=T)
+fitted <- clustering(results_clust,n=5,type="hier",standard=T)
 clustOpt <- NULL
 dunnInd <- dunn2 <- gamma <- silWidth <- clus.SS <- widGap <- separat <- c()
-k_vec <- 2:8
+k_vec <- 2:10
 for(i in (k_vec-1))
 {
   clustOpt[[i]] <- clustering(results_clust,n=i+1,type="hier",standard=F)
@@ -151,6 +151,8 @@ for(i in (k_vec-1))
   #Sys.sleep(0.1)
 }
 
+cluster_metrics <- list("k_vec"=k_vec,xlabel="k, number of clusters","dunnInd"=dunnInd,"dunn2"=dunn2,"gamma"=gamma,"silWidth"=silWidth,"clus.SS"=clus.SS,"widGap"=widGap,"separat"=separat)
+saveRDS(cluster_metrics,"Simulations/cluster_test.rds")
 layout(matrix(c(1:7,0,0),nrow=3,ncol=3,byrow=TRUE))
 par(mar=c(5,4,1,1))
 opt_k <- k_vec
@@ -178,22 +180,26 @@ points(opt_k,widGap[opt_k-1],pch=21,bg=(opt_k))
 plot(k_vec,separat, xlab=xlabel, ylab="Separation Index", type="l")
 points(opt_k,separat[opt_k-1],pch=21,bg=(opt_k))
 
+
 layout(matrix(1,nrow=1,ncol=1))
-fitted <- clustering(results_clust,n=4,type="hier",standard=F)
-clusplot(results_clust, fitted$groups, color=TRUE, shade=TRUE, labels=4, lines=1, main="", plotchar=TRUE)
+fitted <- clustering(results_clust,n=5,type="hier",standard=F)
+
+saveRDS(fitted,"Simulations/clustering result.rds")
+
+clusplot(results_clust, fitted$groups, color=TRUE, shade=TRUE, labels=5, lines=1, main="", plotchar=TRUE)
 results_clust$cluster_surprises <- results$cluster_surprises <- as.factor(fitted$groups)
 
 aggregate(cbind(recovery,collapsed,medOcc,med_surp,longOcc,long_surp,metaAbund)~cluster_surprises,data=results,FUN=mean)
 
-results$cluster_surprises <- factor(results$cluster_surprises,levels=1:4,labels=c("Resilient","Critical risk","Hidden collapses","Slow recovery"))
+results$cluster_surprises <- factor(results$cluster_surprises,levels=1:5,labels=c("Resilient","Critical risk","Hidden collapses","Slow recovery","Lost capacity"))
 
-results$cluster_surprises <- factor(results$cluster_surprises,levels=c("Resilient","Slow recovery","Hidden collapses","Critical risk"))
+results$cluster_surprises <- factor(results$cluster_surprises,levels=c("Resilient","Slow recovery","Hidden collapses","Lost capacity","Critical risk"))
 
 aggregate(cbind(recovery,RecoveryRate,collapsed,medOcc,med_surp,longOcc,long_surp,metaAbund)~cluster_surprises,data=results,FUN=mean)
 table(results$cluster_surprises)/nrow(results)
 
 jpeg("Figures/surprises clustering.jpeg",res=800,width=6,height=6,units="in")
-clusplot(results_clust, results$cluster_surprises, color=TRUE, shade=FALSE, labels=4, lines=0, main="", plotchar=FALSE)
+clusplot(results_clust, results$cluster_surprises, color=TRUE, shade=FALSE, labels=5, lines=0, main="", plotchar=FALSE)
 dev.off()
 results$surprise_logic <- ifelse(results$surprise=="Resilient",1,1)
 saveRDS(results,file="Figures/clustering_outcomes.rds")
@@ -214,7 +220,7 @@ p1 <- ggplot(surprises,aes(y = surprise_logic,axis1 = network_lab, axis2 = dispe
       geom_stratum(width = 1/6,fill="grey",color="white", reverse = FALSE) +
       geom_text(stat = "stratum",size=2.5,aes(label = after_stat(stratum)), reverse = FALSE) +
       scale_x_discrete(limits = c("Network", "Dispersal","Disturbance","Outcome"),expand=c(0.075,0.075)) +
-      scale_fill_manual("Outcome",values=gradColour(n=length(unique(surprises$cluster_surprises)))) +
+      scale_fill_manual(name="Regime",values=gradColour(n=length(unique(surprises$cluster_surprises)))) +
       #scale_fill_brewer(type="div",palette="RdYlBu",direction=-1) +
       theme_minimal() +
       scale_y_continuous(breaks = seq(0,n_id,length.out=5),label = scales::percent_format(scale = 100 / n_id),sec.axis=sec_axis(~./1,breaks = n_cumul,label = paste(round(100*n_outcomes/n_id),"%",sep=""))) +

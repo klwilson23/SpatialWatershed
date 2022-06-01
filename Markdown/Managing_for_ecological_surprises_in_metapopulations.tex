@@ -4,6 +4,46 @@
 %
 \documentclass[
 ]{article}
+\title{Managing emergent recovery dynamics in at-risk metapopulations}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{Supplemental materials: Model details \& results}
+\author{Kyle L. Wilson\(^\textup{1,2}\)\footnote{Corresponding author -
+  email:
+  \href{mailto:klwilson.ccira@gmail.com}{\nolinkurl{klwilson.ccira@gmail.com}}},
+Alexandra C. Sawyer\(^\textup{1}\), Anna Potapova\(^\textup{1}\), Colin
+J. Bailey\(^\textup{1}\),Daniella LoScerbo\(^\textup{3,4}\),\\
+Elissa K. Sweeney-Bergen\(^\textup{1,5}\), Emma E.
+Hodgson\(^\textup{1,4}\), Kara J. Pitman\(^\textup{1}\), Karl M.
+Seitz\(^\textup{1}\),\\
+Lauren Law\(^\textup{1,6}\), Luke Warkentin\(^\textup{1,7}\), Samantha
+M. Wilson\(^\textup{1}\), William I. Atlas\(^\textup{1,8}\),\\
+Douglas C. Braun\(^\textup{3,5}\), Matthew R. Sloat\(^\textup{8}\), M.
+Tim Tinker\(^\textup{9}\),\\
+and Jonathan W. Moore\(^\textup{1,3}\)\\
+\strut \\
+\(^\textup{1}\)Earth to Ocean Research Group, Simon Fraser University\\
+\(^\textup{2}\)Central Coast Indigenous Resource Alliance, Campbell
+River, BC\\
+\(^\textup{3}\)Resource and Environmental Management, Simon Fraser
+University\\
+\(^\textup{4}\)Fisheries \& Oceans Canada, Cultus Lake Laboratory,
+Cultus Lake, BC\\
+\(^\textup{5}\)Ministry of Forests, Lands, Natural Resource Operations,
+and Rural Development, Smithers, BC\\
+\(^\textup{6}\)Fisheries \& Oceans Canada, Salmonid Enhancement Program,
+Nanaimo, BC\\
+\(^\textup{7}\)Fisheries \& Oceans Canada, North Coast Stock Assessment,
+Smithers, BC\\
+\(^\textup{8}\)Wild Salmon Center, Portland, OR\\
+\(^\textup{9}\)Ecology and Evolutionary Biology, University of
+California Santa Cruz}
+\date{31 May 2022}
+
 \usepackage{amsmath,amssymb}
 \usepackage{lmodern}
 \usepackage{iftex}
@@ -41,46 +81,6 @@
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
 \usepackage[margin=0.75in]{geometry}
-\usepackage{color}
-\usepackage{fancyvrb}
-\newcommand{\VerbBar}{|}
-\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
-\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
-% Add ',fontsize=\small' for more characters per line
-\usepackage{framed}
-\definecolor{shadecolor}{RGB}{248,248,248}
-\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
-\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
-\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
-\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\BuiltInTok}[1]{#1}
-\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
-\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
-\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
-\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
-\newcommand{\ExtensionTok}[1]{#1}
-\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\ImportTok}[1]{#1}
-\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
-\newcommand{\NormalTok}[1]{#1}
-\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
-\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
-\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
-\newcommand{\RegionMarkerTok}[1]{#1}
-\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 \usepackage{graphicx}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
@@ -136,49 +136,12 @@
 \setlength{\parskip}{\baselineskip}
 \usepackage{tocloft}
 \setlength{\cftbeforesecskip}{6pt}
+\usepackage{booktabs}
+\usepackage{makecell}
+\DeclareMathOperator{\EX}{\mathbb{E}}% expected value
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
-
-\title{Managing emergent recovery dynamics in at-risk metapopulations}
-\usepackage{etoolbox}
-\makeatletter
-\providecommand{\subtitle}[1]{% add subtitle to \maketitle
-  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
-}
-\makeatother
-\subtitle{Supplemental materials: Model details \& results}
-\author{Kyle L. Wilson\(^\textup{1,2}\)\footnote{Corresponding author -
-  email:
-  \href{mailto:klwilson.ccira@gmail.com}{\nolinkurl{klwilson.ccira@gmail.com}}},
-Alexandra C. Sawyer\(^\textup{1}\), Anna Potapova\(^\textup{1}\), Colin
-J. Bailey\(^\textup{1}\),Daniella LoScerbo\(^\textup{3,4}\),\\
-Elissa K. Sweeney-Bergen\(^\textup{1,5}\), Emma E.
-Hodgson\(^\textup{1,4}\), Kara J. Pitman\(^\textup{1}\), Karl M.
-Seitz\(^\textup{1}\),\\
-Lauren Law\(^\textup{1,6}\), Luke Warkentin\(^\textup{1,7}\), Samantha
-M. Wilson\(^\textup{1}\), William I. Atlas\(^\textup{1,8}\),\\
-Douglas C. Braun\(^\textup{3,5}\), Matthew R. Sloat\(^\textup{8}\), M.
-Tim Tinker\(^\textup{9}\),\\
-and Jonathan W. Moore\(^\textup{1,3}\)\\
-\strut \\
-\(^\textup{1}\)Earth to Ocean Research Group, Simon Fraser University\\
-\(^\textup{2}\)Central Coast Indigenous Resource Alliance, Campbell
-River, BC\\
-\(^\textup{3}\)Resource and Environmental Management, Simon Fraser
-University\\
-\(^\textup{4}\)Fisheries \& Oceans Canada, Cultus Lake Laboratory,
-Cultus Lake, BC\\
-\(^\textup{5}\)Ministry of Forests, Lands, Natural Resource Operations,
-and Rural Development, Smithers, BC\\
-\(^\textup{6}\)Fisheries \& Oceans Canada, Salmonid Enhancement Program,
-Nanaimo, BC\\
-\(^\textup{7}\)Fisheries \& Oceans Canada, North Coast Stock Assessment,
-Smithers, BC\\
-\(^\textup{8}\)Wild Salmon Center, Portland, OR\\
-\(^\textup{9}\)Ecology and Evolutionary Biology, University of
-California Santa Cruz}
-\date{12 May 2022}
 
 \begin{document}
 \maketitle
@@ -206,7 +169,8 @@ species with a one year generation time with time-dynamics that follows
 birth (i.e., recruitment \emph{R}), immigration, death, and emigration
 processes typical to metapopulation theory and tested the role of
 multiple spatial, temporal, and density-dependent processes (Anderson et
-al. 2015; Okamoto et al. 2020):
+al. 2015; Fullerton et al. 2016; Zelnik et al. 2019; Bowlby \& Gibson
+2020; Okamoto et al. 2020):
 
 \begin{align}
 N_{i,t}= R_{i,t}+{\sum\limits_{\substack{j=1 \\ j\neq i}}^{P} \omega p_{i,j}R_{j,t}}-d_{i,t}R_{i,t}-\omega R_{i,t}
@@ -252,23 +216,14 @@ K_t = \sum_{i=1}^{P} R_{i,t}
 Monitoring at the scale of the whole metapopulation can produce
 productivity relationships that aggregates the population dynamics and
 productivity among all local populations. For example, take a two patch
-metapopulation model that varies \(\alpha_i\) and \(\beta_i\) parameters
-where:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{alpha }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{4}\NormalTok{)}
-\NormalTok{beta }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{100}\NormalTok{, }\DecValTok{200}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-Here, recruitment compensation from local patches \(\alpha_i\) gets
-averaged across the metapopulation leading to an average compensation
-ratio \(\bar{\alpha}\) of 3. Likewise, the total carrying capacity of
-the metapopulation \(\bar{\beta}\) becomes the summation of local patch
-carrying capacities \(\sum\beta_i\), which was 300. This scale of
-monitoring generates the following local patch and metapopulation
-dynamics:
+metapopulation model that varies \(\alpha_1=2; \alpha_2=4\) and
+\(\beta_1=100; \beta_2=200\) parameters. Here, recruitment compensation
+from local patches \(\alpha_i\) gets averaged across the metapopulation
+leading to an average compensation ratio \(\bar{\alpha}\) of 3.
+Likewise, the total carrying capacity of the metapopulation
+\(\bar{\beta}\) becomes the summation of local patch carrying capacities
+\(\sum\beta_i\), which was 300. This scale of monitoring generates the
+following local patch and metapopulation dynamics:
 
 \begin{figure}[H]
 
@@ -276,7 +231,7 @@ dynamics:
 
 }
 
-\caption{Metapopulation and local patch recruitment dynamics.}\label{fig:recruit curves}
+\caption{Density dependence in metapopulation and local patch recruitment dynamics. Dashed line indicates the line of replacement, with equilbrium indicated by points. When populations fall below equilibrium points, per-capita productivity improves driving populations back towards equilibrium. When populations exceed their capacity, per-capita productivity decreases driving populations back towards equilibrium. At each point of the x-axis, the distance between the solid and dashed lines indicates the amount of recruitment above replacement, i.e., the surplus recruitment produced via compensatory density dependence.}\label{fig:recruit curves}
 \end{figure}
 
 \hypertarget{creating-the-spatial-networks}{%
@@ -310,31 +265,39 @@ and some custom code to arrange our spatial networks as the following:
 \end{figure}
 
 Note that distances between neighbor patches in the above networks are
-equal.
+equal. An example dispersal matrix for the grid network can be found in
+Table S1.
 
-\newpage
+\begin{table}
 
-An example dispersal matrix for the grid network:
-
-\begin{verbatim}
-##   A B E F C G D H I J K L M N O P
-## A 0 1 1 1 2 2 3 3 2 2 2 3 3 3 3 3
-## B 1 0 1 1 1 1 2 2 2 2 2 2 3 3 3 3
-## E 1 1 0 1 2 2 3 3 1 1 2 3 2 2 2 3
-## F 1 1 1 0 1 1 2 2 1 1 1 2 2 2 2 2
-## C 2 1 2 1 0 1 1 1 2 2 2 2 3 3 3 3
-## G 2 1 2 1 1 0 1 1 2 1 1 1 2 2 2 2
-## D 3 2 3 2 1 1 0 1 3 2 2 2 3 3 3 3
-## H 3 2 3 2 1 1 1 0 3 2 1 1 3 2 2 2
-## I 2 2 1 1 2 2 3 3 0 1 2 3 1 1 2 3
-## J 2 2 1 1 2 1 2 2 1 0 1 2 1 1 1 2
-## K 2 2 2 1 2 1 2 1 2 1 0 1 2 1 1 1
-## L 3 2 3 2 2 1 2 1 3 2 1 0 3 2 1 1
-## M 3 3 2 2 3 2 3 3 1 1 2 3 0 1 2 3
-## N 3 3 2 2 3 2 3 2 1 1 1 2 1 0 1 2
-## O 3 3 2 2 3 2 3 2 2 1 1 1 2 1 0 1
-## P 3 3 3 2 3 2 3 2 3 2 1 1 3 2 1 0
-\end{verbatim}
+\caption{\label{tab:distance matrix}Example distance matrix between patches within a grid network to affect dispersal rates.}
+\centering
+\begin{tabular}[t]{lrrrrrrrrrrrrrrrr}
+\toprule
+  & A & B & E & F & C & G & D & H & I & J & K & L & M & N & O & P\\
+\midrule
+A & 0 & 1 & 1 & 1 & 2 & 2 & 3 & 3 & 2 & 2 & 2 & 3 & 3 & 3 & 3 & 3\\
+B & 1 & 0 & 1 & 1 & 1 & 1 & 2 & 2 & 2 & 2 & 2 & 2 & 3 & 3 & 3 & 3\\
+E & 1 & 1 & 0 & 1 & 2 & 2 & 3 & 3 & 1 & 1 & 2 & 3 & 2 & 2 & 2 & 3\\
+F & 1 & 1 & 1 & 0 & 1 & 1 & 2 & 2 & 1 & 1 & 1 & 2 & 2 & 2 & 2 & 2\\
+C & 2 & 1 & 2 & 1 & 0 & 1 & 1 & 1 & 2 & 2 & 2 & 2 & 3 & 3 & 3 & 3\\
+\addlinespace
+G & 2 & 1 & 2 & 1 & 1 & 0 & 1 & 1 & 2 & 1 & 1 & 1 & 2 & 2 & 2 & 2\\
+D & 3 & 2 & 3 & 2 & 1 & 1 & 0 & 1 & 3 & 2 & 2 & 2 & 3 & 3 & 3 & 3\\
+H & 3 & 2 & 3 & 2 & 1 & 1 & 1 & 0 & 3 & 2 & 1 & 1 & 3 & 2 & 2 & 2\\
+I & 2 & 2 & 1 & 1 & 2 & 2 & 3 & 3 & 0 & 1 & 2 & 3 & 1 & 1 & 2 & 3\\
+J & 2 & 2 & 1 & 1 & 2 & 1 & 2 & 2 & 1 & 0 & 1 & 2 & 1 & 1 & 1 & 2\\
+\addlinespace
+K & 2 & 2 & 2 & 1 & 2 & 1 & 2 & 1 & 2 & 1 & 0 & 1 & 2 & 1 & 1 & 1\\
+L & 3 & 2 & 3 & 2 & 2 & 1 & 2 & 1 & 3 & 2 & 1 & 0 & 3 & 2 & 1 & 1\\
+M & 3 & 3 & 2 & 2 & 3 & 2 & 3 & 3 & 1 & 1 & 2 & 3 & 0 & 1 & 2 & 3\\
+N & 3 & 3 & 2 & 2 & 3 & 2 & 3 & 2 & 1 & 1 & 1 & 2 & 1 & 0 & 1 & 2\\
+O & 3 & 3 & 2 & 2 & 3 & 2 & 3 & 2 & 2 & 1 & 1 & 1 & 2 & 1 & 0 & 1\\
+\addlinespace
+P & 3 & 3 & 3 & 2 & 3 & 2 & 3 & 2 & 3 & 2 & 1 & 1 & 3 & 2 & 1 & 0\\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \hypertarget{dispersal}{%
 \subsubsection{Dispersal}\label{dispersal}}
@@ -343,7 +306,7 @@ Dispersal from patch \emph{i} into patch \emph{j} depends on constant
 dispersal rate \(\omega\) (defined as the proportion of total local
 recruits that will disperse) and an exponential distance-decay function
 between \emph{i} and \emph{j} with distance cost to dispersal \(m\)
-following Anderson et al. (2015):
+(Anderson et al. 2015; Fullerton et al. 2016):
 
 \begin{align}
 E_{i,j,t}=\omega R_{i,t}p_{i,j}
@@ -425,14 +388,14 @@ model such that:
 \epsilon_{i,t}=\rho_T\epsilon_{t-1}+MVN(\mu=0,\Sigma=\sigma_R^2(1-\rho_T^2)e^{(-\rho_SD_{i,j})})
 \end{align}
 
-where \(\rho_T\) was temporal correlation (bounded \(0-1\)) \(\rho_S\)
-was rate of distance-decay in spatial correlation (bounded \(0-\infty\)
-with higher values leading to independent patches). If \(\rho_T\) was 0
-and \(\rho_S\) was high, then annual recruitment deviates were
-independent. We modelled the initial conditions for autoregressive
-recruitment deviates \(\epsilon_{i,1}\) by drawing from a stationary
-normal distribution with mean \(\mu=0\) and variance \(\sigma_R^2\) such
-that: \begin{align}
+where \(\rho_T\) was temporal correlation (bounded \(0-1\)) and
+\(\rho_S\) was rate of distance-decay in spatial correlation (bounded
+\(0-\infty\) with higher values leading to independent patches). If
+\(\rho_T\) was 0 and \(\rho_S\) was high, then annual recruitment
+deviates were independent. We modelled the initial conditions for
+autoregressive recruitment deviates \(\epsilon_{i,1}\) by drawing from a
+stationary normal distribution with mean \(\mu=0\) and variance
+\(\sigma_R^2\) such that: \begin{align}
 \epsilon_{i,1} \sim N(\mu=0,\sigma=\sigma_R)
 \end{align} We illustrate the effects of four kinds of recruitment
 deviates below using the same random number generator seed:
@@ -449,39 +412,46 @@ deviates below using the same random number generator seed:
 \hypertarget{post-disturbance-outcomes}{%
 \subsection{Post-disturbance outcomes}\label{post-disturbance-outcomes}}
 
+\hypertarget{monitoring-management-at-aggregate-scale}{%
+\subsubsection{Monitoring \& management at
+aggregate-scale}\label{monitoring-management-at-aggregate-scale}}
+
+While true metapopulation dynamics emerge from local patch dynamics and
+dispersal in eq. S.1, natural resource managers often monitor and manage
+at the scale of the metapopulation. Hence, management at this scale
+inherently defines the stock-recruitment dynamics of the aggregate
+complex of patches (i.e., metapopulation) as:
+
+\begin{align}
+{\mathop{\mathrm{\mathbb{E}}}(K_t)}=\cfrac{\bar{\alpha}{A}_{t-1}}{1+\cfrac{\bar{\alpha}-1}{\bar{\beta}}{A}_{t-1}}
+\end{align}
+
+where \(\bar{\alpha}\) was the compensation ratio averaged across the
+metapopulation and \(\bar{\beta}\) was the carrying capacity summed
+across the entire metapopulation.
+
+\hypertarget{recovery-metrics}{%
+\subsubsection{Recovery metrics}\label{recovery-metrics}}
+
 We measured the following post-disturbance outcomes to track the
 temporal and spatial recovery regime of the metapopulation.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
-  Non-recovery (a) \& recovery rate (b) after disturbance:
-
-  \begin{enumerate}
-  \def\labelenumii{\alph{enumii}.}
-  \tightlist
-  \item
-    Non-recovery rate was defined as the \% of simulations where
-    metapopulation abundance failed to recover to \texttt{1.0} of the
-    average pre-disturbance abundance for \texttt{5} consecutive years
-    post-disturbance. This ``non-recovery rate'' reflects the risk of a
-    long-term state shift in metapopulation dynamics after disturbance
-    in the face of stochasticity.
-  \item
-    Recovery rate represents the proportional post-disturbance recovery
-    towards metapopulation carrying capacity gained per year (1 year = 1
-    generation in our models). Recovery rate was calculated as
-    \(1-T_{recovery}/T_{sim}\) where the recovery time,
-    \(T_{recovery}\), was the number of years/generations it took for
-    the metapopulation to reach five consecutive years ≥ pre-disturbance
-    abundance. Recovery rate captures how quickly the aggregate
-    metapopulation recovers from disturbance but doesn't take into
-    account whether any given local patches recover to their
-    pre-disturbance capacity nor did it allow for any uncertainty around
-    recovery criteria.
-  \end{enumerate}
+  Recovery rate after disturbance: Recovery rate represents the
+  proportional post-disturbance recovery towards metapopulation carrying
+  capacity gained per year (1 year = 1 generation in our models).
+  Recovery rate was calculated as \(1-T_{recovery}/T_{sim}\) where the
+  recovery time, \(T_{recovery}\), was the number of years/generations
+  it took for the metapopulation to reach five consecutive years ≥
+  pre-disturbance abundance. Recovery rate captures how quickly the
+  aggregate metapopulation recovers from disturbance but doesn't take
+  into account whether any given local patches recover to their
+  pre-disturbance capacity nor did it allow for any uncertainty around
+  recovery criteria.
 \item
-  Patch occupancy - the mean number of patches with
+  Patch occupancy: The mean number of patches with
   \texttt{\textgreater{}0.1} local carrying capacity after disturbance
   in the short-term (5 years), medium-term (10 years), and long-term (25
   years). This value characterizes the expected risk of spatial
@@ -490,201 +460,39 @@ temporal and spatial recovery regime of the metapopulation.
   source-sink dynamics and the ability to provide (or not) rescue
   effects and recover local patches.
 \item
-  The ratio of expected maximum surplus production (we term \emph{MSY})
-  to true maximum surplus production summed across all patches from
-  fitted stock-recruitment model to aggregate across metapopulation such
-  that:\\
+  Relative production: The ratio between the empirical metapopulation
+  adult abundances to the expected adult recruitment if the
+  metapopulation were a single, contiguous population of equivalent size
+  and productivity (i.e., carrying capacities and productivity were
+  equal to the sum \(\beta\) and mean \(\alpha\) among patches,
+  respectively). We term \(\Delta_{N}\) by calculating the
+  stock-recruitment model to aggregate metapopulation adults (eq. S.10)
+  such that:\\
   \begin{align}
-  \Delta_{MSY}=\cfrac{\hat{MSY_M}}{\sum_{i=1}^{P} MSY_{i}}
+  \Delta_{N_t}=\cfrac{A_t}{\mathop{\mathrm{\mathbb{E}}}(M_t)}
   \end{align}\\
-  A value of 1.0 would indicate that the disturbed metapopulation can
-  sustain itself against the same disturbance regime as the sum of each
-  patch independently. In other words, was the metapopulation more than
-  (\(\Delta_{MSY}\)\textgreater1.0), less than
-  (\(\Delta_{MSY}\)\textless1.0), or equal to the sum of its parts
-  (\(\Delta_{MSY}\)=1.0). We detail how \emph{MSY} was estimated further
-  below.
+  A value of 1.0 would indicate that the disturbed metapopulation
+  production was equal to a single, contiguous population such that
+  source-sink dynamics were not consuming surplus recruits. In other
+  words, this metric can describe whether the metapopulation acts more
+  than (\(\Delta_{N_t}\)\textgreater1.0), less than
+  (\(\Delta_{N_t}\)\textless1.0), or equal to the sum of its parts
+  (\(\Delta_{N_t}\)=1.0).
+\item
+  Risk of non-recovery after disturbance: Non-recovery rate was defined
+  as the \% of simulations where metapopulation abundance failed to
+  recover to \texttt{1.0} of the average pre-disturbance abundance for
+  \texttt{5} consecutive years post-disturbance. This ``non-recovery
+  rate'' reflects the risk of a long-term state shift in metapopulation
+  dynamics after disturbance in the face of stochasticity.
 \end{enumerate}
-
-\hypertarget{monitoring-management-at-aggregate-scale}{%
-\subsubsection{Monitoring \& management at
-aggregate-scale}\label{monitoring-management-at-aggregate-scale}}
-
-While true metapopulation dynamics emerge from local patch dynamics and
-dispersal in S.1, natural resource managers often monitor and manage at
-the scale of the metapopulation. Hence, management at this scale
-inherently defines the stock-recruitment dynamics of the aggregate
-complex of patches (i.e., metapopulation) as:
-
-\begin{align}
-{K}_{t}=\cfrac{\hat{\alpha_t}{A}_{t-1}}{1+\cfrac{\hat{\alpha_t}-1}{\hat{\beta_t}}{A}_{i,t-1}}
-\end{align}
-
-where \(\hat{\alpha_t}\) was the estimated compensation ratio averaged
-across the metapopulation at time \emph{t} and \(\hat{\beta_t}\) was the
-estimated carrying capacity of the entire metapopulation. Necessarily,
-these estimates emerge from monitoring data collected across all patches
-and are sensitive to the quality of the data and how local patches
-perform through time. For example, temporal shifts in productivity
-regimes may be masked if most of the data were sampled before the regime
-shift. To help surmount these issues, modern resource assessments use
-data weighting and penalties (i.e., priors) when fitting models to data.
-
-In our assessment, we weighted recent years of sampling over more
-distant years such that:
-
-\begin{figure}[H]
-
-{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/unnamed-chunk-1-1} 
-
-}
-
-\caption{Likelihood weighting for samples collected over time from current year of sampling.}\label{fig:unnamed-chunk-1}
-\end{figure}
-
-This forward-weighting approach increased the sensitivity of the
-monitoring sub-model to detect demographic changes in the
-post-disturbance recovery regime. Data-weighting is increasingly being
-used in resource monitoring, although how weights are developed and
-applied to data is a case-by-case basis.
-
-Furthermore, we used penalized normal likelihoods on both
-\(\hat{\alpha_t}\) and \(\hat{\beta_t}\) such that:
-
-\begin{align}
-\hat{\alpha_t} \sim N(\mu=\hat{\alpha_{t-1}},\sigma=3\hat{\alpha_{t-1}})
-\end{align}
-
-and
-
-\begin{align}
-\hat{\beta_t} \sim N(\mu=\hat{\beta_{t-1}},\sigma=3\hat{\beta_{t-1}})
-\end{align}
-
-where \(\mu=\hat{\alpha_{t-1}}\) and \(\mu=\hat{\beta_{t-1}}\)
-represents the best estimates from the previous assessment and the
-\texttt{3} in the \(\sigma\) term represents a 300\% coefficient of
-variation. We used these penalized likelihoods to fit the above
-aggregate stock-recruitment model with \emph{lognormal} error to the
-metapopulation stock-recruit data collected at time \emph{t}. We used
-the following function and fitted to the below \(\theta\) parameters
-(termed \texttt{theta} in the function \texttt{optim()} using the
-\texttt{L-BFGS-B} optimizer with a lower bound on \(\hat{\alpha}\) of
-\texttt{1.01} (i.e., constrained to be at least above replacement).
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{SRfn }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(theta, data, lastYr) \{}
-\NormalTok{    a.hat }\OtherTok{\textless{}{-}}\NormalTok{ theta[}\DecValTok{1}\NormalTok{]}
-\NormalTok{    b.hat }\OtherTok{\textless{}{-}} \FunctionTok{exp}\NormalTok{(theta[}\DecValTok{2}\NormalTok{])}
-\NormalTok{    sd.hat }\OtherTok{\textless{}{-}} \FunctionTok{exp}\NormalTok{(theta[}\DecValTok{3}\NormalTok{])}
-\NormalTok{    rec.mean }\OtherTok{\textless{}{-}}\NormalTok{ (a.hat }\SpecialCharTok{*}\NormalTok{ data}\SpecialCharTok{$}\NormalTok{spawners)}\SpecialCharTok{/}\NormalTok{(}\DecValTok{1} \SpecialCharTok{+}\NormalTok{ ((a.hat }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{)}\SpecialCharTok{/}\NormalTok{b.hat) }\SpecialCharTok{*}\NormalTok{ data}\SpecialCharTok{$}\NormalTok{spawners)}
-    \CommentTok{\# negative log likelihood on recruitment parameters}
-\NormalTok{    nll }\OtherTok{\textless{}{-}} \SpecialCharTok{{-}}\DecValTok{1} \SpecialCharTok{*} \FunctionTok{sum}\NormalTok{(}\FunctionTok{dlnorm}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{recruits, }\AttributeTok{meanlog =} \FunctionTok{log}\NormalTok{(rec.mean), }\AttributeTok{sdlog =}\NormalTok{ sd.hat,}
-        \AttributeTok{log =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{*}\NormalTok{ data}\SpecialCharTok{$}\NormalTok{weights, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
-    \CommentTok{\# penalized likelihood on estimated alpha}
-\NormalTok{    penalty1 }\OtherTok{\textless{}{-}} \SpecialCharTok{{-}}\FunctionTok{dnorm}\NormalTok{(a.hat, lastYr}\SpecialCharTok{$}\NormalTok{alphaLstYr, }\DecValTok{4} \SpecialCharTok{*}\NormalTok{ lastYr}\SpecialCharTok{$}\NormalTok{alphaLstYr, }\AttributeTok{log =} \ConstantTok{TRUE}\NormalTok{)}
-    \CommentTok{\# penalized likelihood on estimated carrying capacity}
-\NormalTok{    penalty2 }\OtherTok{\textless{}{-}} \SpecialCharTok{{-}}\FunctionTok{dnorm}\NormalTok{(b.hat, lastYr}\SpecialCharTok{$}\NormalTok{metaKLstYr, }\DecValTok{4} \SpecialCharTok{*}\NormalTok{ lastYr}\SpecialCharTok{$}\NormalTok{metaKLstYr, }\AttributeTok{log =} \ConstantTok{TRUE}\NormalTok{)}
-\NormalTok{    jnll }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(}\FunctionTok{c}\NormalTok{(nll, penalty1, penalty2), }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
-    \FunctionTok{return}\NormalTok{(jnll)}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
-
-This above function allows us to assess the bias in \(\hat{\alpha_t}\),
-\(\hat{\beta_t}\), and \(\hat{K_t}\) compared to true \(\bar{\alpha}\),
-\(\bar{\beta}\), and \({K}_t\) across the metapopulation. This then
-allows us to see how much information management \& monitoring programs
-were missing when they assess metapopulations at the aggregate (rather
-than local) scales.
-
-\hypertarget{finding-maximum-sustainable-yield}{%
-\subsubsection{Finding maximum sustainable
-yield}\label{finding-maximum-sustainable-yield}}
-
-Resource managers measure productivity with a variety of performance
-reference points (Forrest et al. 2010). One of the most widely used
-metrics, commonly called \emph{Maximum Sustainable Yield} in fisheries
-and other harvest literature (\(MSY\)), relates to the largest loss the
-population can sustain over an indefinite period of time that maximizes
-its ability to replenish itself. Under density-dependent growth,
-individuals' growth, survival, and reproduction at low population
-densities are not constrained by limited resources, but overall
-production is low because there are few individuals. At high densities,
-limited resources increasingly constrain individual's reproductive
-success until the population reaches carrying capacity, and overall
-production drops to zero because per-capita success is low. However, at
-some intermediate densities, both per-capita and overall production is
-high, and population growth is at its maximum point due to the large
-number of reproducing individuals. At this point, there is the maximum
-surplus of individuals produced above replacement that can help to
-withstand disturbance or harvest regimes and contribute to future
-recovery, either through increasing local patch densities or by
-emigrating neighboring patches providing ``rescue effects''.
-
-Under Beverton-Holt or Ricker density-dependent recuitment, however,
-there exists no analytical solution for calculating \(MSY\). Therefore,
-we used numerical methods and a one dimensional root finder to
-iteratively search for the population mortality that maximized surplus
-production in the metapopulation. We term this mortality \(F_{MSY}\) and
-can use this mortality value to calculate maximum surplus production
-\(MSY\), the adult densities that produce \(MSY\) (termed \(N_{MSY}\)),
-and the recruits that result from this (termed \(R_{MSY}\)).
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# uniroot numerical search}
-\NormalTok{yieldRoot }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(alpha, beta, Fcur, model) \{}
-\NormalTok{    Ucur }\OtherTok{\textless{}{-}} \DecValTok{1} \SpecialCharTok{{-}} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{Fcur)}
-    \ControlFlowTok{if}\NormalTok{ (model }\SpecialCharTok{==} \StringTok{"Beverton{-}Holt"}\NormalTok{) \{}
-        \CommentTok{\# population model is R \textasciitilde{} (CR * S)/(1+(CR{-}1)/K * S): reparameterized}
-        \CommentTok{\# Beverton{-}Holt}
-\NormalTok{        adults }\OtherTok{\textless{}{-}}\NormalTok{ beta }\SpecialCharTok{*} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{Fcur)}
-\NormalTok{        recruits }\OtherTok{\textless{}{-}}\NormalTok{ (alpha }\SpecialCharTok{*}\NormalTok{ adults)}\SpecialCharTok{/}\NormalTok{(}\DecValTok{1} \SpecialCharTok{+}\NormalTok{ ((alpha }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{)}\SpecialCharTok{/}\NormalTok{beta) }\SpecialCharTok{*}\NormalTok{ adults)}
-\NormalTok{        yield }\OtherTok{\textless{}{-}}\NormalTok{ recruits }\SpecialCharTok{{-}}\NormalTok{ adults}
-\NormalTok{    \}}
-    \ControlFlowTok{if}\NormalTok{ (model }\SpecialCharTok{==} \StringTok{"Ricker"}\NormalTok{) \{}
-        \CommentTok{\# population model is R \textasciitilde{} CR * S * e({-}log(CR)/K * S): reparameterized}
-        \CommentTok{\# Ricker}
-\NormalTok{        adults }\OtherTok{\textless{}{-}}\NormalTok{ beta }\SpecialCharTok{*} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{Fcur)}
-\NormalTok{        recruits }\OtherTok{\textless{}{-}}\NormalTok{ alpha }\SpecialCharTok{*}\NormalTok{ adults }\SpecialCharTok{*} \FunctionTok{exp}\NormalTok{((}\SpecialCharTok{{-}}\FunctionTok{log}\NormalTok{(alpha)}\SpecialCharTok{/}\NormalTok{beta) }\SpecialCharTok{*}\NormalTok{ adults)}
-\NormalTok{        yield }\OtherTok{\textless{}{-}}\NormalTok{ recruits }\SpecialCharTok{{-}}\NormalTok{ adults}
-\NormalTok{    \}}
-    \FunctionTok{return}\NormalTok{(}\FunctionTok{list}\NormalTok{(}\AttributeTok{recruits =}\NormalTok{ recruits, }\AttributeTok{adults =}\NormalTok{ adults, }\AttributeTok{yield =}\NormalTok{ yield))}
-\NormalTok{\}}
-
-\CommentTok{\# Return approximate gradient for integral}
-\NormalTok{fun\_yield }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(Fcur, alpha, beta, delta, model) \{}
-\NormalTok{    y1 }\OtherTok{\textless{}{-}} \FunctionTok{yieldRoot}\NormalTok{(}\AttributeTok{alpha =}\NormalTok{ alpha, }\AttributeTok{beta =}\NormalTok{ beta, }\AttributeTok{Fcur =}\NormalTok{ Fcur }\SpecialCharTok{{-}}\NormalTok{ delta}\SpecialCharTok{/}\DecValTok{2}\NormalTok{, }\AttributeTok{model =}\NormalTok{ model)}\SpecialCharTok{$}\NormalTok{yield}
-\NormalTok{    y2 }\OtherTok{\textless{}{-}} \FunctionTok{yieldRoot}\NormalTok{(}\AttributeTok{alpha =}\NormalTok{ alpha, }\AttributeTok{beta =}\NormalTok{ beta, }\AttributeTok{Fcur =}\NormalTok{ Fcur }\SpecialCharTok{+}\NormalTok{ delta}\SpecialCharTok{/}\DecValTok{2}\NormalTok{, }\AttributeTok{model =}\NormalTok{ model)}\SpecialCharTok{$}\NormalTok{yield}
-\NormalTok{    approx.gradient }\OtherTok{\textless{}{-}}\NormalTok{ (y2 }\SpecialCharTok{{-}}\NormalTok{ y1)}\SpecialCharTok{/}\NormalTok{delta}
-    \FunctionTok{return}\NormalTok{(approx.gradient)}
-\NormalTok{\}}
-
-\CommentTok{\# uniroot search for optimal yield and Fmsy}
-\NormalTok{findMSY }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(alpha, beta, Npatches, model) \{}
-\NormalTok{    F\_msy }\OtherTok{\textless{}{-}} \ConstantTok{NULL}
-    \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{Npatches) \{}
-\NormalTok{        a\_p }\OtherTok{\textless{}{-}}\NormalTok{ alpha[i]}
-\NormalTok{        b\_p }\OtherTok{\textless{}{-}}\NormalTok{ beta[i]}
-\NormalTok{        F\_msy[i] }\OtherTok{\textless{}{-}} \FunctionTok{uniroot}\NormalTok{(fun\_yield, }\AttributeTok{interval =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{), }\AttributeTok{extendInt =} \StringTok{"yes"}\NormalTok{, }\AttributeTok{alpha =}\NormalTok{ a\_p,}
-            \AttributeTok{beta =}\NormalTok{ b\_p, }\AttributeTok{delta =} \FloatTok{1e{-}04}\NormalTok{, }\AttributeTok{model =}\NormalTok{ model)}\SpecialCharTok{$}\NormalTok{root}
-\NormalTok{    \}}
-\NormalTok{    MSY }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\NormalTok{Npatches, }\ControlFlowTok{function}\NormalTok{(x) \{}
-        \FunctionTok{yieldRoot}\NormalTok{(}\AttributeTok{alpha =}\NormalTok{ alpha[x], }\AttributeTok{beta =}\NormalTok{ beta[x], }\AttributeTok{Fcur =}\NormalTok{ F\_msy[[x]][}\DecValTok{1}\NormalTok{], }\AttributeTok{model =}\NormalTok{ model)}
-\NormalTok{    \})}
-    \FunctionTok{return}\NormalTok{(}\FunctionTok{list}\NormalTok{(}\AttributeTok{F\_msy =}\NormalTok{ F\_msy, }\AttributeTok{MSY =}\NormalTok{ MSY))}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
 
 \hypertarget{scenarios}{%
 \subsection{Scenarios}\label{scenarios}}
 
 We tested all combinations of the following eight processes (below) and
-ran \texttt{100} iterations per scenario to estimate the mean for each
-of the above outcomes.
+ran \texttt{100} stochastic iterations per scenario to estimate the mean
+outcome for each of the above recovery metrics:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -812,9 +620,9 @@ disturbance was on the set of patches was more influential than variable
 density dependence, dispersal rates, or network topology. This was
 surprising and not expected in our initial hypotheses. Localized
 disturbances increased the risk of spatial contraction, reduced recovery
-rates and aggregate compensation, and increased the risk of a long-term
-state shift. By altering aggregate compensation, localized disturbance
-reduced the surplus production of the metapopulation. In other words,
+rates and aggregate compensation, and increased the risk of
+non-recoveries By altering aggregate compensation, localized disturbance
+reduced the relative production of the metapopulation. In other words,
 through changes in source-sink dynamics, metapopulations under localized
 disturbance acted less than the sum of their parts -- the more localized
 the impacts, the worse these effects. Uniform disturbances generally
@@ -880,34 +688,113 @@ factors like stochasticity.
 \end{figure}
 \newpage
 
-\hypertarget{surprising-ecological-outcomes}{%
-\subsubsection{Surprising ecological
-outcomes}\label{surprising-ecological-outcomes}}
+\hypertarget{clustering-analyses}{%
+\subsubsection{Clustering analyses}\label{clustering-analyses}}
 
-Metapopulation recovery regimes emerged from a complex interplay of
+We used hierarchical clustering analyses (implementing Ward's criterion)
+of a dissimilarity matrix from our four recovery metrics to evaluate
+whether there was evidence for common recovery regimes among our
+simulation results across all ecological and disturbance scenarios
+(Murtagh \& Legendre 2014). Based on advice laid out in Hennig (2014),
+we determined that the best number of unique clusters in metapopulation
+recoveries should satisfy the following statistical criteria:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  recovery outcomes from within a cluster are closer to one another than
+  to other clusters (i.e., the two Dunn indices are relatively high)
+\item
+  the number of clusters explains much of the point variation within the
+  dataset (i.e., diminishing returns in minimizing the sums-of-squared
+  residuals)
+\item
+  the point observations within clusters are relatively tight (i.e.,
+  both the average silhouette width and the widest within-cluster gap
+  are relatively low)
+\item
+  clusters are relatively unique and there is good separation between
+  the clusters (i.e., the separation index is still high, while
+  considering that low numbers of clusters should always have the
+  highest separation)
+\end{enumerate}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/clustering analysis-1} 
+
+}
+
+\caption{The relationships between number of potential clusters and multiple statistical criteria used to test support for the best number of clusters within the simulated recovery outcomes}\label{fig:clustering analysis}
+\end{figure}
+
+Based on the above criteria, we chose 5 unique clusters as satisfying
+most of the above criteria in the figure above, although there was good
+support for between 3 and 6 unique clusters. The principal components
+analysis indicates that five clusters has substantial explanatory power
+of metapopulation recovery metrics (explained \textasciitilde89\% of the
+point variation).
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/clustering plot-1} 
+
+}
+
+\caption{Bivariate cluster plot of the principal components explaining point variation in metapopulaton recovery metrics acrosss all simulated scenarios grouped into five distinct clusters.}\label{fig:clustering plot}
+\end{figure}
+
+\hypertarget{emergent-recovery-outcomes}{%
+\subsubsection{Emergent recovery
+outcomes}\label{emergent-recovery-outcomes}}
+
+Overall, we used hierarchical clustering analyses to describe five
+common metapopulation recovery outcomes. These outcomes were: (1)
+resilient recovery -- metapopulations recovered to pre-disturbance
+abundances quickly with all patches occupied, (2) slow recovery --
+metapopulation recovery was slow but there were no other changes in
+metrics, (3) hidden collapses -- metapopulations tended to recover,
+metapopulation abundance was high, but many local patches remained
+unoccupied, (4) lost capacity -- recovery rates was very slow, risk of
+non-recovery was high, long-term production was low, and many local
+patches remained unoccupied and (5) critical risk -- metapopulation
+abundances remained in a collapsed state and risk of non-recovery was
+high.
+
+\begin{table}
+
+\caption{\label{tab:clustering table}The mean recovery metrics and metapopulation abundance (N/K) for each of five common metapopulation recovery regimes supported by hierarchical clustering analyses.}
+\centering
+\begin{tabular}[t]{lrrrrr}
+\toprule
+Regime & Recovery rate & \% non-recovery & Occupancy & Relative production & Relative abundance\\
+\midrule
+Resilient & 0.81 & 3 & 0.98 & 0.97 & 0.99\\
+Slow recovery & 0.71 & 3 & 0.76 & 0.87 & 0.99\\
+Hidden collapses & 0.48 & 12 & 0.40 & 0.70 & 0.98\\
+Lost capacity & 0.16 & 78 & 0.58 & 0.78 & 0.65\\
+Critical risk & 0.00 & 100 & 0.10 & 0.54 & 0.08\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+These five spatial recovery regimes emerged from the interplay of
 density-dependent productivity (shown in Figure 6 of the main text),
-network structure (shown here), dispersal, and disturbance regimes.
-Overall, clustering analyses of our model results found evidence for six
-common outcomes: (1) resilient recovery -- metapopulation recovery
-\textless10 years, (2) slow recovery -- metapopulation recovery
-\textgreater10 years and no other surprise, (3) lost capacity --
-long-term maximum surplus production \textless50\% before disturbance,
-(4) hidden collapses -- metapopulation recovered (or was recovering) but
-50\% of patches remain unoccupied, (5) spatial contraction --
-\textgreater25\% of patches remain unoccupied and (6) critical risk --
-metapopulation abundance remains \textless10\% of pre-disturbance.
-Resilient recovery regimes were most common when disturbance was evenly
-applied across the network and local patches were identical. Any
-localized disturbances could create ecological surprises, and the
-frequency of these surprises were often exacerbated when patches were
-diverse. Localized, even disturbances tended to reduce recovery by 50\%
-compared to even disturbances (from 16 years to 24 years on average).
-The riskiest recovery outcomes emerged when disturbance was localized
-and allowed for extirpation. In these scenarios, recovery was slowed by
-\textgreater100\% (from 16 years to \textgreater32 years on average),
-surplus production was often reduced by \textgreater50\%, long-term
-patch occupancy was reduced by \textgreater35\%. Last, note that linear
-networks tended to have higher risks for long-term spatial contractions.
+network structure (shown here), dispersal, stochasticity, and spatial
+disturbance regimes. Resilient recovery regimes were most common when
+disturbance was evenly applied across the network and local patches were
+identical. Any localized disturbances could create ecological surprises,
+and the frequency of these surprises were often exacerbated when patches
+were diverse. Localized, even disturbances tended to reduce recovery by
+50\% compared to even disturbances (from 16 years to 24 years on
+average). The riskiest recovery outcomes emerged when disturbance was
+localized and allowed for extirpation. In these scenarios, recovery was
+slowed by \textgreater100\% (from 16 years to \textgreater32 years on
+average), relative production was often reduced by \textgreater50\%,
+long-term patch occupancy was reduced by \textgreater35\%. Last, note
+that linear networks tended to have higher risks for long-term spatial
+contractions.
 
 \begin{figure}[H]
 
@@ -930,30 +817,49 @@ Anderson, S.C., Moore, J.W., McClure, M.M., Dulvy, N.K. \& Cooper, A.B.
 (2015). {Portfolio conservation of metapopulations under climate
 change.} \emph{Ecological Applications}, 25, 559--572.
 
+\leavevmode\vadjust pre{\hypertarget{ref-Bowlby2020}{}}%
+Bowlby, H.D. \& Gibson, A.J.F. (2020). {Evaluating whether
+metapopulation structure benefits endangered diadromous fishes}.
+\emph{Canadian Journal of Fisheries and Aquatic Sciences}, 77, 388--400.
+
 \leavevmode\vadjust pre{\hypertarget{ref-Csardi2006}{}}%
-Csardi, G. \& Nepusz, T. (2006). \href{https://igraph.org}{{The igraph
-software package for complex network research}}. \emph{InterJournal},
-Complex Sy, 1695.
+Csardi, G. \& Nepusz, T. (2006). {The igraph software package for
+complex network research}. \emph{InterJournal}, Complex Sy, 1695.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Forrest2010}{}}%
 Forrest, R.E., McAllister, M.K., Dorn, M.W., Martell, S.J.D. \& Stanley,
-R.D. (2010). \href{https://doi.org/10.1139/f10-077}{{Hierarchical
-Bayesian estimation of recruitment parameters and reference points for
-Pacific rockfishes (Sebastes spp.) under alternative assumptions about
-the stock--recruit function}}. \emph{Canadian Journal of Fisheries and
-Aquatic Sciences}, 67, 1611--1634.
+R.D. (2010). {Hierarchical Bayesian estimation of recruitment parameters
+and reference points for Pacific rockfishes (Sebastes spp.) under
+alternative assumptions about the stock--recruit function}.
+\emph{Canadian Journal of Fisheries and Aquatic Sciences}, 67,
+1611--1634.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Fullerton2016}{}}%
+Fullerton, A.H., Anzalone, S., Moran, P., Van Doornik, D.M., Copeland,
+T. \& Zabel, R.W. (2016). {Setting spatial conservation priorities
+despite incomplete data for characterizing metapopulations}.
+\emph{Ecological Applications}, 26, 2558--2578.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Hennig2014}{}}%
+Hennig, C. (2014). {How many bee species? A case study in determining
+the number of clusters}. In: \emph{Data analysis, machine learning and
+knowledge discovery} (eds. Spiliopoulou, M., Schmidt-Thieme, L. \&
+Janning, R.). pp. 41--49.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Moore2021}{}}%
-Moore, J.W., Connors, B.M. \& Hodgson, E.E. (2021).
-\href{https://doi.org/10.1111/faf.12567}{{Conservation risks and
-portfolio effects in mixed‐stock fisheries}}. \emph{Fish and Fisheries},
-faf.12567.
+Moore, J.W., Connors, B.M. \& Hodgson, E.E. (2021). {Conservation risks
+and portfolio effects in mixed‐stock fisheries}. \emph{Fish and
+Fisheries}, faf.12567.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Murtagh2014}{}}%
+Murtagh, F. \& Legendre, P. (2014). {Ward's hierarchical agglomerative
+clustering method: which algorithms implement Ward's criterion?}
+\emph{Journal of Classification}, 31, 274--295.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Okamoto2020}{}}%
 Okamoto, D.K., Hessing‐Lewis, M., Samhouri, J.F., Shelton, A.O., Stier,
-A.C., Levin, P.S. \& Salomon, A.K. (2020).
-\href{https://doi.org/10.1002/eap.2051}{{Spatial variation in exploited
-metapopulations obscures risk of collapse}}. \emph{Ecological
+A.C., Levin, P.S. \& Salomon, A.K. (2020). {Spatial variation in
+exploited metapopulations obscures risk of collapse}. \emph{Ecological
 Applications}, 30, e02051.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Walters2004}{}}%
@@ -962,9 +868,12 @@ management}}. Princeton University Press.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Yeakel2014}{}}%
 Yeakel, J.D., Moore, J.W., Guimarães, P.R. \& Aguiar, M.A.M. de. (2014).
-\href{https://doi.org/10.1111/ele.12228}{{Synchronisation and stability
-in river metapopulation networks}}. \emph{Ecology Letters}, 17,
-273--283.
+{Synchronisation and stability in river metapopulation networks}.
+\emph{Ecology Letters}, 17, 273--283.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Zelnik2019}{}}%
+Zelnik, Y.R., Arnoldi, J. \& Loreau, M. (2019). {The three regimes of
+spatial recovery}. \emph{Ecology}, 100, e02586.
 
 \end{CSLReferences}
 

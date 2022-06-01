@@ -200,6 +200,8 @@ metaPop <- function(Npatches=16,
     }
   }
   
+  relative_prod <- MetaPop[,"Spawners"]/MetaPop[,"Spawners_Contiguous"]
+  
   recovered <- half_recovered <- rep(FALSE,Nyears)
   recovered[(Nburnin+1):(Nyears-4)] <- running.mean(MetaPop[(Nburnin+1):Nyears,"Spawners"],5)>=mean(MetaPop[1:Nburnin,"Spawners"])
   
@@ -243,7 +245,7 @@ metaPop <- function(Npatches=16,
   if(spatialPlots)
   {
     network
-    spatialRecoveryPlot(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recovery,Nburnin,Nyears,alpha,metaK,alphaYr,metaKYr,lostCapacity,compensationBias,MSYYr,nodeScalar=35,network=network,networkType=networkType,Npatches=Npatches,NMsy=c(sum(NMSY_p),mnNMSY)) 
+    spatialRecoveryPlot(textSize=1,popDyn,MetaPop,k_p,Nlevels=10,recovery,Nburnin,Nyears,alpha,metaK,alphaYr,metaKYr,lostCapacity,compensationBias,MSYYr,relative_prod,patchOccupancy,nodeScalar=35,network=network,networkType=networkType,Npatches=Npatches,NMsy=c(sum(NMSY_p),mnNMSY)) 
   }
 
   return(list("MetaPop"=MetaPop,"popDyn"=popDyn,"sink"=sink,"source"=source,"pseudoSink"=pseudoSink,"dispersing"=dispersing,"shortTermProd"=shortTermProd,"shortTermComp"=shortTermComp,"shortTermCap"=shortTermCap,"medTermProd"=medTermProd,"medTermComp"=medTermComp,"medTermCap"=medTermCap,"longTermProd"=longTermProd,"longTermComp"=longTermComp,"longTermCap"=longTermCap,"recovery"=recovery,"extinction"=extinction,"shortTermOcc"=shortTermOcc,"medTermOcc"=medTermOcc,"longTermOcc"=longTermOcc,"shortTermMSY"=shortTermMSY,"medTermMSY"=medTermMSY,"longTermMSY"=longTermMSY,"shortTermCV"=shortTermCV,"medTermCV"=medTermCV,"longTermCV"=longTermCV,"shortTermSurp"=shortTermSurp,"medTermSurp"=medTermSurp,"longTermSurp"=longTermSurp,"k_p"=k_p,"network"=network))
