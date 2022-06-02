@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020/W32TeX) (preloaded format=xelatex 2021.3.24)  31 MAY 2022 15:00
+This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020/W32TeX) (preloaded format=xelatex 2021.3.24)  1 JUN 2022 23:26
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1080,19 +1080,24 @@ File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/c
 luster results-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/cl
 uster results-1.pdf>
-[18] [19] (./Managing_for_ecological_surprises_in_metapopulations.aux)
+[18]
+File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/v
+iolin plots of risk of non-recovery-1.pdf Graphic file (type pdf)
+<use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/vi
+olin plots of risk of non-recovery-1.pdf>
+[19] [20] [21] (./Managing_for_ecological_surprises_in_metapopulations.aux)
 Package rerunfilecheck Info: File `Managing_for_ecological_surprises_in_metapop
 ulations.out' has not changed.
 (rerunfilecheck)             Checksum: D2A532185BAFE04B338A71885F4EDB08;2867.
  ) 
 Here is how much of TeX's memory you used:
- 17436 strings out of 478922
- 317626 string characters out of 5864876
- 890400 words of memory out of 5000000
- 37021 multiletter control sequences out of 15000+600000
+ 17444 strings out of 478922
+ 318418 string characters out of 5864876
+ 891854 words of memory out of 5000000
+ 37028 multiletter control sequences out of 15000+600000
  409889 words of font info for 81 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 98i,15n,122p,805b,694s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 98i,15n,122p,1201b,694s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on Managing_for_ecological_surprises_in_metapopulations.pdf (19 
+Output written on Managing_for_ecological_surprises_in_metapopulations.pdf (21 
 pages).

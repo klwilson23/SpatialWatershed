@@ -4,6 +4,9 @@ re_runresults <- readRDS("Simulations/results2022-05-05.rds")
 results[8997:9000,]
 re_runresults[8997:9000,]
 
+results$network <- factor(results$network,levels=unique(results$network),labels=c("linear","dendritic","star","grid"))
+scenarios$network <- factor(scenarios$network,levels=unique(scenarios$network),labels=c("linear","dendritic","star","grid"))
+
 pairs(results[8997:9000,-c(1:8)],re_runresults[8997:9000,-c(1:8)])
 cbind(results[8997:9000,],re_runresults[8997:9000,-c(1:8)])
 library(mvtnorm)
@@ -73,7 +76,7 @@ results$surprise <- factor(ifelse(grepl("Wide collapse",results$outcome),"Critic
                                                 ifelse(grepl("Lost capacity",results$outcome),"Lost capacity",
                                                        ifelse(grepl("Fast",results$outcome) & grepl("Recover",results$outcome),"Resilient","Slow recovery"))))),levels=c("Resilient","Slow recovery","Lost capacity","Hidden collapses","Spatial contraction","Critical risk"))
 results$dispersal_range <- factor(ifelse(results$dispersal>=0.001,"High","Low"),levels=c("High","Low"))
-results$network_lab <- factor(results$network,levels=levels(results$network),labels=c("Linear","Dendritic","Star","Complex"))
+results$network_lab <- factor(results$network,levels=levels(results$network),labels=c("Linear","Dendritic","Star","Grid"))
 results$disturb_lab <- factor(results$disturbance,levels=levels(results$disturbance),labels=c("Uniform","Local, even","Local, uneven"))
 results$density_dep <- factor(results$alpha,levels=levels(results$alpha),labels=c("Identical","Diverse"))
 results$collapsed <- 100*(1-results$recovered)
@@ -124,7 +127,7 @@ p <- ggplot(data=sub_res, aes(x=dispersal_range, y=RecoveryRate, fill=network_la
   #geom_jitter(pch=21,width=0.1)+
   facet_grid(rows=vars(disturb_lab),cols=vars(variance_scen),labeller=label_wrap_gen(width=45,multi_line = TRUE)) +
   scale_fill_brewer(palette="BrBG") +
-  labs(x="Dispersal rate",y="Rate of non-recovery (% of simulations)",fill="Habitat network") +
+  labs(x="Dispersal rate",y=expression('Recovery rate (yr'^-1*')'),fill="Habitat network") +
   theme_minimal() +
   theme(legend.position="top",strip.text.y = element_text(size=6.5),strip.text.x = element_text(size=8,hjust=0),axis.text.x=element_text(size=7),axis.text.y=element_text(size=7),legend.text=element_text(size=6),legend.title=element_text(size=7),axis.title=element_text(size=8),legend.key.size = unit(0.9, "line"),panel.spacing.y = unit(0.75, "lines"))
 p

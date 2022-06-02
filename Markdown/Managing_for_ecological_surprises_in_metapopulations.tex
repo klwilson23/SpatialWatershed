@@ -42,7 +42,7 @@ Smithers, BC\\
 \(^\textup{8}\)Wild Salmon Center, Portland, OR\\
 \(^\textup{9}\)Ecology and Evolutionary Biology, University of
 California Santa Cruz}
-\date{31 May 2022}
+\date{01 June 2022}
 
 \usepackage{amsmath,amssymb}
 \usepackage{lmodern}
@@ -199,9 +199,9 @@ lognormally distributed deviates to introduce stochastic recruitment
 dynamics.
 
 Resource monitoring often occurs at the scale of the whole
-metapopulation by aggregating abundances among local populations to
-(Anderson et al. 2015; Moore et al. 2021), hence we define
-metapopulation adults as:
+metapopulation by sampling aggregate abundances from multiple local
+populations to (Anderson et al. 2015; Moore et al. 2021), hence we
+define metapopulation adults as:
 
 \begin{align}
 {A}_t = \sum_{i=1}^{P} N_{i,t}
@@ -270,7 +270,7 @@ Table S1.
 
 \begin{table}
 
-\caption{\label{tab:distance matrix}Example distance matrix between patches within a grid network to affect dispersal rates.}
+\caption{\label{tab:distance matrix}Example distance matrix between 16 patches within a grid network to affect distance-dependent dispersal rates.}
 \centering
 \begin{tabular}[t]{lrrrrrrrrrrrrrrrr}
 \toprule
@@ -423,7 +423,7 @@ inherently defines the stock-recruitment dynamics of the aggregate
 complex of patches (i.e., metapopulation) as:
 
 \begin{align}
-{\mathop{\mathrm{\mathbb{E}}}(K_t)}=\cfrac{\bar{\alpha}{A}_{t-1}}{1+\cfrac{\bar{\alpha}-1}{\bar{\beta}}{A}_{t-1}}
+{\mathop{\mathrm{\mathbb{E}}}(N_t)}=\cfrac{\bar{\alpha}{A}_{t-1}}{1+\cfrac{\bar{\alpha}-1}{\bar{\beta}}{A}_{t-1}}
 \end{align}
 
 where \(\bar{\alpha}\) was the compensation ratio averaged across the
@@ -469,7 +469,7 @@ temporal and spatial recovery regime of the metapopulation.
   stock-recruitment model to aggregate metapopulation adults (eq. S.10)
   such that:\\
   \begin{align}
-  \Delta_{N_t}=\cfrac{A_t}{\mathop{\mathrm{\mathbb{E}}}(M_t)}
+  \Delta_{N_t}=\cfrac{A_t}{\mathop{\mathrm{\mathbb{E}}}(N_t)}
   \end{align}\\
   A value of 1.0 would indicate that the disturbed metapopulation
   production was equal to a single, contiguous population such that
@@ -531,13 +531,14 @@ outcome for each of the above recovery metrics:
   grid networks. Each network with \(P=16\) and distance between patches
   \(\bar{d}=1\).
 \item
-  Stochastic recruitment deviates from low, medium, high coefficient of
-  variation on lognormal error. Generate stochasticity in time-dynamics
-  via random recruitement deviates away from expected.
+  Stochastic recruitment deviates with low, medium, and high standard
+  deviation in lognormal error. Used to generate stochastic population
+  dynamics via random deviates from the expected recruitment
+  relationship in eq. S.2.
 \item
-  Temporal correlation in recruitment deviates from low, medium, high
-  correlation (i.e., good year at time \emph{t} begets good year at time
-  \emph{t+1}).
+  Temporal correlation in recruitment deviates from low, medium, and
+  high correlation (i.e., good year at time \emph{t} begets good year at
+  time \emph{t+1}).
 \item
   Spatial correlation in recruitment deviates among patches from low,
   medium, to high correlation (i.e., neighboring patches go up or down
@@ -617,19 +618,22 @@ The strongest lever influencing recovery in our simulated
 metapopulations was, by far, the characteristics of the disturbance
 regime. Specifically, the degree to how locally concentrated the
 disturbance was on the set of patches was more influential than variable
-density dependence, dispersal rates, or network topology. This was
-surprising and not expected in our initial hypotheses. Localized
+density dependence, dispersal rates, or network topology. Localized
 disturbances increased the risk of spatial contraction, reduced recovery
 rates and aggregate compensation, and increased the risk of
-non-recoveries By altering aggregate compensation, localized disturbance
-reduced the relative production of the metapopulation. In other words,
-through changes in source-sink dynamics, metapopulations under localized
-disturbance acted less than the sum of their parts -- the more localized
-the impacts, the worse these effects. Uniform disturbances generally
-left the metapopulation dynamics unaffected with few ecological
-surprises. These above spatial and temporal recovery processes also
+non-recoveries. By altering aggregate compensation, localized
+disturbance reduced the relative production of the metapopulation. In
+other words, through changes in source-sink dynamics, metapopulations
+under localized disturbance acted less than the sum of their parts --
+the more localized the impacts, the worse these effects. Uniform
+disturbances generally left the metapopulation dynamics unaffected with
+few changes to recovery metrics outside of occasionally slower
+recoveries. These above spatial and temporal recovery processes also
 appeared tied to one another such that changes to any of them had
-feedbacks with other recovery metrics.
+feedbacks with other recovery metrics. Perhaps intuitively, for example,
+patch occupancy was highly correlated to the relative production of the
+metapopulation, such that the more patches occupied, the more that
+metapopulation dynamics resembled a contiguous population.
 
 \begin{figure}[H]
 
@@ -637,7 +641,7 @@ feedbacks with other recovery metrics.
 
 }
 
-\caption{Spatial and temporal recovery patterns along disturbance regimes across all scenarios.}\label{fig:disturbance regime}
+\caption{The role of spatial disturbance regimes on metapopulation recoveries and covariation among four recovery metrics: (a,b,c) recovery rate – the annual rate of metapopulation recovery; (a,d) relative patch occupancy – the mean proportion of patches occupied 25 years after disturbance; (b,d), relative production – the ratio between the summed abundances across all patches to the expected production of an equivalent single population 25 years after disturbance; and (c) rate of non-recovery – the percent of 100 stochastic simulations where the metapopulation failed to recover. Each point represents a single simulation for a metapopulation under a unique combination of local productivity, dispersal, spatial network, stochasticity, and disturbance (9,504 total simulations). Shaded regions describe the range in recovery metrics for all simulated metapopulations and are colored by disturbance regime. Square points represent the mean recovery metrics from all simulations within each disturbance regime.}\label{fig:disturbance regime}
 \end{figure}
 \newpage
 
@@ -648,9 +652,8 @@ dispersal}\label{role-of-network-structure-dispersal}}
 We now show some general patterns in how variable patch demographic
 rates, network structure, dispersal, disturbance, recruitment
 stochasticity, and spatio-temporal correlations variation affects
-metapopulation \emph{recovery rates}, \emph{maximum sustainable yield}
-(analagous to the maximum rate of loss the system can sustain), and
-\emph{collapse rate} (i.e, the number of simulations where the
+metapopulation \emph{recovery rates}, \emph{relative production},
+\emph{non-recovery rate} (i.e, the number of simulations where the
 metapopulation fails to recover), and \emph{patch occupancy} (i.e.,
 number of patches with local abundance \textless10\% of
 pre-disturbance).
@@ -754,13 +757,13 @@ common metapopulation recovery outcomes. These outcomes were: (1)
 resilient recovery -- metapopulations recovered to pre-disturbance
 abundances quickly with all patches occupied, (2) slow recovery --
 metapopulation recovery was slow but there were no other changes in
-metrics, (3) hidden collapses -- metapopulations tended to recover,
-metapopulation abundance was high, but many local patches remained
-unoccupied, (4) lost capacity -- recovery rates was very slow, risk of
-non-recovery was high, long-term production was low, and many local
-patches remained unoccupied and (5) critical risk -- metapopulation
-abundances remained in a collapsed state and risk of non-recovery was
-high.
+metrics, (3) hidden collapses -- metapopulations tended to recover and
+aggregate abundances were high, but many local patches remained
+unoccupied and recovery was slowed, (4) lost capacity -- recovery rates
+were very slow, the risk of non-recovery was high, long-term production
+was low, and many local patches remained unoccupied and (5) critical
+risk -- where metapopulations failed to recover, abundances remained
+low, and the risk of non-recovery was high.
 
 \begin{table}
 
@@ -780,14 +783,15 @@ Critical risk & 0.00 & 100 & 0.10 & 0.54 & 0.08\\
 \end{table}
 
 These five spatial recovery regimes emerged from the interplay of
-density-dependent productivity (shown in Figure 6 of the main text),
-network structure (shown here), dispersal, stochasticity, and spatial
-disturbance regimes. Resilient recovery regimes were most common when
+density-dependent productivity, network structure (shown here),
+dispersal, stochasticity, and spatial disturbance regimes (Figures S12,
+S15, and S16). Resilient recovery regimes were most common when
 disturbance was evenly applied across the network and local patches were
 identical. Any localized disturbances could create ecological surprises,
-and the frequency of these surprises were often exacerbated when patches
-were diverse. Localized, even disturbances tended to reduce recovery by
-50\% compared to even disturbances (from 16 years to 24 years on
+and the frequency of these recovery regimes were often exacerbated when
+patch demographic rates, like productivity and carrying capacity, varied
+from one another. Localized, even disturbances tended to reduce recovery
+by 50\% compared to even disturbances (from 16 years to 24 years on
 average). The riskiest recovery outcomes emerged when disturbance was
 localized and allowed for extirpation. In these scenarios, recovery was
 slowed by \textgreater100\% (from 16 years to \textgreater32 years on
@@ -802,7 +806,16 @@ contractions.
 
 }
 
-\caption{Interplay between network structure, disturbance, and dispersal can lead to suprising recovery outcomes.}\label{fig:cluster results}
+\caption{Frequency of emergent metapopulation recovery regimes can depend on a complex interplay between network structure, dispersal, and spatial disturbances. Ribbon colors denote a group of simulations that led to one of five common recovery outcomes. Frequency of regimes denoted by width of ribbons}\label{fig:cluster results}
+\end{figure}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/violin plots of risk of non-recovery-1} 
+
+}
+
+\caption{Violin plots showing distribution of the risk of non-recovery for metapopulations along gradients of network configuration, dispersal categories (low=0.001; high>0.001), stochasticity (low=0.001; high=0.1, spatial-temporal correlations (low~0; high=0.6), and spatial distribution of disturbance.}\label{fig:violin plots of risk of non-recovery}
 \end{figure}
 
 \hypertarget{references}{%
