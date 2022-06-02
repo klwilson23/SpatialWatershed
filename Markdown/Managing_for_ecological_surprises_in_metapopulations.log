@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020/W32TeX) (preloaded format=xelatex 2021.3.24)  1 JUN 2022 23:26
+This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020/W32TeX) (preloaded format=xelatex 2021.3.24)  2 JUN 2022 12:35
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -419,6 +419,73 @@ Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 \Gm@layoutvoffset=\dimen162
 \Gm@dimlist=\toks21
 )
+(c:/Users/kylel/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/tools/longtable.st
+y
+Package: longtable 2020/01/07 v4.13 Multi-page Table package (DPC)
+\LTleft=\skip53
+\LTright=\skip54
+\LTpre=\skip55
+\LTpost=\skip56
+\LTchunksize=\count298
+\LTcapwidth=\dimen163
+\LT@head=\box51
+\LT@firsthead=\box52
+\LT@foot=\box53
+\LT@lastfoot=\box54
+\LT@cols=\count299
+\LT@rows=\count300
+\c@LT@tables=\count301
+\c@LT@chunks=\count302
+\LT@p@ftn=\toks22
+)
+(c:/Users/kylel/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/booktabs/booktabs.
+sty
+Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
+\heavyrulewidth=\dimen164
+\lightrulewidth=\dimen165
+\cmidrulewidth=\dimen166
+\belowrulesep=\dimen167
+\belowbottomsep=\dimen168
+\aboverulesep=\dimen169
+\abovetopsep=\dimen170
+\cmidrulesep=\dimen171
+\cmidrulekern=\dimen172
+\defaultaddspace=\dimen173
+\@cmidla=\count303
+\@cmidlb=\count304
+\@aboverulesep=\dimen174
+\@belowrulesep=\dimen175
+\@thisruleclass=\count305
+\@lastruleclass=\count306
+\@thisrulewidth=\dimen176
+) (c:/Users/kylel/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/tools/array.sty
+Package: array 2020/10/01 v2.5c Tabular extension package (FMi)
+\col@sep=\dimen177
+\ar@mcellbox=\box55
+\extrarowheight=\dimen178
+\NC@list=\toks23
+\extratabsurround=\skip57
+\backup@length=\skip58
+\ar@cellbox=\box56
+) (c:/Users/kylel/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/tools/calc.sty
+Package: calc 2017/05/25 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count307
+\calc@Bcount=\count308
+\calc@Adimen=\dimen179
+\calc@Bdimen=\dimen180
+\calc@Askip=\skip59
+\calc@Bskip=\skip60
+LaTeX Info: Redefining \setlength on input line 80.
+LaTeX Info: Redefining \addtolength on input line 81.
+\calc@Ccount=\count309
+\calc@Cskip=\skip61
+)
+(c:/Users/kylel/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/mdwtools/footnote.
+sty
+Package: footnote 1997/01/28 1.13 Save footnotes around boxes
+\fn@notes=\box57
+\fn@width=\dimen181
+)
 (c:/Users/kylel/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics/graphicx.
 sty
 Package: graphicx 2020/09/09 v1.2b Enhanced LaTeX Graphics (DPC,SPQR)
@@ -435,36 +502,24 @@ File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
 Package graphics Info: Driver file: xetex.def on input line 105.
 )
-\Gin@req@height=\dimen163
-\Gin@req@width=\dimen164
+\Gin@req@height=\dimen182
+\Gin@req@width=\dimen183
 )
-\cslhangindent=\skip53
-\csllabelwidth=\skip54
-\cslentryspacingunit=\skip55
-(c:/Users/kylel/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/tools/calc.sty
-Package: calc 2017/05/25 v4.3 Infix arithmetic (KKT,FJ)
-\calc@Acount=\count298
-\calc@Bcount=\count299
-\calc@Adimen=\dimen165
-\calc@Bdimen=\dimen166
-\calc@Askip=\skip56
-\calc@Bskip=\skip57
-LaTeX Info: Redefining \setlength on input line 80.
-LaTeX Info: Redefining \addtolength on input line 81.
-\calc@Ccount=\count300
-\calc@Cskip=\skip58
-)
+\cslhangindent=\skip62
+\csllabelwidth=\skip63
+\cslentryspacingunit=\skip64
+
 (c:/Users/kylel/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/setspace/setspace.
 sty
 Package: setspace 2011/12/19 v6.7a set line spacing
 )
 (c:/Users/kylel/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/wrapfig/wrapfig.st
 y
-\wrapoverhang=\dimen167
-\WF@size=\dimen168
-\c@WF@wrappedlines=\count301
-\WF@box=\box51
-\WF@everypar=\toks22
+\wrapoverhang=\dimen184
+\WF@size=\dimen185
+\c@WF@wrappedlines=\count310
+\WF@box=\box58
+\WF@everypar=\toks24
 Package: wrapfig 2003/01/31  v 3.6
 ) (c:/Users/kylel/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lipsum/lipsum.st
 y
@@ -475,157 +530,126 @@ tex
 File: lipsum.ltd.tex 2021-03-03 v2.3 The Lorem ipsum dummy text
 )) (c:/Users/kylel/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/float/float.sty
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count302
-\float@exts=\toks23
-\float@box=\box52
-\@float@everytoks=\toks24
-\@floatcapt=\box53
+\c@float@type=\count311
+\float@exts=\toks25
+\float@box=\box59
+\@float@everytoks=\toks26
+\@floatcapt=\box60
 ) (c:/Users/kylel/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lineno/lineno.st
 y
 Package: lineno 2005/11/02 line numbers on paragraphs v4.41
 Invalid UTF-8 byte or sequence at line 296 replaced by U+FFFD.
-\linenopenalty=\count303
-\output=\toks25
-\linenoprevgraf=\count304
-\linenumbersep=\dimen169
-\linenumberwidth=\dimen170
-\c@linenumber=\count305
-\c@pagewiselinenumber=\count306
-\c@LN@truepage=\count307
-\c@internallinenumber=\count308
-\c@internallinenumbers=\count309
-\quotelinenumbersep=\dimen171
-\bframerule=\dimen172
-\bframesep=\dimen173
-\bframebox=\box54
+\linenopenalty=\count312
+\output=\toks27
+\linenoprevgraf=\count313
+\linenumbersep=\dimen186
+\linenumberwidth=\dimen187
+\c@linenumber=\count314
+\c@pagewiselinenumber=\count315
+\c@LN@truepage=\count316
+\c@internallinenumber=\count317
+\c@internallinenumbers=\count318
+\quotelinenumbersep=\dimen188
+\bframerule=\dimen189
+\bframesep=\dimen190
+\bframebox=\box61
 LaTeX Info: Redefining \\ on input line 3056.
 )
 (c:/Users/kylel/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/fancyhdr/fancyhdr.
 sty
 Package: fancyhdr 2021/01/28 v4.0.1 Extensive control of page headers and foote
 rs
-\f@nch@headwidth=\skip59
-\f@nch@O@elh=\skip60
-\f@nch@O@erh=\skip61
-\f@nch@O@olh=\skip62
-\f@nch@O@orh=\skip63
-\f@nch@O@elf=\skip64
-\f@nch@O@erf=\skip65
-\f@nch@O@olf=\skip66
-\f@nch@O@orf=\skip67
+\f@nch@headwidth=\skip65
+\f@nch@O@elh=\skip66
+\f@nch@O@erh=\skip67
+\f@nch@O@olh=\skip68
+\f@nch@O@orh=\skip69
+\f@nch@O@elf=\skip70
+\f@nch@O@erf=\skip71
+\f@nch@O@olf=\skip72
+\f@nch@O@orf=\skip73
 )
 (c:/Users/kylel/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/tocloft/tocloft.st
 y
 Package: tocloft 2017/08/31 v2.3i parameterised ToC, etc., typesetting
 Package tocloft Info: The document has section divisions on input line 51.
-\cftparskip=\skip68
-\cftbeforetoctitleskip=\skip69
-\cftaftertoctitleskip=\skip70
-\cftbeforepartskip=\skip71
-\cftpartnumwidth=\skip72
-\cftpartindent=\skip73
-\cftbeforesecskip=\skip74
-\cftsecindent=\skip75
-\cftsecnumwidth=\skip76
-\cftbeforesubsecskip=\skip77
-\cftsubsecindent=\skip78
-\cftsubsecnumwidth=\skip79
-\cftbeforesubsubsecskip=\skip80
-\cftsubsubsecindent=\skip81
-\cftsubsubsecnumwidth=\skip82
-\cftbeforeparaskip=\skip83
-\cftparaindent=\skip84
-\cftparanumwidth=\skip85
-\cftbeforesubparaskip=\skip86
-\cftsubparaindent=\skip87
-\cftsubparanumwidth=\skip88
-\cftbeforeloftitleskip=\skip89
-\cftafterloftitleskip=\skip90
-\cftbeforefigskip=\skip91
-\cftfigindent=\skip92
-\cftfignumwidth=\skip93
-\c@lofdepth=\count310
-\c@lotdepth=\count311
-\cftbeforelottitleskip=\skip94
-\cftafterlottitleskip=\skip95
-\cftbeforetabskip=\skip96
-\cfttabindent=\skip97
-\cfttabnumwidth=\skip98
-)
-(c:/Users/kylel/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/booktabs/booktabs.
-sty
-Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
-\heavyrulewidth=\dimen174
-\lightrulewidth=\dimen175
-\cmidrulewidth=\dimen176
-\belowrulesep=\dimen177
-\belowbottomsep=\dimen178
-\aboverulesep=\dimen179
-\abovetopsep=\dimen180
-\cmidrulesep=\dimen181
-\cmidrulekern=\dimen182
-\defaultaddspace=\dimen183
-\@cmidla=\count312
-\@cmidlb=\count313
-\@aboverulesep=\dimen184
-\@belowrulesep=\dimen185
-\@thisruleclass=\count314
-\@lastruleclass=\count315
-\@thisrulewidth=\dimen186
+\cftparskip=\skip74
+\cftbeforetoctitleskip=\skip75
+\cftaftertoctitleskip=\skip76
+\cftbeforepartskip=\skip77
+\cftpartnumwidth=\skip78
+\cftpartindent=\skip79
+\cftbeforesecskip=\skip80
+\cftsecindent=\skip81
+\cftsecnumwidth=\skip82
+\cftbeforesubsecskip=\skip83
+\cftsubsecindent=\skip84
+\cftsubsecnumwidth=\skip85
+\cftbeforesubsubsecskip=\skip86
+\cftsubsubsecindent=\skip87
+\cftsubsubsecnumwidth=\skip88
+\cftbeforeparaskip=\skip89
+\cftparaindent=\skip90
+\cftparanumwidth=\skip91
+\cftbeforesubparaskip=\skip92
+\cftsubparaindent=\skip93
+\cftsubparanumwidth=\skip94
+\cftbeforeloftitleskip=\skip95
+\cftafterloftitleskip=\skip96
+\cftbeforefigskip=\skip97
+\cftfigindent=\skip98
+\cftfignumwidth=\skip99
+\c@lofdepth=\count319
+\c@lotdepth=\count320
+\cftbeforelottitleskip=\skip100
+\cftafterlottitleskip=\skip101
+\cftbeforetabskip=\skip102
+\cfttabindent=\skip103
+\cfttabnumwidth=\skip104
 )
 (c:/Users/kylel/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/makecell/makecell.
 sty
 Package: makecell 2009/08/03 V0.1e Managing of Tab Column Heads and Cells
-(c:/Users/kylel/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/tools/array.sty
-Package: array 2020/10/01 v2.5c Tabular extension package (FMi)
-\col@sep=\dimen187
-\ar@mcellbox=\box55
-\extrarowheight=\dimen188
-\NC@list=\toks26
-\extratabsurround=\skip99
-\backup@length=\skip100
-\ar@cellbox=\box56
-)
-\rotheadsize=\dimen189
-\c@nlinenum=\count316
-\TeXr@lab=\toks27
+\rotheadsize=\dimen191
+\c@nlinenum=\count321
+\TeXr@lab=\toks28
 ) (./Managing_for_ecological_surprises_in_metapopulations.aux)
 \openout1 = `Managing_for_ecological_surprises_in_metapopulations.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 146.
-LaTeX Font Info:    ... okay on input line 146.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 146.
-LaTeX Font Info:    ... okay on input line 146.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 146.
-LaTeX Font Info:    ... okay on input line 146.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 146.
-LaTeX Font Info:    ... okay on input line 146.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 146.
-LaTeX Font Info:    ... okay on input line 146.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 146.
-LaTeX Font Info:    ... okay on input line 146.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 146.
-LaTeX Font Info:    ... okay on input line 146.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 146.
-LaTeX Font Info:    ... okay on input line 146.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 146.
-LaTeX Font Info:    ... okay on input line 146.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 146.
-LaTeX Font Info:    ... okay on input line 146.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 156.
+LaTeX Font Info:    ... okay on input line 156.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 156.
+LaTeX Font Info:    ... okay on input line 156.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 156.
+LaTeX Font Info:    ... okay on input line 156.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 156.
+LaTeX Font Info:    ... okay on input line 156.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 156.
+LaTeX Font Info:    ... okay on input line 156.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 156.
+LaTeX Font Info:    ... okay on input line 156.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 156.
+LaTeX Font Info:    ... okay on input line 156.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 156.
+LaTeX Font Info:    ... okay on input line 156.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 156.
+LaTeX Font Info:    ... okay on input line 156.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 156.
+LaTeX Font Info:    ... okay on input line 156.
 LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `normal'
-(Font)                  OT1/lmr/m/n --> TU/lmr/m/n on input line 146.
+(Font)                  OT1/lmr/m/n --> TU/lmr/m/n on input line 156.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
-(Font)                  OT1/lmr/m/it --> TU/lmr/m/it on input line 146.
+(Font)                  OT1/lmr/m/it --> TU/lmr/m/it on input line 156.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
-(Font)                  OT1/lmr/bx/n --> TU/lmr/bx/n on input line 146.
+(Font)                  OT1/lmr/bx/n --> TU/lmr/bx/n on input line 156.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
-(Font)                  OT1/lmss/m/n --> TU/lmss/m/n on input line 146.
+(Font)                  OT1/lmss/m/n --> TU/lmss/m/n on input line 156.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  OT1/lmss/bx/n --> TU/lmss/bx/n on input line 146.
+(Font)                  OT1/lmss/bx/n --> TU/lmss/bx/n on input line 156.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
-(Font)                  OT1/lmtt/m/n --> TU/lmtt/m/n on input line 146.
+(Font)                  OT1/lmtt/m/n --> TU/lmtt/m/n on input line 156.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  OT1/lmtt/m/n --> TU/lmtt/bx/n on input line 146.
+(Font)                  OT1/lmtt/m/n --> TU/lmtt/bx/n on input line 156.
 
 Package fontspec Info: latinmodern-math scale = 0.9999964596882403.
 
@@ -654,7 +678,7 @@ pt=math;language=dflt;"
 (fontspec)             - 'bold small caps'  (b/sc) with NFSS spec.: 
 
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(0)/m/n' will be
-(Font)              scaled to size 10.0pt on input line 146.
+(Font)              scaled to size 10.0pt on input line 156.
 
 Package fontspec Info: latinmodern-math scale = 0.9999964596882403.
 
@@ -693,18 +717,18 @@ pt=math;language=dflt;"
 (fontspec)             - 'bold small caps'  (b/sc) with NFSS spec.: 
 
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 10.0pt on input line 146.
+(Font)              scaled to size 10.0pt on input line 156.
 LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `normal' on input line 146.
+(Font)              `operators' in the math version `normal' on input line 156.
 
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
 (Font)                  OT1/lmr/m/n --> TU/latinmodern-math.otf(1)/m/n on input
- line 146.
+ line 156.
 LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `bold' on input line 146.
+(Font)              `operators' in the math version `bold' on input line 156.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
 (Font)                  OT1/lmr/bx/n --> TU/latinmodern-math.otf(1)/b/n on inpu
-t line 146.
+t line 156.
 
 Package fontspec Info: latinmodern-math scale = 0.9999964596882403.
 
@@ -791,15 +815,15 @@ t=math;language=dflt;"
 (fontspec)             \fontdimen 21\font =0pt\relax 
 
 LaTeX Font Info:    Encoding `OMS' has changed to `TU' for symbol font
-(Font)              `symbols' in the math version `normal' on input line 146.
+(Font)              `symbols' in the math version `normal' on input line 156.
 LaTeX Font Info:    Overwriting symbol font `symbols' in version `normal'
 (Font)                  OMS/lmsy/m/n --> TU/latinmodern-math.otf(2)/m/n on inpu
-t line 146.
+t line 156.
 LaTeX Font Info:    Encoding `OMS' has changed to `TU' for symbol font
-(Font)              `symbols' in the math version `bold' on input line 146.
+(Font)              `symbols' in the math version `bold' on input line 156.
 LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
 (Font)                  OMS/lmsy/b/n --> TU/latinmodern-math.otf(2)/b/n on inpu
-t line 146.
+t line 156.
 
 Package fontspec Info: latinmodern-math scale = 0.9999964596882403.
 
@@ -869,17 +893,17 @@ pt=math;language=dflt;"
 
 LaTeX Font Info:    Encoding `OMX' has changed to `TU' for symbol font
 (Font)              `largesymbols' in the math version `normal' on input line 1
-46.
+56.
 LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
 (Font)                  OMX/lmex/m/n --> TU/latinmodern-math.otf(3)/m/n on inpu
-t line 146.
+t line 156.
 LaTeX Font Info:    Encoding `OMX' has changed to `TU' for symbol font
-(Font)              `largesymbols' in the math version `bold' on input line 146
+(Font)              `largesymbols' in the math version `bold' on input line 156
 .
 LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
 (Font)                  OMX/lmex/m/n --> TU/latinmodern-math.otf(3)/b/n on inpu
-t line 146.
-Package hyperref Info: Link coloring OFF on input line 146.
+t line 156.
+Package hyperref Info: Link coloring OFF on input line 156.
 
 (c:/Users/kylel/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/hyperref/nameref.s
 ty
@@ -893,11 +917,11 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 ettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count317
+\c@section@level=\count322
 )
-LaTeX Info: Redefining \ref on input line 146.
-LaTeX Info: Redefining \pageref on input line 146.
-LaTeX Info: Redefining \nameref on input line 146.
+LaTeX Info: Redefining \ref on input line 156.
+LaTeX Info: Redefining \pageref on input line 156.
+LaTeX Info: Redefining \nameref on input line 156.
 (./Managing_for_ecological_surprises_in_metapopulations.out) (./Managing_for_ec
 ological_surprises_in_metapopulations.out)
 \@outlinefile=\write3
@@ -938,48 +962,48 @@ ological_surprises_in_metapopulations.out)
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 12.0pt on input line 148.
+(Font)              scaled to size 12.0pt on input line 158.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 8.0pt on input line 148.
+(Font)              scaled to size 8.0pt on input line 158.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 6.0pt on input line 148.
+(Font)              scaled to size 6.0pt on input line 158.
 LaTeX Font Info:    Trying to load font information for OML+lmm on input line 1
-48.
+58.
 (c:/Users/kylel/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 12.0011pt on input line 148.
+(Font)              scaled to size 12.0011pt on input line 158.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 8.00073pt on input line 148.
+(Font)              scaled to size 8.00073pt on input line 158.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 6.00055pt on input line 148.
+(Font)              scaled to size 6.00055pt on input line 158.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 11.99872pt on input line 148.
+(Font)              scaled to size 11.99872pt on input line 158.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 7.99915pt on input line 148.
+(Font)              scaled to size 7.99915pt on input line 158.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 5.99936pt on input line 148.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 148
+(Font)              scaled to size 5.99936pt on input line 158.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 158
 .
 (c:/Users/kylel/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 148
+LaTeX Font Info:    Trying to load font information for U+msb on input line 158
 .
 (c:/Users/kylel/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-Overfull \hbox (8.72607pt too wide) in paragraph at lines 148--148
+Overfull \hbox (8.72607pt too wide) in paragraph at lines 158--158
  [][] 
  []
 
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 5.0pt on input line 148.
+(Font)              scaled to size 5.0pt on input line 158.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 5.00046pt on input line 148.
+(Font)              scaled to size 5.00046pt on input line 158.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 4.99947pt on input line 148.
+(Font)              scaled to size 4.99947pt on input line 158.
 (./Managing_for_ecological_surprises_in_metapopulations.toc
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
 (Font)              scaled to size 7.0pt on input line 1.
@@ -1000,11 +1024,11 @@ LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
 ]
 
 Package fancyhdr Warning: \fancyhead's `E' option without twoside option is use
-less on input line 157.
+less on input line 167.
 
 
 Package fancyhdr Warning: \fancyhead's `E' option without twoside option is use
-less on input line 158.
+less on input line 168.
 
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/r
 ecruit curves-1.pdf Graphic file (type pdf)
@@ -1058,15 +1082,25 @@ isturbance regime-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/di
 sturbance regime-1.pdf>
 [14]
-File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/r
-ecovery and dispersal and spatial network-1.pdf Graphic file (type pdf)
-<use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/re
-covery and dispersal and spatial network-1.pdf>
+File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/v
+iolin plots of risk of non-recovery-1.pdf Graphic file (type pdf)
+<use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/vi
+olin plots of risk of non-recovery-1.pdf>
+File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/v
+iolin plots of risk of patch occupancy-1.pdf Graphic file (type pdf)
+<use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/vi
+olin plots of risk of patch occupancy-1.pdf>
+[15]
+File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/v
+iolin plots of risk of relative production-1.pdf Graphic file (type pdf)
+<use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/vi
+olin plots of risk of relative production-1.pdf>
+[16]
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/r
 ecovery with patch variation-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/re
 covery with patch variation-1.pdf>
-[15] [16]
+[17] [18]
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/c
 lustering analysis-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/cl
@@ -1075,29 +1109,94 @@ File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/c
 lustering plot-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/cl
 ustering plot-1.pdf>
-[17]
+[19]
+Overfull \hbox (2.10527pt too wide) in paragraph at lines 820--821
+[]\TU/lmr/m/n/10 Disturbance  
+ []
+
+
+Overfull \hbox (2.93803pt too wide) in paragraph at lines 822--823
+[]\TU/lmr/m/n/10 Network  
+ []
+
+
+Overfull \hbox (14.30803pt too wide) in paragraph at lines 828--829
+ []\TU/lmr/m/n/10 Occupancy
+ []
+
+
+Overfull \hbox (2.10527pt too wide) in paragraph at lines 840--841
+[]\TU/lmr/m/n/10 Disturbance  
+ []
+
+
+Overfull \hbox (2.93803pt too wide) in paragraph at lines 842--843
+[]\TU/lmr/m/n/10 Network  
+ []
+
+
+Overfull \hbox (14.30803pt too wide) in paragraph at lines 848--849
+ []\TU/lmr/m/n/10 Occupancy
+ []
+
+
+Overfull \hbox (7.25803pt too wide) in paragraph at lines 868--868
+[]|\TU/lmr/m/n/10 Dendritic|  
+ []
+
+
+Overfull \hbox (7.25803pt too wide) in paragraph at lines 869--869
+[]|\TU/lmr/m/n/10 Dendritic|  
+ []
+
+
+Overfull \hbox (7.25803pt too wide) in paragraph at lines 870--870
+[]|\TU/lmr/m/n/10 Dendritic|  
+ []
+
+
+Overfull \hbox (7.25803pt too wide) in paragraph at lines 872--872
+[]|\TU/lmr/m/n/10 Dendritic|  
+ []
+
+
+Overfull \hbox (7.25803pt too wide) in paragraph at lines 874--874
+[]|\TU/lmr/m/n/10 Dendritic|  
+ []
+
+
+Overfull \hbox (7.25803pt too wide) in paragraph at lines 876--876
+[]|\TU/lmr/m/n/10 Dendritic|  
+ []
+
+
+Overfull \hbox (7.25803pt too wide) in paragraph at lines 878--878
+[]|\TU/lmr/m/n/10 Dendritic|  
+ []
+
+
+Overfull \hbox (7.25803pt too wide) in paragraph at lines 880--880
+[]|\TU/lmr/m/n/10 Dendritic|  
+ []
+
+[20]
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/c
 luster results-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/cl
 uster results-1.pdf>
-[18]
-File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/v
-iolin plots of risk of non-recovery-1.pdf Graphic file (type pdf)
-<use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/vi
-olin plots of risk of non-recovery-1.pdf>
-[19] [20] [21] (./Managing_for_ecological_surprises_in_metapopulations.aux)
+[21] [22] (./Managing_for_ecological_surprises_in_metapopulations.aux)
 Package rerunfilecheck Info: File `Managing_for_ecological_surprises_in_metapop
 ulations.out' has not changed.
 (rerunfilecheck)             Checksum: D2A532185BAFE04B338A71885F4EDB08;2867.
  ) 
 Here is how much of TeX's memory you used:
- 17444 strings out of 478922
- 318418 string characters out of 5864876
- 891854 words of memory out of 5000000
- 37028 multiletter control sequences out of 15000+600000
+ 17581 strings out of 478922
+ 321058 string characters out of 5864876
+ 911829 words of memory out of 5000000
+ 37157 multiletter control sequences out of 15000+600000
  409889 words of font info for 81 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  98i,15n,122p,1201b,694s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on Managing_for_ecological_surprises_in_metapopulations.pdf (21 
+Output written on Managing_for_ecological_surprises_in_metapopulations.pdf (22 
 pages).

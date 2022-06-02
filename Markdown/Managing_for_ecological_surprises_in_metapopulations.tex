@@ -42,7 +42,7 @@ Smithers, BC\\
 \(^\textup{8}\)Wild Salmon Center, Portland, OR\\
 \(^\textup{9}\)Ecology and Evolutionary Biology, University of
 California Santa Cruz}
-\date{01 June 2022}
+\date{02 June 2022}
 
 \usepackage{amsmath,amssymb}
 \usepackage{lmodern}
@@ -81,6 +81,16 @@ California Santa Cruz}
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
 \usepackage[margin=0.75in]{geometry}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
@@ -652,19 +662,44 @@ dispersal}\label{role-of-network-structure-dispersal}}
 We now show some general patterns in how variable patch demographic
 rates, network structure, dispersal, disturbance, recruitment
 stochasticity, and spatio-temporal correlations variation affects
-metapopulation \emph{recovery rates}, \emph{relative production},
-\emph{non-recovery rate} (i.e, the number of simulations where the
-metapopulation fails to recover), and \emph{patch occupancy} (i.e.,
-number of patches with local abundance \textless10\% of
-pre-disturbance).
+metapopulation \emph{recovery rates} (shown in Figures 4 and 5 of the
+main text), \emph{non-recovery rate} (i.e, the number of simulations
+where the metapopulation fails to recover), \emph{patch occupancy}
+(i.e., number of patches with local abundance \textless10\% of
+pre-disturbance), and \emph{relative production}.
 
 \begin{figure}[H]
 
-{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/recovery and dispersal and spatial network-1} 
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/violin plots of risk of non-recovery-1} 
 
 }
 
-\caption{Metapopulation recovery rates along gradients of network configuration, dispersal rates, and spatial distribution of disturbance. The shaded region describes the interquartile range across all scenarios.}\label{fig:recovery and dispersal and spatial network}
+\caption{Violin plots showing distribution of the risk of non-recovery for metapopulations along gradients of network configuration, dispersal categories (low=0.001; high>0.001), stochasticity (low=0.001; high=0.1, spatial-temporal correlations (low~0; high=0.6), and spatial distribution of disturbance.}\label{fig:violin plots of risk of non-recovery}
+\end{figure}
+
+Next, we show violin plots demonstrating the long-term impacts to patch
+occupancy.
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/violin plots of risk of patch occupancy-1} 
+
+}
+
+\caption{Violin plots showing distribution of patch occupancies for metapopulations along gradients of network configuration, dispersal categories (low=0.001; high>0.001), stochasticity (low=0.001; high=0.1, spatial-temporal correlations (low~0; high=0.6), and spatial distribution of disturbance.}\label{fig:violin plots of risk of patch occupancy}
+\end{figure}
+
+Next, we show variation in relative production metrics. Figure S10 shows
+the tight correlation between patch occupancy and relative production.
+Hence, Figure S12 and S13 look quite similar.
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/violin plots of risk of relative production-1} 
+
+}
+
+\caption{Violin plots showing distribution of relative production for metapopulations along gradients of network configuration, dispersal categories (low=0.001; high>0.001), stochasticity (low=0.001; high=0.1, spatial-temporal correlations (low~0; high=0.6), and spatial distribution of disturbance.}\label{fig:violin plots of risk of relative production}
 \end{figure}
 
 Dispersal, landscape structure, and local density-dependence also
@@ -765,22 +800,106 @@ was low, and many local patches remained unoccupied and (5) critical
 risk -- where metapopulations failed to recover, abundances remained
 low, and the risk of non-recovery was high.
 
-\begin{table}
-
-\caption{\label{tab:clustering table}The mean recovery metrics and metapopulation abundance (N/K) for each of five common metapopulation recovery regimes supported by hierarchical clustering analyses.}
-\centering
-\begin{tabular}[t]{lrrrrr}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.14}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.12}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.08}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.12}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.13}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.08}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.17}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.16}}@{}}
+\caption{The mean recovery metrics and metapopulation abundance (N/K)
+for each of five common metapopulation recovery regimes supported by
+hierarchical clustering analyses across gradients in disturbance and
+network structure.}\tabularnewline
 \toprule
-Regime & Recovery rate & \% non-recovery & Occupancy & Relative production & Relative abundance\\
+\begin{minipage}[b]{\linewidth}\raggedright
+Regime
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Disturbance
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Network
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Recovery rate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% non-recovery
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Occupancy
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Relative production
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Relative abundance
+\end{minipage} \\
 \midrule
-Resilient & 0.81 & 3 & 0.98 & 0.97 & 0.99\\
-Slow recovery & 0.71 & 3 & 0.76 & 0.87 & 0.99\\
-Hidden collapses & 0.48 & 12 & 0.40 & 0.70 & 0.98\\
-Lost capacity & 0.16 & 78 & 0.58 & 0.78 & 0.65\\
-Critical risk & 0.00 & 100 & 0.10 & 0.54 & 0.08\\
+\endfirsthead
+\toprule
+\begin{minipage}[b]{\linewidth}\raggedright
+Regime
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Disturbance
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Network
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Recovery rate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% non-recovery
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Occupancy
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Relative production
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Relative abundance
+\end{minipage} \\
+\midrule
+\endhead
+Resilient & Uniform & Linear & 0.83 & 2 & 0.99 & 0.98 & 1.00 \\
+Resilient & Local, even & Linear & 0.78 & 5 & 0.94 & 0.95 & 0.99 \\
+Slow recovery & Local, even & Linear & 0.69 & 3 & 0.77 & 0.87 & 0.99 \\
+Hidden collapses & Local, even & Linear & 0.61 & 3 & 0.59 & 0.79 &
+0.99 \\
+Lost capacity & Local, even & Linear & 0.17 & 77 & 0.58 & 0.79 & 0.66 \\
+Slow recovery & Local, uneven & Linear & 0.72 & 0 & 0.64 & 0.81 &
+1.00 \\
+Hidden collapses & Local, uneven & Linear & 0.34 & 21 & 0.34 & 0.67 &
+0.97 \\
+Critical risk & Local, uneven & Linear & 0.00 & 100 & 0.10 & 0.54 &
+0.09 \\
+Resilient & Uniform & Dendritic & 0.82 & 2 & 0.99 & 0.98 & 0.99 \\
+Resilient & Local, even & Dendritic & 0.78 & 5 & 0.94 & 0.96 & 0.99 \\
+Slow recovery & Local, even & Dendritic & 0.70 & 3 & 0.77 & 0.87 &
+0.99 \\
+Hidden collapses & Local, even & Dendritic & 0.65 & 0 & 0.59 & 0.78 &
+0.99 \\
+Lost capacity & Local, even & Dendritic & 0.16 & 78 & 0.58 & 0.78 &
+0.65 \\
+Slow recovery & Local, uneven & Dendritic & 0.73 & 0 & 0.66 & 0.81 &
+0.99 \\
+Hidden collapses & Local, uneven & Dendritic & 0.49 & 8 & 0.36 & 0.68 &
+0.99 \\
+Critical risk & Local, uneven & Dendritic & 0.00 & 100 & 0.10 & 0.54 &
+0.08 \\
+Resilient & Uniform & Star & 0.81 & 3 & 0.99 & 0.98 & 0.99 \\
+Resilient & Local, even & Star & 0.75 & 7 & 0.93 & 0.95 & 0.99 \\
+Slow recovery & Local, even & Star & 0.68 & 5 & 0.75 & 0.86 & 0.99 \\
+Hidden collapses & Local, even & Star & 0.72 & 0 & 0.55 & 0.76 & 1.00 \\
+Lost capacity & Local, even & Star & 0.16 & 78 & 0.58 & 0.78 & 0.65 \\
+Slow recovery & Local, uneven & Star & 0.74 & 4 & 0.71 & 0.84 & 0.97 \\
+Hidden collapses & Local, uneven & Star & 0.57 & 9 & 0.45 & 0.72 &
+0.99 \\
+Critical risk & Local, uneven & Star & 0.00 & 100 & 0.10 & 0.54 &
+0.08 \\
+Resilient & Uniform & Grid & 0.82 & 2 & 0.99 & 0.98 & 1.00 \\
+Resilient & Local, even & Grid & 0.78 & 5 & 0.94 & 0.96 & 0.99 \\
+Slow recovery & Local, even & Grid & 0.73 & 3 & 0.81 & 0.89 & 0.99 \\
+Lost capacity & Local, even & Grid & 0.16 & 79 & 0.57 & 0.78 & 0.64 \\
+Slow recovery & Local, uneven & Grid & 0.76 & 0 & 0.73 & 0.85 & 1.00 \\
+Hidden collapses & Local, uneven & Grid & 0.56 & 7 & 0.46 & 0.73 &
+0.99 \\
+Critical risk & Local, uneven & Grid & 0.00 & 100 & 0.10 & 0.54 &
+0.08 \\
 \bottomrule
-\end{tabular}
-\end{table}
+\end{longtable}
 
 These five spatial recovery regimes emerged from the interplay of
 density-dependent productivity, network structure (shown here),
@@ -807,15 +926,6 @@ contractions.
 }
 
 \caption{Frequency of emergent metapopulation recovery regimes can depend on a complex interplay between network structure, dispersal, and spatial disturbances. Ribbon colors denote a group of simulations that led to one of five common recovery outcomes. Frequency of regimes denoted by width of ribbons}\label{fig:cluster results}
-\end{figure}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/violin plots of risk of non-recovery-1} 
-
-}
-
-\caption{Violin plots showing distribution of the risk of non-recovery for metapopulations along gradients of network configuration, dispersal categories (low=0.001; high>0.001), stochasticity (low=0.001; high=0.1, spatial-temporal correlations (low~0; high=0.6), and spatial distribution of disturbance.}\label{fig:violin plots of risk of non-recovery}
 \end{figure}
 
 \hypertarget{references}{%

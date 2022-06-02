@@ -531,69 +531,184 @@ legend("bottomright",c("Uniform","Local, even","Local, uneven"),pch=22,pt.bg=dis
 \newpage
 ### Role of network structure & dispersal
 
-We now show some general patterns in how variable patch demographic rates, network structure, dispersal, disturbance, recruitment stochasticity, and spatio-temporal correlations variation affects metapopulation *recovery rates*, *relative production*, *non-recovery rate* (i.e, the number of simulations where the metapopulation fails to recover), and *patch occupancy* (i.e., number of patches with local abundance <10% of pre-disturbance).
+We now show some general patterns in how variable patch demographic rates, network structure, dispersal, disturbance, recruitment stochasticity, and spatio-temporal correlations variation affects metapopulation *recovery rates* (shown in Figures 4 and 5 of the main text), *non-recovery rate* (i.e, the number of simulations where the metapopulation fails to recover), *patch occupancy* (i.e., number of patches with local abundance <10% of pre-disturbance), and *relative production*.
 
-```{r recovery and dispersal and spatial network, echo=FALSE,fig.height=5,fig.width=5.5,fig.cap="Metapopulation recovery rates along gradients of network configuration, dispersal rates, and spatial distribution of disturbance. The shaded region describes the interquartile range across all scenarios.",fig.align="center"}
+```{r violin plots of risk of non-recovery, echo=FALSE,warning = FALSE, message = FALSE,fig.height=6,fig.width=8,fig.cap="Violin plots showing distribution of the risk of non-recovery for metapopulations along gradients of network configuration, dispersal categories (low≤0.001; high>0.001), stochasticity (low=0.001; high=0.1, spatial-temporal correlations (low~0; high=0.6), and spatial distribution of disturbance.",fig.align="center"}
 results <- readRDS("Simulations/results2022-05-11.rds")
 scenarios <- readRDS("Simulations/scenarios2022-05-11.rds")
-Nboots <- 100
-Nlevels <- 11
-model <- "Beverton-Holt"
-# simulation parameters
-Npatches <- 16
-patchDist <- 1
-Nburnin <- 50
-NyrsPost <- 100
-Nyears <- Nburnin+NyrsPost
-compLag <- 25 # how many years to lag estimates of compensation
-dataWeighting <- 0.1 # penalty to past years for data weighting
-m <- 100 # distance decay function: penalty of 1 says about 60% of dispersing recruits move to neighbor patches. penalty of 2 says about 90% of dispersing recruits move to neighbor patches
-# adult stock-juvenile recruitment traits
-alpha <- 2
-metaK <- 1600
-# how big is the disturbance after Nburnin years?
-magnitude_of_decline <- 0.9
-# what is the lag time between recruits and spawners
-lagTime <- 1
-
+results$network <- factor(results$network,levels=unique(results$network),labels=c("linear","dendritic","star","grid"))
+scenarios$network <- factor(scenarios$network,levels=unique(scenarios$network),labels=c("linear","dendritic","star","grid"))
 results$StateShift <- ((1-results$recovered)+(1-results$longOcc))/2
 results$RecoveryRate <- 1-results$recovery/NyrsPost
+results$collapsed <- 1-results$recovered
+results$space_var <- factor(results$spatial,levels=unique(results$spatial),labels=c("Low spatial","Medium spatial","High spatial"))
+results$temporal_var <- factor(results$temporal,levels=unique(results$temporal),labels=c("Low temporal","Medium temporal","High temporal"))
+results$stochastic_lab <- factor(results$stochastic,levels=unique(results$stochastic),labels=c("Low variance","High variance"))
+results$variance_scen <- paste(results$space_var,results$temporal_var,results$stochastic_lab,sep="\n")
+results$unrecovered <- factor(ifelse(results$metaAbund >=0.9,"Recovered",ifelse(results$metaAbund>=0.7,"Recovering","Collapsed")),levels=c("Recovered","Recovering","Collapsed"))
+results$recovery_pace <- factor(ifelse(results$recovery <=10,"Fast",ifelse(results$recovery<=25,"Moderate","Slow")),levels=c("Fast","Moderate","Slow"))
+results$contraction <- factor(ifelse(results$longOcc >=0.9,"Full",ifelse(results$longOcc >=0.75,"Filling","Contracted")),levels=c("Full","Filling","Contracted"))
+results$masked <- factor(ifelse(results$unrecovered!="Collapsed" & results$longOcc <= 0.5,"Hidden collapses","Good monitoring"),levels=c("Good monitoring","Hidden collapses"))
+results$lostCap <- factor(ifelse(results$long_surp <=0.5,"Lost capacity","Healthy"),levels=c("Healthy","Lost capacity"))
+
+results$collapse_logic <- factor(ifelse(results$metaAbund <= 0.10, "Wide collapse","Healthy"),levels=c("Healthy","Wide collapse"))
+
+results$outcome <- factor(paste(results$unrecovered,results$recovery_pace,results$contraction,results$masked,results$lostCap,results$collapse_logic))
+results$surprise <- factor(ifelse(grepl("Wide collapse",results$outcome),"Critical risk",
+                                  ifelse(grepl("Contracted",results$outcome) & !grepl("Recovered",results$unrecovered),"Spatial contraction",
+                                         ifelse(grepl("Hidden",results$outcome),"Hidden collapses",
+                                                ifelse(grepl("Lost capacity",results$outcome),"Lost capacity",
+                                                       ifelse(grepl("Fast",results$outcome) & grepl("Recover",results$outcome),"Resilient","Slow recovery"))))),levels=c("Resilient","Slow recovery","Lost capacity","Hidden collapses","Spatial contraction","Critical risk"))
+results$dispersal_range <- factor(ifelse(results$dispersal>=0.001,"High","Low"),levels=c("High","Low"))
+results$network_lab <- factor(results$network,levels=levels(results$network),labels=c("Linear","Dendritic","Star","Grid"))
+results$disturb_lab <- factor(results$disturbance,levels=levels(results$disturbance),labels=c("Uniform","Local, even","Local, uneven"))
+results$density_dep <- factor(results$alpha,levels=levels(results$alpha),labels=c("Identical","Diverse"))
 results$collapsed <- 100*(1-results$recovered)
 
-dist_colours <- c("tomato","dodgerblue","orange")
-transparency <- 0.6
-plotColours <- ifelse(results$dispersal==-1,
-                      adjustcolor(dist_colours[results$disturbance],1,offset=c(-0.35,-0.35,-0.35,0)),
-                      adjustcolor(dist_colours[results$disturbance],1))
-matLayout <- matrix(0,nrow=16,ncol=16)
-matLayout <- matrix(0,nrow=16,ncol=16)
-matLayout[1:8,1:8] <- 1
-matLayout[1:8,9:16] <- 2
-matLayout[9:16,1:8] <- 3
-matLayout[9:16,9:16] <- 4
-matLayout[5:7,6:8] <- 5
-matLayout[5:7,14:16] <- 6
-matLayout[13:15,6:8] <- 7
-matLayout[13:15,14:16] <- 8
+# http://www.sthda.com/english/wiki/ggplot2-violin-plot-quick-start-guide-r-software-and-data-visualization
+results$patchScen <- paste(results$alpha,"\u03B1","\n",results$beta,"\u03B2")
+results$stochasticity <- as.character(results$stochastic)
+sub_res <- results[results$variance_scen %in% c("High spatial\nHigh temporal\nLow variance","High spatial\nHigh temporal\nHigh variance","Low spatial\nLow temporal\nLow variance","Low spatial\nLow temporal\nHigh variance") & results$dispersal!=0,]
 
-layout(matLayout)
-par(mar=c(4,4.5,0.5,0.5))
-for(i in 1:length(scenarios$network))
-{
-  subResults <- results[results$network==scenarios$network[i],]
-  plot(subResults$dispersal,subResults$RecoveryRate,col=0,lty=0,type="b",lwd=0,pch=0,ylab=expression('Recovery rate (yr'^-1*')'),xlab="Dispersal rate",ylim=1.0*range(c(0,results$RecoveryRate)),cex.lab=1.2)
-  for(j in 1:length(scenarios$disturbance)){
-    distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
-    #points(distResults$dispersal,distResults$recovery,bg=dist_colours[j],pch=21)
-  }
-  
-  invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){
-    y_rng <- sapply(1:length(scenarios$dispersal),function(x){quantile(subResults$RecoveryRate[v_all.equal(subResults$dispersal,scenarios$dispersal[x]) & subResults$disturbance==scenarios$disturbance[z]],probs=c(0.25,0.75))});
-    polygon(x=c(scenarios$dispersal,rev(scenarios$dispersal)),y=c(y_rng[1,],rev(y_rng[2,])),col=adjustcolor(dist_colours[z],transparency))}))
-}
-legend("right",c("Uniform","Local, even","Local, uneven"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime",cex=1.2)
-add2plot()
+sub_res$variance_scen <- factor(sub_res$variance_scen,
+                                levels=c("Low spatial\nLow temporal\nLow variance",
+                                         "Low spatial\nLow temporal\nHigh variance",
+                                         "High spatial\nHigh temporal\nLow variance",
+                                         "High spatial\nHigh temporal\nHigh variance"),
+                                labels=c("Low space-time \U03C1, Low variance",
+                                         "Low space-time \U03C1, High variance",
+                                         "High space-time \U03C1, Low variance",
+                                         "High space-time \U03C1, High variance"))
+sub_res$dispersal_range <- factor(sub_res$dispersal_range,levels=c("Low","High"))
+p <- ggplot(data=sub_res, aes(x=dispersal_range, y=collapsed, fill=network_lab))+ 
+  geom_violin(trim=TRUE,scale = "width")+
+  geom_boxplot(width=0.3,colour="grey90",outlier.shape=NA,position=position_dodge(0.9))+
+  #geom_jitter(pch=21,width=0.1)+
+  facet_grid(rows=vars(disturb_lab),cols=vars(variance_scen),labeller=label_wrap_gen(width=45,multi_line = TRUE)) +
+  scale_fill_brewer(palette="BrBG") +
+  labs(x="Dispersal rate",y="Rate of non-recovery (% of simulations)",fill="Habitat network") +
+  theme_minimal() +
+  theme(legend.position="top",strip.text.y = element_text(size=6.5),strip.text.x = element_text(size=8,hjust=0),axis.text.x=element_text(size=7),axis.text.y=element_text(size=7),legend.text=element_text(size=6),legend.title=element_text(size=7),axis.title=element_text(size=8),legend.key.size = unit(0.9, "line"),panel.spacing.y = unit(0.75, "lines"))
+p
+```
+Next, we show violin plots demonstrating the long-term impacts to patch occupancy.
+```{r violin plots of risk of patch occupancy, echo=FALSE,warning = FALSE, message = FALSE,fig.height=6,fig.width=8,fig.cap="Violin plots showing distribution of patch occupancies for metapopulations along gradients of network configuration, dispersal categories (low≤0.001; high>0.001), stochasticity (low=0.001; high=0.1, spatial-temporal correlations (low~0; high=0.6), and spatial distribution of disturbance.",fig.align="center"}
+results <- readRDS("Simulations/results2022-05-11.rds")
+scenarios <- readRDS("Simulations/scenarios2022-05-11.rds")
+results$network <- factor(results$network,levels=unique(results$network),labels=c("linear","dendritic","star","grid"))
+scenarios$network <- factor(scenarios$network,levels=unique(scenarios$network),labels=c("linear","dendritic","star","grid"))
+results$StateShift <- ((1-results$recovered)+(1-results$longOcc))/2
+results$RecoveryRate <- 1-results$recovery/NyrsPost
+results$collapsed <- 1-results$recovered
+results$space_var <- factor(results$spatial,levels=unique(results$spatial),labels=c("Low spatial","Medium spatial","High spatial"))
+results$temporal_var <- factor(results$temporal,levels=unique(results$temporal),labels=c("Low temporal","Medium temporal","High temporal"))
+results$stochastic_lab <- factor(results$stochastic,levels=unique(results$stochastic),labels=c("Low variance","High variance"))
+results$variance_scen <- paste(results$space_var,results$temporal_var,results$stochastic_lab,sep="\n")
+results$unrecovered <- factor(ifelse(results$metaAbund >=0.9,"Recovered",ifelse(results$metaAbund>=0.7,"Recovering","Collapsed")),levels=c("Recovered","Recovering","Collapsed"))
+results$recovery_pace <- factor(ifelse(results$recovery <=10,"Fast",ifelse(results$recovery<=25,"Moderate","Slow")),levels=c("Fast","Moderate","Slow"))
+results$contraction <- factor(ifelse(results$longOcc >=0.9,"Full",ifelse(results$longOcc >=0.75,"Filling","Contracted")),levels=c("Full","Filling","Contracted"))
+results$masked <- factor(ifelse(results$unrecovered!="Collapsed" & results$longOcc <= 0.5,"Hidden collapses","Good monitoring"),levels=c("Good monitoring","Hidden collapses"))
+results$lostCap <- factor(ifelse(results$long_surp <=0.5,"Lost capacity","Healthy"),levels=c("Healthy","Lost capacity"))
 
+results$collapse_logic <- factor(ifelse(results$metaAbund <= 0.10, "Wide collapse","Healthy"),levels=c("Healthy","Wide collapse"))
+
+results$outcome <- factor(paste(results$unrecovered,results$recovery_pace,results$contraction,results$masked,results$lostCap,results$collapse_logic))
+results$surprise <- factor(ifelse(grepl("Wide collapse",results$outcome),"Critical risk",
+                                  ifelse(grepl("Contracted",results$outcome) & !grepl("Recovered",results$unrecovered),"Spatial contraction",
+                                         ifelse(grepl("Hidden",results$outcome),"Hidden collapses",
+                                                ifelse(grepl("Lost capacity",results$outcome),"Lost capacity",
+                                                       ifelse(grepl("Fast",results$outcome) & grepl("Recover",results$outcome),"Resilient","Slow recovery"))))),levels=c("Resilient","Slow recovery","Lost capacity","Hidden collapses","Spatial contraction","Critical risk"))
+results$dispersal_range <- factor(ifelse(results$dispersal>=0.001,"High","Low"),levels=c("High","Low"))
+results$network_lab <- factor(results$network,levels=levels(results$network),labels=c("Linear","Dendritic","Star","Grid"))
+results$disturb_lab <- factor(results$disturbance,levels=levels(results$disturbance),labels=c("Uniform","Local, even","Local, uneven"))
+results$density_dep <- factor(results$alpha,levels=levels(results$alpha),labels=c("Identical","Diverse"))
+results$collapsed <- 100*(1-results$recovered)
+
+# http://www.sthda.com/english/wiki/ggplot2-violin-plot-quick-start-guide-r-software-and-data-visualization
+results$patchScen <- paste(results$alpha,"\u03B1","\n",results$beta,"\u03B2")
+results$stochasticity <- as.character(results$stochastic)
+sub_res <- results[results$variance_scen %in% c("High spatial\nHigh temporal\nLow variance","High spatial\nHigh temporal\nHigh variance","Low spatial\nLow temporal\nLow variance","Low spatial\nLow temporal\nHigh variance") & results$dispersal!=0,]
+
+sub_res$variance_scen <- factor(sub_res$variance_scen,
+                                levels=c("Low spatial\nLow temporal\nLow variance",
+                                         "Low spatial\nLow temporal\nHigh variance",
+                                         "High spatial\nHigh temporal\nLow variance",
+                                         "High spatial\nHigh temporal\nHigh variance"),
+                                labels=c("Low space-time \U03C1, Low variance",
+                                         "Low space-time \U03C1, High variance",
+                                         "High space-time \U03C1, Low variance",
+                                         "High space-time \U03C1, High variance"))
+sub_res$dispersal_range <- factor(sub_res$dispersal_range,levels=c("Low","High"))
+p <- ggplot(data=sub_res, aes(x=dispersal_range, y=longOcc, fill=network_lab))+ 
+  geom_violin(trim=TRUE,scale = "width")+
+  geom_boxplot(width=0.3,colour="grey90",outlier.shape=NA,position=position_dodge(0.9))+
+  #geom_jitter(pch=21,width=0.1)+
+  facet_grid(rows=vars(disturb_lab),cols=vars(variance_scen),labeller=label_wrap_gen(width=45,multi_line = TRUE)) +
+  scale_fill_brewer(palette="BrBG") +
+  labs(x="Dispersal rate",y="Patch occupancy (25 years)",fill="Habitat network") +
+  theme_minimal() +
+  theme(legend.position="top",strip.text.y = element_text(size=6.5),strip.text.x = element_text(size=8,hjust=0),axis.text.x=element_text(size=7),axis.text.y=element_text(size=7),legend.text=element_text(size=6),legend.title=element_text(size=7),axis.title=element_text(size=8),legend.key.size = unit(0.9, "line"),panel.spacing.y = unit(0.75, "lines"))
+p
+```
+
+Next, we show variation in relative production metrics. Figure S10 shows the tight correlation between patch occupancy and relative production. Hence, Figure S12 and S13 look quite similar.
+```{r violin plots of risk of relative production, echo=FALSE,warning = FALSE, message = FALSE,fig.height=6,fig.width=8,fig.cap="Violin plots showing distribution of relative production for metapopulations along gradients of network configuration, dispersal categories (low≤0.001; high>0.001), stochasticity (low=0.001; high=0.1, spatial-temporal correlations (low~0; high=0.6), and spatial distribution of disturbance.",fig.align="center"}
+results <- readRDS("Simulations/results2022-05-11.rds")
+scenarios <- readRDS("Simulations/scenarios2022-05-11.rds")
+results$network <- factor(results$network,levels=unique(results$network),labels=c("linear","dendritic","star","grid"))
+scenarios$network <- factor(scenarios$network,levels=unique(scenarios$network),labels=c("linear","dendritic","star","grid"))
+results$StateShift <- ((1-results$recovered)+(1-results$longOcc))/2
+results$RecoveryRate <- 1-results$recovery/NyrsPost
+results$collapsed <- 1-results$recovered
+results$space_var <- factor(results$spatial,levels=unique(results$spatial),labels=c("Low spatial","Medium spatial","High spatial"))
+results$temporal_var <- factor(results$temporal,levels=unique(results$temporal),labels=c("Low temporal","Medium temporal","High temporal"))
+results$stochastic_lab <- factor(results$stochastic,levels=unique(results$stochastic),labels=c("Low variance","High variance"))
+results$variance_scen <- paste(results$space_var,results$temporal_var,results$stochastic_lab,sep="\n")
+results$unrecovered <- factor(ifelse(results$metaAbund >=0.9,"Recovered",ifelse(results$metaAbund>=0.7,"Recovering","Collapsed")),levels=c("Recovered","Recovering","Collapsed"))
+results$recovery_pace <- factor(ifelse(results$recovery <=10,"Fast",ifelse(results$recovery<=25,"Moderate","Slow")),levels=c("Fast","Moderate","Slow"))
+results$contraction <- factor(ifelse(results$longOcc >=0.9,"Full",ifelse(results$longOcc >=0.75,"Filling","Contracted")),levels=c("Full","Filling","Contracted"))
+results$masked <- factor(ifelse(results$unrecovered!="Collapsed" & results$longOcc <= 0.5,"Hidden collapses","Good monitoring"),levels=c("Good monitoring","Hidden collapses"))
+results$lostCap <- factor(ifelse(results$long_surp <=0.5,"Lost capacity","Healthy"),levels=c("Healthy","Lost capacity"))
+
+results$collapse_logic <- factor(ifelse(results$metaAbund <= 0.10, "Wide collapse","Healthy"),levels=c("Healthy","Wide collapse"))
+
+results$outcome <- factor(paste(results$unrecovered,results$recovery_pace,results$contraction,results$masked,results$lostCap,results$collapse_logic))
+results$surprise <- factor(ifelse(grepl("Wide collapse",results$outcome),"Critical risk",
+                                  ifelse(grepl("Contracted",results$outcome) & !grepl("Recovered",results$unrecovered),"Spatial contraction",
+                                         ifelse(grepl("Hidden",results$outcome),"Hidden collapses",
+                                                ifelse(grepl("Lost capacity",results$outcome),"Lost capacity",
+                                                       ifelse(grepl("Fast",results$outcome) & grepl("Recover",results$outcome),"Resilient","Slow recovery"))))),levels=c("Resilient","Slow recovery","Lost capacity","Hidden collapses","Spatial contraction","Critical risk"))
+results$dispersal_range <- factor(ifelse(results$dispersal>=0.001,"High","Low"),levels=c("High","Low"))
+results$network_lab <- factor(results$network,levels=levels(results$network),labels=c("Linear","Dendritic","Star","Grid"))
+results$disturb_lab <- factor(results$disturbance,levels=levels(results$disturbance),labels=c("Uniform","Local, even","Local, uneven"))
+results$density_dep <- factor(results$alpha,levels=levels(results$alpha),labels=c("Identical","Diverse"))
+results$collapsed <- 100*(1-results$recovered)
+
+# http://www.sthda.com/english/wiki/ggplot2-violin-plot-quick-start-guide-r-software-and-data-visualization
+results$patchScen <- paste(results$alpha,"\u03B1","\n",results$beta,"\u03B2")
+results$stochasticity <- as.character(results$stochastic)
+sub_res <- results[results$variance_scen %in% c("High spatial\nHigh temporal\nLow variance","High spatial\nHigh temporal\nHigh variance","Low spatial\nLow temporal\nLow variance","Low spatial\nLow temporal\nHigh variance") & results$dispersal!=0,]
+
+sub_res$variance_scen <- factor(sub_res$variance_scen,
+                                levels=c("Low spatial\nLow temporal\nLow variance",
+                                         "Low spatial\nLow temporal\nHigh variance",
+                                         "High spatial\nHigh temporal\nLow variance",
+                                         "High spatial\nHigh temporal\nHigh variance"),
+                                labels=c("Low space-time \U03C1, Low variance",
+                                         "Low space-time \U03C1, High variance",
+                                         "High space-time \U03C1, Low variance",
+                                         "High space-time \U03C1, High variance"))
+sub_res$dispersal_range <- factor(sub_res$dispersal_range,levels=c("Low","High"))
+p <- ggplot(data=sub_res, aes(x=dispersal_range, y=long_surp, fill=network_lab))+ 
+  geom_violin(trim=TRUE,scale = "width")+
+  geom_boxplot(width=0.3,colour="grey90",outlier.shape=NA,position=position_dodge(0.9))+
+  #geom_jitter(pch=21,width=0.1)+
+  facet_grid(rows=vars(disturb_lab),cols=vars(variance_scen),labeller=label_wrap_gen(width=45,multi_line = TRUE)) +
+  scale_fill_brewer(palette="BrBG") +
+  labs(x="Dispersal rate",y="Relative production (25 years)",fill="Habitat network") +
+  theme_minimal() +
+  theme(legend.position="top",strip.text.y = element_text(size=6.5),strip.text.x = element_text(size=8,hjust=0),axis.text.x=element_text(size=7),axis.text.y=element_text(size=7),legend.text=element_text(size=6),legend.title=element_text(size=7),axis.title=element_text(size=8),legend.key.size = unit(0.9, "line"),panel.spacing.y = unit(0.75, "lines"))
+p
 ```
 
 Dispersal, landscape structure, and local density-dependence also affected metapopulation recovery patterns in three key ways, though to a lesser extent. First, recovery rates increased with increased dispersal. However, this effect was nonlinear with diminishing benefits of dispersal occurring at ~1-3%, depending on spatial structure and disturbance. Second, more linearized networks had slower recovery times than more connected networks suggesting that rescue effects take some time to cascade through the entire network of patches; but this interacted with the disturbance regime as only local, extirpation exhibited this change in any substantial manner. Last, diversity in local patch compensation and carrying capacities tended to slow metapopulation recoveries - this effect interacted with other factors like stochasticity.
@@ -712,9 +827,9 @@ results_clust$cluster_surprises <- results$cluster_surprises <- as.factor(fitted
 results$cluster_surprises <- factor(results$cluster_surprises,levels=1:5,labels=c("Resilient","Critical risk","Hidden collapses","Slow recovery","Lost capacity"))
 results$cluster_surprises <- factor(results$cluster_surprises,levels=c("Resilient","Slow recovery","Hidden collapses","Lost capacity","Critical risk"))
 
-df <- aggregate(cbind(RecoveryRate,collapsed,longOcc,long_surp,metaAbund)~cluster_surprises,data=results,FUN=mean)
-colnames(df) <- c("Regime","Recovery rate","% non-recovery","Occupancy","Relative production","Relative abundance")
-kable(df,caption = 'The mean recovery metrics and metapopulation abundance (N/K) for each of five common metapopulation recovery regimes supported by hierarchical clustering analyses.',digits=c(0,2,0,2,2,2),booktabs=TRUE,format='latex')
+df <- aggregate(cbind(RecoveryRate,collapsed,longOcc,long_surp,metaAbund)~cluster_surprises+disturb_lab+network_lab,data=results,FUN=mean)
+colnames(df) <- c("Regime","Disturbance","Network","Recovery rate","% non-recovery","Occupancy","Relative production","Relative abundance")
+kable(df,caption = 'The mean recovery metrics and metapopulation abundance (N/K) for each of five common metapopulation recovery regimes supported by hierarchical clustering analyses across gradients in disturbance and network structure.',digits=c(0,0,0,2,0,2,2,2),booktabs=TRUE, longtable = TRUE)
 ```
 
 These five spatial recovery regimes emerged from the interplay of density-dependent productivity, network structure (shown here), dispersal, stochasticity, and spatial disturbance regimes (Figures S12, S15, and S16). Resilient recovery regimes were most common when disturbance was evenly applied across the network and local patches were identical. Any localized disturbances could create ecological surprises, and the frequency of these recovery regimes were often exacerbated when patch demographic rates, like productivity and carrying capacity, varied from one another. Localized, even disturbances tended to reduce recovery by 50% compared to even disturbances (from 16 years to 24 years on average). The riskiest recovery outcomes emerged when disturbance was localized and allowed for extirpation. In these scenarios, recovery was slowed by >100% (from 16 years to >32 years on average), relative production was often reduced by >50%, long-term patch occupancy was reduced by >35%. Last, note that linear networks tended to have higher risks for long-term spatial contractions.
@@ -746,65 +861,6 @@ p1 <- ggplot(surprises,aes(y = surprise_logic,axis1 = network_lab, axis2 = dispe
       ggtitle("Emergent metapopulation recovery regimes")
 p1
 
-```
-
-```{r violin plots of risk of non-recovery, echo=FALSE,warning = FALSE, message = FALSE,fig.height=6,fig.width=8,fig.cap="Violin plots showing distribution of the risk of non-recovery for metapopulations along gradients of network configuration, dispersal categories (low≤0.001; high>0.001), stochasticity (low=0.001; high=0.1, spatial-temporal correlations (low~0; high=0.6), and spatial distribution of disturbance.",fig.align="center"}
-results <- readRDS("Simulations/results2022-05-11.rds")
-scenarios <- readRDS("Simulations/scenarios2022-05-11.rds")
-results$network <- factor(results$network,levels=unique(results$network),labels=c("linear","dendritic","star","grid"))
-scenarios$network <- factor(scenarios$network,levels=unique(scenarios$network),labels=c("linear","dendritic","star","grid"))
-results$StateShift <- ((1-results$recovered)+(1-results$longOcc))/2
-results$RecoveryRate <- 1-results$recovery/NyrsPost
-results$collapsed <- 1-results$recovered
-results$space_var <- factor(results$spatial,levels=unique(results$spatial),labels=c("Low spatial","Medium spatial","High spatial"))
-results$temporal_var <- factor(results$temporal,levels=unique(results$temporal),labels=c("Low temporal","Medium temporal","High temporal"))
-results$stochastic_lab <- factor(results$stochastic,levels=unique(results$stochastic),labels=c("Low variance","High variance"))
-results$variance_scen <- paste(results$space_var,results$temporal_var,results$stochastic_lab,sep="\n")
-results$unrecovered <- factor(ifelse(results$metaAbund >=0.9,"Recovered",ifelse(results$metaAbund>=0.7,"Recovering","Collapsed")),levels=c("Recovered","Recovering","Collapsed"))
-results$recovery_pace <- factor(ifelse(results$recovery <=10,"Fast",ifelse(results$recovery<=25,"Moderate","Slow")),levels=c("Fast","Moderate","Slow"))
-results$contraction <- factor(ifelse(results$longOcc >=0.9,"Full",ifelse(results$longOcc >=0.75,"Filling","Contracted")),levels=c("Full","Filling","Contracted"))
-results$masked <- factor(ifelse(results$unrecovered!="Collapsed" & results$longOcc <= 0.5,"Hidden collapses","Good monitoring"),levels=c("Good monitoring","Hidden collapses"))
-results$lostCap <- factor(ifelse(results$long_surp <=0.5,"Lost capacity","Healthy"),levels=c("Healthy","Lost capacity"))
-
-results$collapse_logic <- factor(ifelse(results$metaAbund <= 0.10, "Wide collapse","Healthy"),levels=c("Healthy","Wide collapse"))
-
-results$outcome <- factor(paste(results$unrecovered,results$recovery_pace,results$contraction,results$masked,results$lostCap,results$collapse_logic))
-results$surprise <- factor(ifelse(grepl("Wide collapse",results$outcome),"Critical risk",
-                                  ifelse(grepl("Contracted",results$outcome) & !grepl("Recovered",results$unrecovered),"Spatial contraction",
-                                         ifelse(grepl("Hidden",results$outcome),"Hidden collapses",
-                                                ifelse(grepl("Lost capacity",results$outcome),"Lost capacity",
-                                                       ifelse(grepl("Fast",results$outcome) & grepl("Recover",results$outcome),"Resilient","Slow recovery"))))),levels=c("Resilient","Slow recovery","Lost capacity","Hidden collapses","Spatial contraction","Critical risk"))
-results$dispersal_range <- factor(ifelse(results$dispersal>=0.001,"High","Low"),levels=c("High","Low"))
-results$network_lab <- factor(results$network,levels=levels(results$network),labels=c("Linear","Dendritic","Star","Grid"))
-results$disturb_lab <- factor(results$disturbance,levels=levels(results$disturbance),labels=c("Uniform","Local, even","Local, uneven"))
-results$density_dep <- factor(results$alpha,levels=levels(results$alpha),labels=c("Identical","Diverse"))
-results$collapsed <- 100*(1-results$recovered)
-
-# http://www.sthda.com/english/wiki/ggplot2-violin-plot-quick-start-guide-r-software-and-data-visualization
-results$patchScen <- paste(results$alpha,"\u03B1","\n",results$beta,"\u03B2")
-results$stochasticity <- as.character(results$stochastic)
-sub_res <- results[results$variance_scen %in% c("High spatial\nHigh temporal\nLow variance","High spatial\nHigh temporal\nHigh variance","Low spatial\nLow temporal\nLow variance","Low spatial\nLow temporal\nHigh variance") & results$dispersal!=0,]
-
-sub_res$variance_scen <- factor(sub_res$variance_scen,
-                                levels=c("Low spatial\nLow temporal\nLow variance",
-                                         "Low spatial\nLow temporal\nHigh variance",
-                                         "High spatial\nHigh temporal\nLow variance",
-                                         "High spatial\nHigh temporal\nHigh variance"),
-                                labels=c("Low space-time \U03C1, Low variance",
-                                         "Low space-time \U03C1, High variance",
-                                         "High space-time \U03C1, Low variance",
-                                         "High space-time \U03C1, High variance"))
-sub_res$dispersal_range <- factor(sub_res$dispersal_range,levels=c("Low","High"))
-p <- ggplot(data=sub_res, aes(x=dispersal_range, y=collapsed, fill=network_lab))+ 
-  geom_violin(trim=TRUE,scale = "width")+
-  geom_boxplot(width=0.3,colour="grey90",outlier.shape=NA,position=position_dodge(0.9))+
-  #geom_jitter(pch=21,width=0.1)+
-  facet_grid(rows=vars(disturb_lab),cols=vars(variance_scen),labeller=label_wrap_gen(width=45,multi_line = TRUE)) +
-  scale_fill_brewer(palette="BrBG") +
-  labs(x="Dispersal rate",y="Rate of non-recovery (% of simulations)",fill="Habitat network") +
-  theme_minimal() +
-  theme(legend.position="top",strip.text.y = element_text(size=6.5),strip.text.x = element_text(size=8,hjust=0),axis.text.x=element_text(size=7),axis.text.y=element_text(size=7),legend.text=element_text(size=6),legend.title=element_text(size=7),axis.title=element_text(size=8),legend.key.size = unit(0.9, "line"),panel.spacing.y = unit(0.75, "lines"))
-p
 ```
 
 ## References
