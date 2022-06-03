@@ -118,7 +118,7 @@ source("Functions/finding MSY.R")
 
 ## Metapopulation model
 ### Local & metapopulation dynamics
-Our metapopulation was defined by a set of $P$ local populations for a species with a one year generation time with time-dynamics that follows birth (i.e., recruitment *R*), immigration, death, and emigration processes typical to metapopulation theory and tested the role of multiple spatial, temporal, and density-dependent processes [@Anderson2015; @Fullerton2016; @Zelnik2019; @Bowlby2020; @Okamoto2020]:
+Our metapopulation was defined by a set of $P$ local populations for a species with a one year generation time with time-dynamics that follows birth (i.e., recruitment *R*), immigration, death, and emigration processes typical to metapopulation theory and tested the role of multiple local and regional processes [@Anderson2015; @Fullerton2016; @Zelnik2019; @Bowlby2020; @Okamoto2020]:
 
 \begin{align}
 N_{i,t}= R_{i,t}+{\sum\limits_{\substack{j=1 \\ j\neq i}}^{P} \omega p_{i,j}R_{j,t}}-d_{i,t}R_{i,t}-\omega R_{i,t}
@@ -126,7 +126,7 @@ N_{i,t}= R_{i,t}+{\sum\limits_{\substack{j=1 \\ j\neq i}}^{P} \omega p_{i,j}R_{j
 
 where $N_{i,t}$ was the number of adults in patch *i* at time *t*, $R_{i,t}$ was the number of recruits at time *t*, ${\sum\limits_{\substack{j=1 \\ j\neq i}}^{P} \omega p_{i,j}R_{j,t}}$ was the number of recruits immigrating into patch *i* from any other patch, $\omega$ was the proportion of local recruits to disperse, $p_{i,j}$ was a distance-dependent dispersal function, and $d_{i,t}$ was the proportion of recruits that die due to disturbance regime.
 
-Local patch recruitment at time *t* depended on adult densities at *t-1* and followed a reparameterized Beverton-Holt function [@Walters2004;@Forrest2010]:
+Figure S1 shows how local patch recruitment at time *t* depended on adult densities at *t-1* and followed a reparameterized Beverton-Holt function [@Walters2004;@Forrest2010]:
 
 \begin{align}
 R_{i,t}=\cfrac{\alpha_iN_{i,t-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{i,t-1}}\epsilon_{i,t}
@@ -151,7 +151,7 @@ alpha <- c(2,4)
 beta <- c(100,200)
 ```
 
-Monitoring at the scale of the whole metapopulation can produce productivity relationships that aggregates the population dynamics and productivity among all local populations. For example, take a two patch metapopulation model that varies $\alpha_1=2; \alpha_2=4$ and $\beta_1=100; \beta_2=200$ parameters. Here, recruitment compensation from local patches $\alpha_i$ gets averaged across the metapopulation leading to an average compensation ratio $\bar{\alpha}$ of `r mean(alpha)`. Likewise, the total carrying capacity of the metapopulation $\bar{\beta}$ becomes the summation of local patch carrying capacities $\sum\beta_i$, which was `r sum(beta)`. This scale of monitoring generates the following local patch and metapopulation dynamics:
+Monitoring at the scale of the whole metapopulation can produce productivity relationships that aggregates the population dynamics and productivity among all local populations. For example, take a two patch metapopulation model (Figure S1) that each vary in demographic shape parameters $\alpha_1=2; \alpha_2=4$ and $\beta_1=100; \beta_2=200$. Here, recruitment compensation from local patches $\alpha_i$ gets averaged across the metapopulation leading to an average compensation ratio $\bar{\alpha}$ of `r mean(alpha)`. Likewise, the total carrying capacity of the metapopulation $\bar{\beta}$ becomes the summation of local patch carrying capacities $\sum\beta_i$, which was `r sum(beta)`. This scale of monitoring generates the following local patch and metapopulation dynamics:
 
 <br>
 ```{r recruit curves, echo=FALSE,warning = F, message = F,fig.hold=TRUE,fig.width=4.5, fig.height = 4,fig.cap="Density dependence in metapopulation and local patch recruitment dynamics. Dashed line indicates the line of replacement, with equilbrium indicated by points. When populations fall below equilibrium points, per-capita productivity improves driving populations back towards equilibrium. When populations exceed their capacity, per-capita productivity decreases driving populations back towards equilibrium. At each point of the x-axis, the distance between the solid and dashed lines indicates the amount of recruitment above replacement, i.e., the surplus recruitment produced via compensatory density dependence.",fig.align="center"}
@@ -171,9 +171,9 @@ legend("bottomright",c("Patch 1","Patch 2","Metapopulation","Replacement"),bty="
 <br>
 
 ### Creating the spatial networks
-The next aspect to our metapopulation model was connecting the set of patches to one another [@Yeakel2014]. We need to specify the number of patches, their arrangements (i.e., connections), and how far apart they are from one another. We followed some classic metapopulation and source-sink arrangements to create four networks that generalize across a few real-world topologies: a linear habitat network (e.g., coastline), a dendritic or branching network (e.g., coastal rivers), a star network (e.g., mountain & valley, or lake with inlet tributaries), and a grid network (e.g., grasslands). 
+The next aspect to developing our metapopulation model was connecting the set of patches to one another [@Yeakel2014]. We needed to specify the number of patches, their arrangements (i.e., connections), and how far apart they are from one another. We followed some classic metapopulation and source-sink arrangements to create four networks that generalize across a few real-world topologies: a linear habitat network (e.g., coastline), a dendritic or branching network (e.g., coastal rivers), a star network (e.g., mountain & valley, or lake with inlet tributaries), and a grid network (e.g., grasslands). 
   
-To make networks comparable, each spatial network type needs the same leading parameters (e.g., number of patches $P$ and mean distance between neighboring patches $\bar{d}$). In this case, we set $P$ to `16` and $\bar{d}$ to `1` unit (distance units are arbitrary). We used the `igraph` package [@Csardi2006] and some custom code to arrange our spatial networks as the following:
+To make networks comparable, each spatial network type needs the same leading parameters (e.g., number of patches $P$ and mean distance between neighboring patches $\bar{d}$). In this case, we set $P$ to `16` and $\bar{d}$ to `1` unit (distance units are arbitrary). We used the `igraph` package [@Csardi2006] to arrange our spatial networks as the following:
 
 <br>
 ```{r networks, echo=FALSE,fig.hold=TRUE,fig.width=5, fig.height = 5,fig.cap="Four spatial network topologies.",fig.align="center"}
@@ -208,7 +208,7 @@ title(main="Grid",line=0,font.main=1)
 ```
 <br>
 
-Note that distances between neighbor patches in the above networks are equal. An example dispersal matrix for the grid network can be found in Table S1. 
+Note that distances between neighbor patches in the above networks are equal. Table S1 shows an example dispersal matrix for a grid network. 
 ```{r distance matrix,echo=FALSE,results='asis'}
 kable(as.data.frame(network$distanceMatrix),caption = 'Example distance matrix between 16 patches within a grid network to affect distance-dependent dispersal rates.',digits=0,booktabs=TRUE,format='latex')
 ```
@@ -254,7 +254,7 @@ plot(network$landscape,col="dodgerblue",layout=cbind(1,seq(1,-1,length.out = gor
 
 ### Disturbance regimes
 
-In all scenarios, disturbance was applied after `50` years of equilibrating the metapopulation at pristine conditions. We then applied the disturbance regime at year `50` (the regime varied from *uniform*, *localized, even*, and *localized, uneven* - see *Scenarios* below). Disturbance immediately removed a fixed proportion of the metapopulation adults at that time (i.e., `0.9` of $A_{t=50}$). Once applied, the metapopulation was no longer disturbed and spatio-temporal recovery dynamics emerged from these conditions given the ecological scenarios of network complexity, dispersal rate, spatio-temporal correlations, local patch demographies, and magnitude of stochastic variance.
+In all scenarios, disturbance was applied after `50` years of equilibrating the metapopulation at pristine conditions. We then applied a pulsed disturbance regime at year `50` (the regime varied from *uniform*, *localized, even*, and *localized, uneven* - see *Scenarios* below). Disturbance immediately removed a fixed proportion of the metapopulation adults at that time (i.e., `0.9` of $A_{t=50}$). Once applied, the metapopulation was no longer disturbed and spatio-temporal recovery dynamics emerged from these conditions given the ecological scenarios of network complexity, dispersal rate, spatio-temporal correlations, local patch demographies, and magnitude of stochastic variance.
 
 ```{r example disturbance regime, echo=FALSE,warning=FALSE,message=FALSE,fig.height=4,fig.width=8,fig.cap="Recovery regime of metapopulation with linear topology through time (a) and space (b).",fig.align="center"}
 seed <- 2477

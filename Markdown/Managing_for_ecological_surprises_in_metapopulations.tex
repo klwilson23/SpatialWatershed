@@ -42,7 +42,7 @@ Smithers, BC\\
 \(^\textup{8}\)Wild Salmon Center, Portland, OR\\
 \(^\textup{9}\)Ecology and Evolutionary Biology, University of
 California Santa Cruz}
-\date{02 June 2022}
+\date{03 June 2022}
 
 \usepackage{amsmath,amssymb}
 \usepackage{lmodern}
@@ -178,9 +178,9 @@ Our metapopulation was defined by a set of \(P\) local populations for a
 species with a one year generation time with time-dynamics that follows
 birth (i.e., recruitment \emph{R}), immigration, death, and emigration
 processes typical to metapopulation theory and tested the role of
-multiple spatial, temporal, and density-dependent processes (Anderson et
-al. 2015; Fullerton et al. 2016; Zelnik et al. 2019; Bowlby \& Gibson
-2020; Okamoto et al. 2020):
+multiple local and regional processes (Anderson et al. 2015; Fullerton
+et al. 2016; Zelnik et al. 2019; Bowlby \& Gibson 2020; Okamoto et al.
+2020):
 
 \begin{align}
 N_{i,t}= R_{i,t}+{\sum\limits_{\substack{j=1 \\ j\neq i}}^{P} \omega p_{i,j}R_{j,t}}-d_{i,t}R_{i,t}-\omega R_{i,t}
@@ -195,9 +195,9 @@ disperse, \(p_{i,j}\) was a distance-dependent dispersal function, and
 \(d_{i,t}\) was the proportion of recruits that die due to disturbance
 regime.
 
-Local patch recruitment at time \emph{t} depended on adult densities at
-\emph{t-1} and followed a reparameterized Beverton-Holt function
-(Walters \& Martell 2004; Forrest et al. 2010):
+Figure S1 shows how local patch recruitment at time \emph{t} depended on
+adult densities at \emph{t-1} and followed a reparameterized
+Beverton-Holt function (Walters \& Martell 2004; Forrest et al. 2010):
 
 \begin{align}
 R_{i,t}=\cfrac{\alpha_iN_{i,t-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{i,t-1}}\epsilon_{i,t}
@@ -226,14 +226,15 @@ K_t = \sum_{i=1}^{P} R_{i,t}
 Monitoring at the scale of the whole metapopulation can produce
 productivity relationships that aggregates the population dynamics and
 productivity among all local populations. For example, take a two patch
-metapopulation model that varies \(\alpha_1=2; \alpha_2=4\) and
-\(\beta_1=100; \beta_2=200\) parameters. Here, recruitment compensation
-from local patches \(\alpha_i\) gets averaged across the metapopulation
-leading to an average compensation ratio \(\bar{\alpha}\) of 3.
-Likewise, the total carrying capacity of the metapopulation
-\(\bar{\beta}\) becomes the summation of local patch carrying capacities
-\(\sum\beta_i\), which was 300. This scale of monitoring generates the
-following local patch and metapopulation dynamics:
+metapopulation model (Figure S1) that each vary in demographic shape
+parameters \(\alpha_1=2; \alpha_2=4\) and \(\beta_1=100; \beta_2=200\).
+Here, recruitment compensation from local patches \(\alpha_i\) gets
+averaged across the metapopulation leading to an average compensation
+ratio \(\bar{\alpha}\) of 3. Likewise, the total carrying capacity of
+the metapopulation \(\bar{\beta}\) becomes the summation of local patch
+carrying capacities \(\sum\beta_i\), which was 300. This scale of
+monitoring generates the following local patch and metapopulation
+dynamics:
 
 \begin{figure}[H]
 
@@ -248,22 +249,22 @@ following local patch and metapopulation dynamics:
 \subsubsection{Creating the spatial
 networks}\label{creating-the-spatial-networks}}
 
-The next aspect to our metapopulation model was connecting the set of
-patches to one another (Yeakel et al. 2014). We need to specify the
-number of patches, their arrangements (i.e., connections), and how far
-apart they are from one another. We followed some classic metapopulation
-and source-sink arrangements to create four networks that generalize
-across a few real-world topologies: a linear habitat network (e.g.,
-coastline), a dendritic or branching network (e.g., coastal rivers), a
-star network (e.g., mountain \& valley, or lake with inlet tributaries),
-and a grid network (e.g., grasslands).
+The next aspect to developing our metapopulation model was connecting
+the set of patches to one another (Yeakel et al. 2014). We needed to
+specify the number of patches, their arrangements (i.e., connections),
+and how far apart they are from one another. We followed some classic
+metapopulation and source-sink arrangements to create four networks that
+generalize across a few real-world topologies: a linear habitat network
+(e.g., coastline), a dendritic or branching network (e.g., coastal
+rivers), a star network (e.g., mountain \& valley, or lake with inlet
+tributaries), and a grid network (e.g., grasslands).
 
 To make networks comparable, each spatial network type needs the same
 leading parameters (e.g., number of patches \(P\) and mean distance
 between neighboring patches \(\bar{d}\)). In this case, we set \(P\) to
 \texttt{16} and \(\bar{d}\) to \texttt{1} unit (distance units are
 arbitrary). We used the \texttt{igraph} package (Csardi \& Nepusz 2006)
-and some custom code to arrange our spatial networks as the following:
+to arrange our spatial networks as the following:
 
 \begin{figure}[H]
 
@@ -275,8 +276,7 @@ and some custom code to arrange our spatial networks as the following:
 \end{figure}
 
 Note that distances between neighbor patches in the above networks are
-equal. An example dispersal matrix for the grid network can be found in
-Table S1.
+equal. Table S1 shows an example dispersal matrix for a grid network.
 
 \begin{table}
 
@@ -352,7 +352,7 @@ patch (i.e., \(j\neq i\). With \(\bar{d}= 1\), \(m=0.5\),
 
 In all scenarios, disturbance was applied after \texttt{50} years of
 equilibrating the metapopulation at pristine conditions. We then applied
-the disturbance regime at year \texttt{50} (the regime varied from
+a pulsed disturbance regime at year \texttt{50} (the regime varied from
 \emph{uniform}, \emph{localized, even}, and \emph{localized, uneven} -
 see \emph{Scenarios} below). Disturbance immediately removed a fixed
 proportion of the metapopulation adults at that time (i.e., \texttt{0.9}
