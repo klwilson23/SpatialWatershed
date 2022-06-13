@@ -1,5 +1,6 @@
 ---
-title: "Managing emergent recovery dynamics in at-risk metapopulations"
+title: "Supporting information for: Wilson *et al.* 2022. Managing emergent spatial recoveries in at-risk metapopulations. In: *Ecological Applications*."
+subtitle: "**Appendix S1:** Overview of metapopulation model description & detailed results"
 author: |
   | Kyle L. Wilson$^\textup{1,2}$^[Corresponding author - email: klwilson.ccira@gmail.com], Alexandra C. Sawyer$^\textup{1}$, Anna Potapova$^\textup{1}$, Colin J. Bailey$^\textup{1}$,Daniella LoScerbo$^\textup{3,4}$,
   | Elissa K. Sweeney-Bergen$^\textup{1,5}$, Emma E. Hodgson$^\textup{1,4}$, Kara J. Pitman$^\textup{1}$, Karl M. Seitz$^\textup{1}$,
@@ -21,6 +22,7 @@ output:
   pdf_document:
     keep_tex: yes
     latex_engine: xelatex
+    number_sections: yes
   highlight: tango
   html_document:
   word_document: default
@@ -28,7 +30,7 @@ output:
   toc: true
   fontsize: 11pt
   fig_caption: yes
-subtitle: 'Supplemental materials: Model details & results'
+  number_sections: yes
 bibliography: Metapop_references.bib
 csl: conservation-letters.csl
 geometry: margin=0.75in
@@ -38,6 +40,7 @@ filters:
   - type: pandoc-citeproc
 header-includes:
 - \usepackage{setspace}
+- \setcounter{section}{1}
 - \singlespacing
 - \usepackage{wrapfig}
 - \usepackage{lipsum}
@@ -114,7 +117,7 @@ source("Functions/finding MSY.R")
 
 \pagestyle{fancy}
 \fancyhead[LO,LE]{Wilson \textit{et al.}}
-\fancyhead[RO,RE]{\textbf{Appendix A}: Emergent spatial recoveries}
+\fancyhead[RO,RE]{\textbf{Appendix S1}: Emergent spatial recoveries}
 
 ## Metapopulation model
 ### Local & metapopulation dynamics
