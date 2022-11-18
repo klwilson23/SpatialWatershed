@@ -7,8 +7,8 @@ re_runresults[8997:9000,]
 results$network <- factor(results$network,levels=unique(results$network),labels=c("linear","dendritic","star","grid"))
 scenarios$network <- factor(scenarios$network,levels=unique(scenarios$network),labels=c("linear","dendritic","star","grid"))
 
-pairs(results[8997:9000,-c(1:8)],re_runresults[8997:9000,-c(1:8)])
-cbind(results[8997:9000,],re_runresults[8997:9000,-c(1:8)])
+#pairs(results[8997:9000,-c(1:8)],re_runresults[8997:9000,-c(1:8)])
+#cbind(results[8997:9000,],re_runresults[8997:9000,-c(1:8)])
 library(mvtnorm)
 library(vioplot)
 library(ggplot2)
