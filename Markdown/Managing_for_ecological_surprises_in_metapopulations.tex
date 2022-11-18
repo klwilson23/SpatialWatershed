@@ -4,49 +4,6 @@
 %
 \documentclass[
 ]{article}
-\title{Supporting information for: Wilson \emph{et al.} 2022. Managing
-emergent spatial recoveries in at-risk metapopulations. In:
-\emph{Ecological Applications}.}
-\usepackage{etoolbox}
-\makeatletter
-\providecommand{\subtitle}[1]{% add subtitle to \maketitle
-  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
-}
-\makeatother
-\subtitle{\textbf{Appendix S1:} Overview of metapopulation model
-description \& detailed results}
-\author{Kyle L. Wilson\(^\textup{1,2}\)\footnote{Corresponding author -
-  email:
-  \href{mailto:klwilson.ccira@gmail.com}{\nolinkurl{klwilson.ccira@gmail.com}}},
-Alexandra C. Sawyer\(^\textup{1}\), Anna Potapova\(^\textup{1}\), Colin
-J. Bailey\(^\textup{1}\),Daniella LoScerbo\(^\textup{3,4}\),\\
-Elissa K. Sweeney-Bergen\(^\textup{1,5}\), Emma E.
-Hodgson\(^\textup{1,4}\), Kara J. Pitman\(^\textup{1}\), Karl M.
-Seitz\(^\textup{1}\),\\
-Lauren Law\(^\textup{1,6}\), Luke Warkentin\(^\textup{1,7}\), Samantha
-M. Wilson\(^\textup{1}\), William I. Atlas\(^\textup{1,8}\),\\
-Douglas C. Braun\(^\textup{3,5}\), Matthew R. Sloat\(^\textup{8}\), M.
-Tim Tinker\(^\textup{9}\),\\
-and Jonathan W. Moore\(^\textup{1,3}\)\\
-\strut \\
-\(^\textup{1}\)Earth to Ocean Research Group, Simon Fraser University\\
-\(^\textup{2}\)Central Coast Indigenous Resource Alliance, Campbell
-River, BC\\
-\(^\textup{3}\)Resource and Environmental Management, Simon Fraser
-University\\
-\(^\textup{4}\)Fisheries \& Oceans Canada, Cultus Lake Laboratory,
-Cultus Lake, BC\\
-\(^\textup{5}\)Ministry of Forests, Lands, Natural Resource Operations,
-and Rural Development, Smithers, BC\\
-\(^\textup{6}\)Fisheries \& Oceans Canada, Salmonid Enhancement Program,
-Nanaimo, BC\\
-\(^\textup{7}\)Fisheries \& Oceans Canada, North Coast Stock Assessment,
-Smithers, BC\\
-\(^\textup{8}\)Wild Salmon Center, Portland, OR\\
-\(^\textup{9}\)Ecology and Evolutionary Biology, University of
-California Santa Cruz}
-\date{13 June 2022}
-
 \usepackage{amsmath,amssymb}
 \usepackage{lmodern}
 \usepackage{iftex}
@@ -76,24 +33,7 @@ California Santa Cruz}
   \KOMAoptions{parskip=half}}
 \makeatother
 \usepackage{xcolor}
-\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
-\hypersetup{
-  pdftitle={Supporting information for: Wilson et al. 2022. Managing emergent spatial recoveries in at-risk metapopulations. In: Ecological Applications.},
-  hidelinks,
-  pdfcreator={LaTeX via pandoc}}
-\urlstyle{same} % disable monospaced font for URLs
 \usepackage[margin=0.75in]{geometry}
-\usepackage{longtable,booktabs,array}
-\usepackage{calc} % for calculating minipage widths
-% Correct order of tables after \paragraph or \subparagraph
-\usepackage{etoolbox}
-\makeatletter
-\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
-\makeatother
-% Allow footnotes in longtable head/foot
-\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
-\makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
@@ -153,9 +93,74 @@ California Santa Cruz}
 \usepackage{booktabs}
 \usepackage{makecell}
 \DeclareMathOperator{\EX}{\mathbb{E}}% expected value
+\usepackage{dcolumn}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={Supporting information for: Wilson et al. 2022. The role of spatial structure on recovery of at-risk metapopulations. In: Ecological Applications.},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Supporting information for: Wilson \emph{et al.} 2022. The role
+of spatial structure on recovery of at-risk metapopulations. In:
+\emph{Ecological Applications}.}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{\textbf{Appendix S1:} Overview of metapopulation model
+description \& detailed results}
+\author{Kyle L. Wilson\(^\textup{1,2}\)\footnote{Corresponding author -
+  email:
+  \href{mailto:klwilson.ccira@gmail.com}{\nolinkurl{klwilson.ccira@gmail.com}}},
+Alexandra C. Sawyer\(^\textup{1}\), Anna Potapova\(^\textup{1}\), Colin
+J. Bailey\(^\textup{1}\),Daniella LoScerbo\(^\textup{3,4}\),\\
+Elissa K. Sweeney-Bergen\(^\textup{1,5}\), Emma E.
+Hodgson\(^\textup{1,4}\), Kara J. Pitman\(^\textup{1}\), Karl M.
+Seitz\(^\textup{1}\),\\
+Lauren Law\(^\textup{1,6}\), Luke Warkentin\(^\textup{1,7}\), Samantha
+M. Wilson\(^\textup{1}\), William I. Atlas\(^\textup{1,8}\),\\
+Douglas C. Braun\(^\textup{3,5}\), Matthew R. Sloat\(^\textup{8}\), M.
+Tim Tinker\(^\textup{9}\),\\
+and Jonathan W. Moore\(^\textup{1,3}\)\\
+\strut \\
+\(^\textup{1}\)Earth to Ocean Research Group, Simon Fraser University\\
+\(^\textup{2}\)Central Coast Indigenous Resource Alliance, Campbell
+River, BC\\
+\(^\textup{3}\)Resource and Environmental Management, Simon Fraser
+University\\
+\(^\textup{4}\)Fisheries \& Oceans Canada, Cultus Lake Laboratory,
+Cultus Lake, BC\\
+\(^\textup{5}\)Ministry of Forests, Lands, Natural Resource Operations,
+and Rural Development, Smithers, BC\\
+\(^\textup{6}\)Fisheries \& Oceans Canada, Salmonid Enhancement Program,
+Nanaimo, BC\\
+\(^\textup{7}\)Fisheries \& Oceans Canada, North Coast Stock Assessment,
+Smithers, BC\\
+\(^\textup{8}\)Wild Salmon Center, Portland, OR\\
+\(^\textup{9}\)Ecology and Evolutionary Biology, University of
+California Santa Cruz}
+\date{18 November 2022}
 
 \begin{document}
 \maketitle
@@ -621,6 +626,39 @@ e.g., a mixed-stock fishery).
 \end{figure}
 \newpage
 
+\hypertarget{sensitivity-test-of-mean-recovery-metrics}{%
+\subsection{Sensitivity test of mean recovery
+metrics}\label{sensitivity-test-of-mean-recovery-metrics}}
+
+\hypertarget{determining-the-number-of-stochastic-simulations}{%
+\subsubsection{Determining the number of stochastic
+simulations}\label{determining-the-number-of-stochastic-simulations}}
+
+The total number of scenarios resulted in a long computation time to run
+all simulations a large number of times necessary to evaluate how
+metapopulation responded, on average, to our ecological and disturbance
+scenarios. To determine a sufficient number of bootstrap iterations to
+run, we ran a sensitivity test to explore the relative sensitivity of
+the mean for a few recovery metrics of interest (recovery rate) to the
+number of stochastic simulations ran per scenario. Below, we repeated
+the scenario for a metapopulation with a dendritic network, with high
+stochasticity, locally uneven disturbances, large spatial-temporal
+correlations, variable patch productivities, and variable patch
+capacities along gradients of 10, 100, 500, and 1,000 stochastic
+simulations. Based on these preliminary results, we see that the mean
+for most metrics was relatively insensitive with at least 100
+simulations.
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/bootstrap results-1} 
+
+}
+
+\caption{Sensitivity test of mean recovery metrics to number of iterations to bootstrap the stochastic simulations. Example metapopulation consisted of a dendritic network, high recruitment stochasticity, locally uneven disturbance regime, large spatial-temporal correlations, variable patch productivities, and variable patch capacities tested along gradients of 10, 100, 500, and 1,000 bootstrapped iterations.}\label{fig:bootstrap results}
+\end{figure}
+\newpage
+
 \hypertarget{general-patterns}{%
 \subsection{General patterns}\label{general-patterns}}
 
@@ -678,7 +716,7 @@ pre-disturbance), and \emph{relative production}.
 
 }
 
-\caption{Violin plots showing distribution of the risk of non-recovery for metapopulations along gradients of network configuration, dispersal categories (low=0.001; high>0.001), stochasticity (low=0.001; high=0.1, spatial-temporal correlations (low~0; high=0.6), and spatial distribution of disturbance.}\label{fig:violin plots of risk of non-recovery}
+\caption{Violin plots showing distribution of the risk of non-recovery for metapopulations along gradients of network configuration, dispersal categories (low≤0.001; high>0.001), stochasticity (low=0.001; high=0.1, spatial-temporal correlations (low~0; high=0.6), and spatial distribution of disturbance.}\label{fig:violin plots of risk of non-recovery}
 \end{figure}
 
 Next, we show violin plots demonstrating the long-term impacts to patch
@@ -690,7 +728,7 @@ occupancy.
 
 }
 
-\caption{Violin plots showing distribution of patch occupancies for metapopulations along gradients of network configuration, dispersal categories (low=0.001; high>0.001), stochasticity (low=0.001; high=0.1, spatial-temporal correlations (low~0; high=0.6), and spatial distribution of disturbance.}\label{fig:violin plots of risk of patch occupancy}
+\caption{Violin plots showing distribution of patch occupancies for metapopulations along gradients of network configuration, dispersal categories (low≤0.001; high>0.001), stochasticity (low=0.001; high=0.1, spatial-temporal correlations (low~0; high=0.6), and spatial distribution of disturbance.}\label{fig:violin plots of risk of patch occupancy}
 \end{figure}
 
 Next, we show variation in relative production metrics. Figure S10 shows
@@ -703,7 +741,7 @@ Hence, Figure S12 and S13 look quite similar.
 
 }
 
-\caption{Violin plots showing distribution of relative production for metapopulations along gradients of network configuration, dispersal categories (low=0.001; high>0.001), stochasticity (low=0.001; high=0.1, spatial-temporal correlations (low~0; high=0.6), and spatial distribution of disturbance.}\label{fig:violin plots of risk of relative production}
+\caption{Violin plots showing distribution of relative production for metapopulations along gradients of network configuration, dispersal categories (low≤0.001; high>0.001), stochasticity (low=0.001; high=0.1, spatial-temporal correlations (low~0; high=0.6), and spatial distribution of disturbance.}\label{fig:violin plots of risk of relative production}
 \end{figure}
 
 Dispersal, landscape structure, and local density-dependence also
@@ -804,104 +842,46 @@ was low, and many local patches remained unoccupied and (5) critical
 risk -- where metapopulations failed to recover, abundances remained
 low, and the risk of non-recovery was high.
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.14}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.12}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.08}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.12}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.13}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.08}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.17}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.16}}@{}}
-\caption{The mean recovery metrics and metapopulation abundance (N/K)
-for each of five common metapopulation recovery regimes supported by
-hierarchical clustering analyses across gradients in disturbance and
-network structure.}\tabularnewline
+\begin{longtable}[t]{>{\raggedright\arraybackslash}p{2.75cm}>{\raggedright\arraybackslash}p{1.4cm}>{\raggedright\arraybackslash}p{2.25cm}>{\centering\arraybackslash}p{1.1cm}>{\centering\arraybackslash}p{1.4cm}>{\centering\arraybackslash}p{1.1cm}>{\centering\arraybackslash}p{1.4cm}>{\centering\arraybackslash}p{1.7cm}>{\centering\arraybackslash}p{1.7cm}}
+\caption{\label{tab:clustering table}The mean recovery metrics, total sample size per regime (No.), and metapopulation abundance (N/K) for each of five common metapopulation recovery regimes supported by hierarchical clustering analyses across gradients in disturbance and network structure.}\\
 \toprule
-\begin{minipage}[b]{\linewidth}\raggedright
-Regime
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Disturbance
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Network
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Recovery rate
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\% non-recovery
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Occupancy
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Relative production
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Relative abundance
-\end{minipage} \\
+Regime & Network & Disturbance & No. & Recovery rate & \% non-recovery & Occupancy & Relative production & Relative abundance\\
 \midrule
-\endfirsthead
-\toprule
-\begin{minipage}[b]{\linewidth}\raggedright
-Regime
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Disturbance
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Network
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Recovery rate
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\% non-recovery
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Occupancy
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Relative production
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Relative abundance
-\end{minipage} \\
-\midrule
-\endhead
-Resilient & Uniform & Linear & 0.83 & 2 & 0.99 & 0.98 & 1.00 \\
-Resilient & Local, even & Linear & 0.78 & 5 & 0.94 & 0.95 & 0.99 \\
-Slow recovery & Local, even & Linear & 0.69 & 3 & 0.77 & 0.87 & 0.99 \\
-Hidden collapses & Local, even & Linear & 0.61 & 3 & 0.59 & 0.79 &
-0.99 \\
-Lost capacity & Local, even & Linear & 0.17 & 77 & 0.58 & 0.79 & 0.66 \\
-Slow recovery & Local, uneven & Linear & 0.72 & 0 & 0.64 & 0.81 &
-1.00 \\
-Hidden collapses & Local, uneven & Linear & 0.34 & 21 & 0.34 & 0.67 &
-0.97 \\
-Critical risk & Local, uneven & Linear & 0.00 & 100 & 0.10 & 0.54 &
-0.09 \\
-Resilient & Uniform & Dendritic & 0.82 & 2 & 0.99 & 0.98 & 0.99 \\
-Resilient & Local, even & Dendritic & 0.78 & 5 & 0.94 & 0.96 & 0.99 \\
-Slow recovery & Local, even & Dendritic & 0.70 & 3 & 0.77 & 0.87 &
-0.99 \\
-Hidden collapses & Local, even & Dendritic & 0.65 & 0 & 0.59 & 0.78 &
-0.99 \\
-Lost capacity & Local, even & Dendritic & 0.16 & 78 & 0.58 & 0.78 &
-0.65 \\
-Slow recovery & Local, uneven & Dendritic & 0.73 & 0 & 0.66 & 0.81 &
-0.99 \\
-Hidden collapses & Local, uneven & Dendritic & 0.49 & 8 & 0.36 & 0.68 &
-0.99 \\
-Critical risk & Local, uneven & Dendritic & 0.00 & 100 & 0.10 & 0.54 &
-0.08 \\
-Resilient & Uniform & Star & 0.81 & 3 & 0.99 & 0.98 & 0.99 \\
-Resilient & Local, even & Star & 0.75 & 7 & 0.93 & 0.95 & 0.99 \\
-Slow recovery & Local, even & Star & 0.68 & 5 & 0.75 & 0.86 & 0.99 \\
-Hidden collapses & Local, even & Star & 0.72 & 0 & 0.55 & 0.76 & 1.00 \\
-Lost capacity & Local, even & Star & 0.16 & 78 & 0.58 & 0.78 & 0.65 \\
-Slow recovery & Local, uneven & Star & 0.74 & 4 & 0.71 & 0.84 & 0.97 \\
-Hidden collapses & Local, uneven & Star & 0.57 & 9 & 0.45 & 0.72 &
-0.99 \\
-Critical risk & Local, uneven & Star & 0.00 & 100 & 0.10 & 0.54 &
-0.08 \\
-Resilient & Uniform & Grid & 0.82 & 2 & 0.99 & 0.98 & 1.00 \\
-Resilient & Local, even & Grid & 0.78 & 5 & 0.94 & 0.96 & 0.99 \\
-Slow recovery & Local, even & Grid & 0.73 & 3 & 0.81 & 0.89 & 0.99 \\
-Lost capacity & Local, even & Grid & 0.16 & 79 & 0.57 & 0.78 & 0.64 \\
-Slow recovery & Local, uneven & Grid & 0.76 & 0 & 0.73 & 0.85 & 1.00 \\
-Hidden collapses & Local, uneven & Grid & 0.56 & 7 & 0.46 & 0.73 &
-0.99 \\
-Critical risk & Local, uneven & Grid & 0.00 & 100 & 0.10 & 0.54 &
-0.08 \\
+Resilient & Linear & Uniform & 792 & 0.83 & 2 & 0.99 & 0.98 & 1.00\\
+Resilient & Dendritic & Uniform & 792 & 0.82 & 2 & 0.99 & 0.98 & 0.99\\
+Resilient & Star & Uniform & 792 & 0.81 & 3 & 0.99 & 0.98 & 0.99\\
+Resilient & Grid & Uniform & 792 & 0.82 & 2 & 0.99 & 0.98 & 1.00\\
+Resilient & Linear & Local, even & 205 & 0.78 & 5 & 0.94 & 0.95 & 0.99\\
+Resilient & Dendritic & Local, even & 201 & 0.78 & 5 & 0.94 & 0.96 & 0.99\\
+Resilient & Star & Local, even & 274 & 0.75 & 7 & 0.93 & 0.95 & 0.99\\
+Resilient & Grid & Local, even & 215 & 0.78 & 5 & 0.94 & 0.96 & 0.99\\
+\addlinespace
+Slow recovery & Linear & Local, even & 528 & 0.69 & 3 & 0.77 & 0.87 & 0.99\\
+Slow recovery & Dendritic & Local, even & 533 & 0.70 & 3 & 0.77 & 0.87 & 0.99\\
+Slow recovery & Star & Local, even & 466 & 0.68 & 5 & 0.75 & 0.86 & 0.99\\
+Slow recovery & Grid & Local, even & 529 & 0.73 & 3 & 0.81 & 0.89 & 0.99\\
+Slow recovery & Linear & Local, uneven & 11 & 0.72 & 0 & 0.64 & 0.81 & 1.00\\
+Slow recovery & Dendritic & Local, uneven & 69 & 0.73 & 0 & 0.66 & 0.81 & 0.99\\
+Slow recovery & Star & Local, uneven & 114 & 0.74 & 4 & 0.71 & 0.84 & 0.97\\
+Slow recovery & Grid & Local, uneven & 244 & 0.76 & 0 & 0.73 & 0.85 & 1.00\\
+\addlinespace
+Hidden collapses & Linear & Local, even & 9 & 0.61 & 3 & 0.59 & 0.79 & 0.99\\
+Hidden collapses & Dendritic & Local, even & 9 & 0.65 & 0 & 0.59 & 0.78 & 0.99\\
+Hidden collapses & Star & Local, even & 4 & 0.72 & 0 & 0.55 & 0.76 & 1.00\\
+Hidden collapses & Linear & Local, uneven & 709 & 0.34 & 21 & 0.34 & 0.67 & 0.97\\
+Hidden collapses & Dendritic & Local, uneven & 651 & 0.49 & 8 & 0.36 & 0.68 & 0.99\\
+Hidden collapses & Star & Local, uneven & 606 & 0.57 & 9 & 0.45 & 0.72 & 0.99\\
+Hidden collapses & Grid & Local, uneven & 476 & 0.56 & 7 & 0.46 & 0.73 & 0.99\\
+\addlinespace
+Lost capacity & Linear & Local, even & 50 & 0.17 & 77 & 0.58 & 0.79 & 0.66\\
+Lost capacity & Dendritic & Local, even & 49 & 0.16 & 78 & 0.58 & 0.78 & 0.65\\
+Lost capacity & Star & Local, even & 48 & 0.16 & 78 & 0.58 & 0.78 & 0.65\\
+Lost capacity & Grid & Local, even & 48 & 0.16 & 79 & 0.57 & 0.78 & 0.64\\
+\addlinespace
+Critical risk & Linear & Local, uneven & 72 & 0.00 & 100 & 0.10 & 0.54 & 0.09\\
+Critical risk & Dendritic & Local, uneven & 72 & 0.00 & 100 & 0.10 & 0.54 & 0.08\\
+Critical risk & Star & Local, uneven & 72 & 0.00 & 100 & 0.10 & 0.54 & 0.08\\
+Critical risk & Grid & Local, uneven & 72 & 0.00 & 100 & 0.10 & 0.54 & 0.08\\
 \bottomrule
 \end{longtable}
 
@@ -940,26 +920,29 @@ Anderson, S.C., Moore, J.W., McClure, M.M., Dulvy, N.K. \& Cooper, A.B.
 change.} \emph{Ecological Applications}, 25, 559--572.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Bowlby2020}{}}%
-Bowlby, H.D. \& Gibson, A.J.F. (2020). {Evaluating whether
-metapopulation structure benefits endangered diadromous fishes}.
+Bowlby, H.D. \& Gibson, A.J.F. (2020).
+\href{https://doi.org/10.1139/cjfas-2019-0001}{{Evaluating whether
+metapopulation structure benefits endangered diadromous fishes}}.
 \emph{Canadian Journal of Fisheries and Aquatic Sciences}, 77, 388--400.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Csardi2006}{}}%
-Csardi, G. \& Nepusz, T. (2006). {The igraph software package for
-complex network research}. \emph{InterJournal}, Complex Sy, 1695.
+Csardi, G. \& Nepusz, T. (2006). \href{https://igraph.org}{{The igraph
+software package for complex network research}}. \emph{InterJournal},
+Complex Sy, 1695.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Forrest2010}{}}%
 Forrest, R.E., McAllister, M.K., Dorn, M.W., Martell, S.J.D. \& Stanley,
-R.D. (2010). {Hierarchical Bayesian estimation of recruitment parameters
-and reference points for Pacific rockfishes (Sebastes spp.) under
-alternative assumptions about the stock--recruit function}.
-\emph{Canadian Journal of Fisheries and Aquatic Sciences}, 67,
-1611--1634.
+R.D. (2010). \href{https://doi.org/10.1139/f10-077}{{Hierarchical
+Bayesian estimation of recruitment parameters and reference points for
+Pacific rockfishes (Sebastes spp.) under alternative assumptions about
+the stock--recruit function}}. \emph{Canadian Journal of Fisheries and
+Aquatic Sciences}, 67, 1611--1634.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Fullerton2016}{}}%
 Fullerton, A.H., Anzalone, S., Moran, P., Van Doornik, D.M., Copeland,
-T. \& Zabel, R.W. (2016). {Setting spatial conservation priorities
-despite incomplete data for characterizing metapopulations}.
+T. \& Zabel, R.W. (2016).
+\href{https://doi.org/10.1002/eap.1411}{{Setting spatial conservation
+priorities despite incomplete data for characterizing metapopulations}}.
 \emph{Ecological Applications}, 26, 2558--2578.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Hennig2014}{}}%
@@ -969,19 +952,22 @@ knowledge discovery} (eds. Spiliopoulou, M., Schmidt-Thieme, L. \&
 Janning, R.). pp. 41--49.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Moore2021}{}}%
-Moore, J.W., Connors, B.M. \& Hodgson, E.E. (2021). {Conservation risks
-and portfolio effects in mixed‐stock fisheries}. \emph{Fish and
-Fisheries}, faf.12567.
+Moore, J.W., Connors, B.M. \& Hodgson, E.E. (2021).
+\href{https://doi.org/10.1111/faf.12567}{{Conservation risks and
+portfolio effects in mixed‐stock fisheries}}. \emph{Fish and Fisheries},
+faf.12567.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Murtagh2014}{}}%
-Murtagh, F. \& Legendre, P. (2014). {Ward's hierarchical agglomerative
-clustering method: which algorithms implement Ward's criterion?}
-\emph{Journal of Classification}, 31, 274--295.
+Murtagh, F. \& Legendre, P. (2014).
+\href{https://doi.org/10.1007/s00357-014-9161-z}{{Ward's hierarchical
+agglomerative clustering method: which algorithms implement Ward's
+criterion?}} \emph{Journal of Classification}, 31, 274--295.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Okamoto2020}{}}%
 Okamoto, D.K., Hessing‐Lewis, M., Samhouri, J.F., Shelton, A.O., Stier,
-A.C., Levin, P.S. \& Salomon, A.K. (2020). {Spatial variation in
-exploited metapopulations obscures risk of collapse}. \emph{Ecological
+A.C., Levin, P.S. \& Salomon, A.K. (2020).
+\href{https://doi.org/10.1002/eap.2051}{{Spatial variation in exploited
+metapopulations obscures risk of collapse}}. \emph{Ecological
 Applications}, 30, e02051.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Walters2004}{}}%
@@ -990,12 +976,14 @@ management}}. Princeton University Press.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Yeakel2014}{}}%
 Yeakel, J.D., Moore, J.W., Guimarães, P.R. \& Aguiar, M.A.M. de. (2014).
-{Synchronisation and stability in river metapopulation networks}.
-\emph{Ecology Letters}, 17, 273--283.
+\href{https://doi.org/10.1111/ele.12228}{{Synchronisation and stability
+in river metapopulation networks}}. \emph{Ecology Letters}, 17,
+273--283.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Zelnik2019}{}}%
-Zelnik, Y.R., Arnoldi, J. \& Loreau, M. (2019). {The three regimes of
-spatial recovery}. \emph{Ecology}, 100, e02586.
+Zelnik, Y.R., Arnoldi, J. \& Loreau, M. (2019).
+\href{https://doi.org/10.1002/ecy.2446}{{The three regimes of spatial
+recovery}}. \emph{Ecology}, 100, e02586.
 
 \end{CSLReferences}
 

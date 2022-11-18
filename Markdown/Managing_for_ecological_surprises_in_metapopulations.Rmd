@@ -1,5 +1,5 @@
 ---
-title: "Supporting information for: Wilson *et al.* 2022. Managing emergent spatial recoveries in at-risk metapopulations. In: *Ecological Applications*."
+title: "Supporting information for: Wilson *et al.* 2022. The role of spatial structure on recovery of at-risk metapopulations. In: *Ecological Applications*."
 subtitle: "**Appendix S1:** Overview of metapopulation model description & detailed results"
 author: |
   | Kyle L. Wilson$^\textup{1,2}$^[Corresponding author - email: klwilson.ccira@gmail.com], Alexandra C. Sawyer$^\textup{1}$, Anna Potapova$^\textup{1}$, Colin J. Bailey$^\textup{1}$,Daniella LoScerbo$^\textup{3,4}$,
@@ -58,6 +58,7 @@ header-includes:
 - \usepackage{booktabs}
 - \usepackage{makecell}
 - \DeclareMathOperator{\EX}{\mathbb{E}}% expected value
+- \usepackage{dcolumn}
 ---
 
 ```{r setup, include=FALSE}
@@ -86,6 +87,11 @@ knitr::knit_hooks$set(plot = function(x, options) {  # set new plot hook ...
     x  <- gsub("{figure}", "{wrapfigure}", x, fixed = T)  # also replace the environment ending
   }
   return(x)
+})
+
+options(knitr.table.format = function() {
+  if (knitr::is_latex_output())
+    "latex" else "pipe"
 })
 
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
@@ -462,6 +468,51 @@ set.seed(seed)
 dendriticSim3 <- metaPop(Npatches=16,networkType="dendritic",patchDistance=1,Nburnin=50,NyrsPost=100,omega=0.01,m=100,alpha=2,metaK=1600,cv=0.1,DistScenario="random_patch",magnitude_of_decline=0.9,lagTime=1,prodType="Beverton-Holt",rho.time=1e-5,rho.dist=1e5,compensationLag=25,dataWeighting=0.1,alphaVariable=TRUE,kVariable=TRUE,spatialPlots=TRUE)
 ```
 \newpage
+## Sensitivity test of mean recovery metrics
+### Determining the number of stochastic simulations
+The total number of scenarios resulted in a long computation time to run all simulations a large number of times necessary to evaluate how metapopulation responded, on average, to our ecological and disturbance scenarios. To determine a sufficient number of bootstrap iterations to run, we ran a sensitivity test to explore the relative sensitivity of the mean for a few recovery metrics of interest (recovery rate) to the number of stochastic simulations ran per scenario. Below, we repeated the scenario for a metapopulation with a dendritic network, with high stochasticity, locally uneven disturbances, large spatial-temporal correlations, variable patch productivities, and variable patch capacities along gradients of 10, 100, 500, and 1,000 stochastic simulations. Based on these preliminary results, we see that the mean for most metrics was relatively insensitive with at least 100 simulations.
+
+```{r bootstrap results, echo=FALSE,fig.height=6,fig.width=6,fig.cap="Sensitivity test of mean recovery metrics to number of iterations to bootstrap the stochastic simulations. Example metapopulation consisted of a dendritic network, high recruitment stochasticity, locally uneven disturbance regime, large spatial-temporal correlations, variable patch productivities, and variable patch capacities tested along gradients of 10, 100, 500, and 1,000 bootstrapped iterations.",fig.align="center"}
+library(ggplot2)
+Nlevels <- 11
+model <- "Beverton-Holt"
+# simulation parameters
+Npatches <- 16
+patchDist <- 1
+Nburnin <- 50
+NyrsPost <- 100
+Nyears <- Nburnin+NyrsPost
+compLag <- 25 # how many years to lag estimates of compensation
+dataWeighting <- 0.1 # penalty to past years for data weighting
+m <- 100 # distance decay function: penalty of 1 says about 60% of dispersing recruits move to neighbor patches. penalty of 2 says about 90% of dispersing recruits move to neighbor patches
+# adult stock-juvenile recruitment traits
+alpha <- 2
+metaK <- 1600
+# how big is the disturbance after Nburnin years?
+magnitude_of_decline <- 0.9
+# what is the lag time between recruits and spawners
+lagTime <- 1
+bootstrap_results <- readRDS("Simulations/bootstrap_results2022-11-17.rds")
+bootstrap_results$StateShift <- ((1-bootstrap_results$recovered)+(1-bootstrap_results$longOcc))/2
+bootstrap_results$RecoveryRate <- 1-bootstrap_results$recovery/NyrsPost
+bootstrap_results$collapsed <- 1-bootstrap_results$recovered
+
+bootstrap_results <- tidyr::pivot_longer(bootstrap_results,cols=colnames(bootstrap_results)[-c(1:8,35)],names_to="Metric",values_to="Value")
+sub_results <- bootstrap_results[bootstrap_results$Metric%in%c("RecoveryRate","collapsed","metaAbund","short_surp","med_surp","long_surp","shortOcc","medOcc","longOcc"),]
+
+sub_results$Metric <- factor(sub_results$Metric,levels=c("RecoveryRate","collapsed","metaAbund","short_surp","med_surp","long_surp","shortOcc","medOcc","longOcc"),labels=c("Recovery rate","Prop. of sims w/ no recovery","Metapopulation Abundance","Relative production (short-term)","Relative production (medium-term)","Relative production (long-term)","Relative occupancy (short-term)","Relative occupancy (medium-term)","Relative occupancy (long-term)"))
+
+ggplot(sub_results,aes(x=Nboots,y=Value,fill=Nboots)) +
+  geom_line()+
+  geom_point(pch=21)+
+  facet_wrap(~Metric) +
+  xlab("Number of bootstrap iterations") + ylab("Value for metric")+
+  theme_minimal()+
+  theme(legend.position="none") +
+  labs(title="Average recovery metrics",subtitle="Sensitivity of mean recovery metrics to the number of stochastic simulations")
+
+```
+\newpage
 ## General patterns
 
 ### Effects of disturbance regime
@@ -829,13 +880,22 @@ fitted <- readRDS("Simulations/clustering result.rds")
 results_clust$cluster_surprises <- results$cluster_surprises <- as.factor(fitted$groups)
 results$cluster_surprises <- factor(results$cluster_surprises,levels=1:5,labels=c("Resilient","Critical risk","Hidden collapses","Slow recovery","Lost capacity"))
 results$cluster_surprises <- factor(results$cluster_surprises,levels=c("Resilient","Slow recovery","Hidden collapses","Lost capacity","Critical risk"))
+results$total <- 1
+df <- aggregate(cbind(RecoveryRate,collapsed,longOcc,long_surp,metaAbund)~network_lab+disturb_lab+cluster_surprises,data=results,FUN=mean)
+df$freq <- aggregate(total~network_lab+disturb_lab+cluster_surprises,data=results,FUN=function(x){sum(x)})$total
+colnames(df) <- c("Network","Disturbance","Regime","Recovery rate","% non-recovery","Occupancy","Relative production","Relative abundance","No.")
+df <- df[,c("Regime","Network","Disturbance","No.","Recovery rate","% non-recovery","Occupancy","Relative production","Relative abundance")]
 
-df <- aggregate(cbind(RecoveryRate,collapsed,longOcc,long_surp,metaAbund)~cluster_surprises+disturb_lab+network_lab,data=results,FUN=mean)
-colnames(df) <- c("Regime","Disturbance","Network","Recovery rate","% non-recovery","Occupancy","Relative production","Relative abundance")
-kable(df,caption = 'The mean recovery metrics and metapopulation abundance (N/K) for each of five common metapopulation recovery regimes supported by hierarchical clustering analyses across gradients in disturbance and network structure.',digits=c(0,0,0,2,0,2,2,2),booktabs=TRUE, longtable = TRUE)
+linesep<-function(x,y=character()){
+  if(!length(x))
+    return(y)
+  linesep(x[-length(x)], c(rep('',x[length(x)]-1),'\\addlinespace',y))  
+}
 
-df <- aggregate(cbind(RecoveryRate,collapsed,longOcc,long_surp,metaAbund)~disturb_lab,data=results,FUN=mean)
-colnames(df) <- c("Disturbance","Recovery rate","% non-recovery","Occupancy","Relative production","Relative abundance")
+knitr::kable(df,caption = 'The mean recovery metrics, total sample size per regime (No.), and metapopulation abundance (N/K) for each of five common metapopulation recovery regimes supported by hierarchical clustering analyses across gradients in disturbance and network structure.',digits=c(0,0,0,0,2,0,2,2,2),booktabs=TRUE, longtable = TRUE,align='lllcccccc',linesep=linesep(c(8,8,7,4,4))) %>% kableExtra::column_spec(column = c(1), width = "2.75cm") %>% kableExtra::column_spec(column = 3, width = "2.25cm") %>%   kableExtra::column_spec(column = c(2,5,7), width = "1.4cm") %>%   kableExtra::column_spec(column = c(4,6), width = "1.1cm") %>%   kableExtra::column_spec(column = c(8,9), width = "1.7cm")
+
+# df <- aggregate(cbind(RecoveryRate,collapsed,longOcc,long_surp,metaAbund)~disturb_lab,data=results,FUN=mean)
+# colnames(df) <- c("Disturbance","Recovery rate","% non-recovery","Occupancy","Relative production","Relative abundance")
 
 ```
 
