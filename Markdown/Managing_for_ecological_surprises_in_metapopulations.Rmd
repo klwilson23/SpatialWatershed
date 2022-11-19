@@ -904,7 +904,7 @@ knitr::kable(df,caption = 'The mean recovery metrics, total sample size per regi
 # df <- aggregate(cbind(RecoveryRate,collapsed,longOcc,long_surp,metaAbund)~disturb_lab,data=results,FUN=mean)
 # colnames(df) <- c("Disturbance","Recovery rate","% non-recovery","Occupancy","Relative production","Relative abundance")
 
-lm(cluster_surprises~network_lab+disturb_lab+dispersal_range+patchScen+stochastic_lab+space_var+temporal_var,data=results)
+#lm(cluster_surprises~network_lab+disturb_lab+dispersal_range+patchScen+stochastic_lab+space_var+temporal_var,data=results)
 
 ```
 
