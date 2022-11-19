@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999994 (MiKTeX 22.10) (preloaded format=xelatex 2022.11.17)  18 NOV 2022 09:23
+This is XeTeX, Version 3.141592653-2.6-0.999994 (MiKTeX 22.10) (preloaded format=xelatex 2022.11.17)  18 NOV 2022 12:44
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1074,13 +1074,13 @@ LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
 (Font)              scaled to size 9.99893pt on input line 1.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
 (Font)              scaled to size 6.99925pt on input line 1.
-[1
-
-])
+)
 \tf@toc=\write3
 \openout3 = `Managing_for_ecological_surprises_in_metapopulations.toc'.
 
-[2]
+[1
+
+]
 
 Package fancyhdr Warning: \fancyhead's `E' option without twoside option is use
 less.
@@ -1097,17 +1097,17 @@ File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/r
 ecruit curves-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/re
 cruit curves-1.pdf>
-[3]
+[2]
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/n
 etworks-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/ne
 tworks-1.pdf>
-[4] [5]
+[3] [4]
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/d
 ispersal-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/di
 spersal-1.pdf>
-[6]
+[5]
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/e
 xample disturbance regime-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/ex
@@ -1116,14 +1116,14 @@ File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/i
 ndependent stochasticity-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/in
 dependent stochasticity-1.pdf>
-[7] [8]
+[6] [7]
 Missing character: There is no ≥ in font [lmroman10-regular]:mapping=tex-text;!
-[9]
+[8]
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/e
 xample results1-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/ex
 ample results1-1.pdf>
-[10]
+[9] [10]
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/e
 xample results2-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/ex
@@ -1183,57 +1183,57 @@ lustering plot-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/cl
 ustering plot-1.pdf>
 [20]
-Overfull \hbox (4.8618pt too wide) in paragraph at lines 848--848
+Overfull \hbox (4.8618pt too wide) in paragraph at lines 912--912
  \TU/lmr/m/n/10 recovery| 
  []
 
 
-Overfull \hbox (8.22632pt too wide) in paragraph at lines 848--848
+Overfull \hbox (8.22632pt too wide) in paragraph at lines 912--912
  []|\TU/lmr/m/n/10 Occupancy| 
  []
 
 
-Overfull \hbox (1.17632pt too wide) in paragraph at lines 851--851
+Overfull \hbox (1.17632pt too wide) in paragraph at lines 915--915
 []|\TU/lmr/m/n/10 Dendritic|  
  []
 
 
-Overfull \hbox (1.17632pt too wide) in paragraph at lines 855--855
+Overfull \hbox (1.17632pt too wide) in paragraph at lines 919--919
 []|\TU/lmr/m/n/10 Dendritic|  
  []
 
 
-Overfull \hbox (1.17632pt too wide) in paragraph at lines 860--860
+Overfull \hbox (1.17632pt too wide) in paragraph at lines 924--924
 []|\TU/lmr/m/n/10 Dendritic|  
  []
 
 
-Overfull \hbox (1.17632pt too wide) in paragraph at lines 864--864
+Overfull \hbox (1.17632pt too wide) in paragraph at lines 928--928
 []|\TU/lmr/m/n/10 Dendritic|  
  []
 
 
-Overfull \hbox (1.17632pt too wide) in paragraph at lines 869--869
+Overfull \hbox (1.17632pt too wide) in paragraph at lines 933--933
 []|\TU/lmr/m/n/10 Dendritic|  
  []
 
 
-Overfull \hbox (1.17632pt too wide) in paragraph at lines 872--872
+Overfull \hbox (1.17632pt too wide) in paragraph at lines 936--936
 []|\TU/lmr/m/n/10 Dendritic|  
  []
 
 
-Overfull \hbox (1.17632pt too wide) in paragraph at lines 877--877
+Overfull \hbox (1.17632pt too wide) in paragraph at lines 941--941
 []|\TU/lmr/m/n/10 Dendritic|  
  []
 
 
-Overfull \hbox (1.17632pt too wide) in paragraph at lines 882--882
+Overfull \hbox (1.17632pt too wide) in paragraph at lines 946--946
 []|\TU/lmr/m/n/10 Dendritic|  
  []
 
 
-Overfull \hbox (23.21037pt too wide) in alignment at lines 845--886
+Overfull \hbox (23.21037pt too wide) in alignment at lines 909--950
  [] [] [] [] [] [] [] [] [] 
  []
 
@@ -1244,10 +1244,10 @@ luster results-1.pdf Graphic file (type pdf)
 uster results-1.pdf>
 [22] [23] (Managing_for_ecological_surprises_in_metapopulations.aux) ) 
 Here is how much of TeX's memory you used:
- 21648 strings out of 410432
- 407391 string characters out of 2810511
- 1054986 words of memory out of 3000000
- 42593 multiletter control sequences out of 15000+600000
+ 21646 strings out of 410432
+ 407335 string characters out of 2810511
+ 1055013 words of memory out of 3000000
+ 42591 multiletter control sequences out of 15000+600000
  475832 words of font info for 84 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  86i,15n,121p,1203b,716s stack positions out of 10000i,1000n,20000p,200000b,80000s

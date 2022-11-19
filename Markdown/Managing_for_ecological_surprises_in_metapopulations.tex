@@ -192,7 +192,7 @@ et al. 2016; Zelnik et al. 2019; Bowlby \& Gibson 2020; Okamoto et al.
 2020):
 
 \begin{align}
-N_{i,t}= R_{i,t}+{\sum\limits_{\substack{j=1 \\ j\neq i}}^{P} \omega p_{i,j}R_{j,t}}-d_{i,t}R_{i,t}-\omega R_{i,t}
+N_{i,t}= (1-d_{i,t})(R_{i,t}+{\sum\limits_{\substack{j=1 \\ j\neq i}}^{P} \omega p_{i,j}R_{j,t}}-\omega R_{i,t})
 \end{align}
 
 where \(N_{i,t}\) was the number of adults in patch \emph{i} at time
@@ -201,12 +201,15 @@ where \(N_{i,t}\) was the number of adults in patch \emph{i} at time
 was the number of recruits immigrating into patch \emph{i} from any
 other patch, \(\omega\) was the proportion of local recruits to
 disperse, \(p_{i,j}\) was a distance-dependent dispersal function, and
-\(d_{i,t}\) was the proportion of recruits that die due to disturbance
-regime.
+\(d_{i,t}\) was the proportion of post-dispersal recruits lost from the
+disturbance regime.
 
 Figure S1 shows how local patch recruitment at time \emph{t} depended on
 adult densities at \emph{t-1} and followed a reparameterized
-Beverton-Holt function (Walters \& Martell 2004; Forrest et al. 2010):
+Beverton-Holt function based on compensation ratio (Box 3.1 in Walters
+\& Martell 2004) and ignoring age-structure to model adult-to-adult
+dynamics, i.e., setting \(\phi_{E_{0}}=1\), \(\phi_{B_{0}}=1\) and
+\(R_0=N_0\) in Table 3 in Forrest et al. (2010):
 
 \begin{align}
 R_{i,t}=\cfrac{\alpha_iN_{i,t-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{i,t-1}}\epsilon_{i,t}
@@ -510,8 +513,9 @@ temporal and spatial recovery regime of the metapopulation.
 \subsection{Scenarios}\label{scenarios}}
 
 We tested all combinations of the following eight processes (below) and
-ran \texttt{100} stochastic iterations per scenario to estimate the mean
-outcome for each of the above recovery metrics:
+ran \texttt{100} stochastic iterations per scenario (see section on
+\emph{Sensitivity test of mean recovery metrics} below) to estimate the
+mean outcome for each of the above recovery metrics:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -519,10 +523,35 @@ outcome for each of the above recovery metrics:
   Homogenous and spatially variable recruitment compensation ratio
   across patches, i.e.~intrinsic rate of population growth
   (\(\alpha_i\)).
+
+  \begin{enumerate}
+  \def\labelenumii{\alph{enumii}.}
+  \tightlist
+  \item
+    when \emph{variable},
+    \(\alpha_i \sim TN(\mu=\bar{\alpha}, \sigma_{\alpha}=0.3\bar{\alpha})\)
+    with a truncation applied such that \(5 \leq \alpha_i \geq 1\) to
+    ensure that patches could, at minimum, could replace themselves but
+    with an upper limit of a 5-fold improvement to per-capita
+    productivity.
+  \end{enumerate}
 \item
   Homogenous and spatially variable local carrying capacity across
   patches, i.e.~asymptote of expected recruits at high adult densities
   (\(\beta_i\))
+
+  \begin{enumerate}
+  \def\labelenumii{\alph{enumii}.}
+  \tightlist
+  \item
+    when \emph{variable}, \(\beta_i \sim multinomial(p_i,N)\) where
+    \(p_i=\cfrac{e^{\theta_i}}{ \sum{e^{\theta_i}}}\),
+    \(\theta_i \sim uniform(0,1)\), and \(N=\bar{\beta}\) - with the
+    added constraint that \(\beta_i<0.1\bar{\beta}\) to ensure that no
+    one patch exceed 10\% of total metapopulation abundance (needed
+    constraint for modelling \emph{local, even} and \emph{local, uneven}
+    disturbances below).
+  \end{enumerate}
 \item
   Disturbances where a proportion of individuals removed from
   metapopulation (e.g., \texttt{0.90}) occurs.
@@ -534,13 +563,52 @@ outcome for each of the above recovery metrics:
     \emph{uniform} - random individuals removed at equal vulnerability
     across all patches.
   \item
-    \emph{localized, even} - random individuals removed from randomly
+    \emph{local, even} - random individuals removed from randomly
     selected subset of patches (as long as the target individuals lost
     in the metapopulation can be achieved in that subset of patches)
+
+    \begin{enumerate}
+    \def\labelenumiii{\roman{enumiii}.}
+    \tightlist
+    \item
+      Specifically, a numerical algorithm was used to search and find a
+      set of disturbance conditions whereby removing a random proportion
+      of individuals from a random subset of local patches achieved
+      both:
+
+      \begin{itemize}
+      \tightlist
+      \item
+        total loss summed to a \textasciitilde90\% loss in abundance to
+        the whole metapopulation, and
+      \item
+        left at least one local patch \emph{undisturbed} to start
+        metapopulation recoveries.
+      \end{itemize}
+    \end{enumerate}
   \item
-    \emph{localized, uneven} - total extirpation of randomly selected
-    subset of patches (as long as the target individuals lost in the
-    metapopulation can be achieved in that subset of patches)
+    \emph{local, uneven} - total extirpation of randomly selected subset
+    of patches (as long as the target individuals lost in the
+    metapopulation can be achieved in that subset of patches).
+
+    \begin{enumerate}
+    \def\labelenumiii{\roman{enumiii}.}
+    \tightlist
+    \item
+      Specifically, a numerical algorithm was used to search and find a
+      set of local demographic conditions whereby extirpations to a
+      random subset of local patches that achieved both:
+
+      \begin{itemize}
+      \tightlist
+      \item
+        total loss summed to a \textasciitilde90\% loss in abundance to
+        the whole metapopulation, and
+      \item
+        left at least one local patch \emph{undisturbed} to start
+        metapopulation recoveries.
+      \end{itemize}
+    \end{enumerate}
   \end{enumerate}
 \item
   Density-independent dispersal rates \(\omega\) from 0 to 5\% of
@@ -629,10 +697,6 @@ e.g., a mixed-stock fishery).
 \hypertarget{sensitivity-test-of-mean-recovery-metrics}{%
 \subsection{Sensitivity test of mean recovery
 metrics}\label{sensitivity-test-of-mean-recovery-metrics}}
-
-\hypertarget{determining-the-number-of-stochastic-simulations}{%
-\subsubsection{Determining the number of stochastic
-simulations}\label{determining-the-number-of-stochastic-simulations}}
 
 The total number of scenarios resulted in a long computation time to run
 all simulations a large number of times necessary to evaluate how
@@ -764,7 +828,7 @@ factors like stochasticity.
 
 }
 
-\caption{Violin plots indicating the effects of variable local patch productivities on metapopulation recovery across all scenarios.}\label{fig:recovery with patch variation}
+\caption{Violin plots indicating the effects of variation among local patch demographic rates on metapopulation recovery across all scenarios. For patch variation, $\alpha$  refers local patch productivity and $\beta$ denotes local patch carrying capacity.}\label{fig:recovery with patch variation}
 \end{figure}
 \newpage
 

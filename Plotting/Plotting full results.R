@@ -117,7 +117,7 @@ p <- ggplot(data=sub_res, aes(x=dispersal_range, y=collapsed, fill=network_lab))
   scale_fill_brewer(palette="BrBG") +
   labs(x="Dispersal rate",y="Rate of non-recovery (% of simulations)",fill="Habitat network") +
   theme_minimal() +
-  theme(legend.position="top",strip.text.y = element_text(size=6.5),strip.text.x = element_text(size=8,hjust=0),axis.text.x=element_text(size=7),axis.text.y=element_text(size=7),legend.text=element_text(size=6),legend.title=element_text(size=7),axis.title=element_text(size=8),legend.key.size = unit(0.9, "line"),panel.spacing.y = unit(0.75, "lines"))
+  theme(legend.position="top",strip.text.y = element_text(size=10),strip.text.x = element_text(size=10,hjust=0),axis.text.x=element_text(size=10),axis.text.y=element_text(size=10),legend.text=element_text(size=10),legend.title=element_text(size=10),axis.title=element_text(size=10),legend.key.size = unit(0.9, "line"),panel.spacing.y = unit(0.75, "lines"))
 p
 ggsave("Figures/risk of collapse along stochastic network and disturbance cline.tiff",plot=p,compression="lzw",units="in",height=6,width=8,dpi=800)
 
@@ -129,7 +129,7 @@ p <- ggplot(data=sub_res, aes(x=dispersal_range, y=RecoveryRate, fill=network_la
   scale_fill_brewer(palette="BrBG") +
   labs(x="Dispersal rate",y=expression('Recovery rate (yr'^-1*')'),fill="Habitat network") +
   theme_minimal() +
-  theme(legend.position="top",strip.text.y = element_text(size=6.5),strip.text.x = element_text(size=8,hjust=0),axis.text.x=element_text(size=7),axis.text.y=element_text(size=7),legend.text=element_text(size=6),legend.title=element_text(size=7),axis.title=element_text(size=8),legend.key.size = unit(0.9, "line"),panel.spacing.y = unit(0.75, "lines"))
+  theme(legend.position="top",strip.text.y = element_text(size=10),strip.text.x = element_text(size=10,hjust=0),axis.text.x=element_text(size=10),axis.text.y=element_text(size=10),legend.text=element_text(size=10),legend.title=element_text(size=10),axis.title=element_text(size=10),legend.key.size = unit(0.9, "line"),panel.spacing.y = unit(0.75, "lines"))
 p
 ggsave("Figures/recovery rates along stochastic network and disturbance cline.tiff",plot=p,compression="lzw",units="in",height=6,width=8,dpi=800)
 
