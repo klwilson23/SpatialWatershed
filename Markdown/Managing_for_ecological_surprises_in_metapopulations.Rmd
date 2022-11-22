@@ -416,10 +416,10 @@ A value of 1.0 would indicate that the disturbed metapopulation production was e
 We tested all combinations of the following eight processes (below) and ran `100` stochastic iterations per scenario (see section on *Sensitivity test of mean recovery metrics* below) to estimate the mean outcome for each of the above recovery metrics:
 
 1. Homogenous and spatially variable recruitment compensation ratio across patches, i.e. intrinsic rate of population growth ($\alpha_i$).
-    a. when *variable*, $\alpha_i \sim TN(\mu=\bar{\alpha}, \sigma_{\alpha}=0.3\bar{\alpha})$ with a truncation applied such that $5 \leq \alpha_i \geq 1$ to ensure that patches could, at minimum, could replace themselves but with an upper limit of a 5-fold improvement to per-capita productivity.
+    a. when *variable*, $\alpha_i \sim TN(\mu=\bar{\alpha}, \sigma_{\alpha}=0.3\bar{\alpha})$ with a truncation applied such that $5 \leq \alpha_i \geq 1$ to ensure that patches could, at minimum, could replace themselves but with an upper limit of a 5-fold improvement to per-capita productivity. By comparison, @Myers1999 found that compensation ratio (their $\hat\alpha$) ranged 1-7 for most fish species. Since our focus was on at-risk species, we opted to truncate this range towards the lower limit, with a mean of `2.0`.
 
 2. Homogenous and spatially variable local carrying capacity across patches, i.e. asymptote of expected recruits at high adult densities ($\beta_i$)
-    a. when *variable*, $\beta_i \sim multinomial(p_i,N)$ where $p_i=\cfrac{e^{\theta_i}}{ \sum{e^{\theta_i}}}$, $\theta_i \sim uniform(0,1)$, and $N=\bar{\beta}$ - with the added constraint that $\beta_i<0.1\bar{\beta}$ to ensure that no one patch exceed 10% of total metapopulation abundance (needed constraint for modelling *local, even* and *local, uneven* disturbances below).
+    a. when *variable*, $\beta_i \sim multinomial(p_i,N)$ where $p_i=\cfrac{e^{\theta_i}}{ \sum{e^{\theta_i}}}$, $\theta_i \sim uniform(0,1)$, and $N=\bar{\beta}$ - with the added constraint that $\beta_i<0.1\bar{\beta}$ to ensure that no one patch exceed 10% of total metapopulation abundance (a necessary constraint when modelling *local, even* and *local, uneven* disturbances below). **Note** that, when local variation in demography rates occurred, the truncated normal in *Appendix S1: Section 1.3.1.a* and truncated multinomial in *Appendix S1: Section 1.3.2.a* above led compensation ratio and carrying capacity, respectively, to vary by the same magnitude ~28% coefficient of variation (Appendix S1: Figure S6).
 
 3. Disturbances where a proportion of individuals removed from metapopulation (e.g., `0.90`) occurs.
     a. *uniform* - random individuals removed at equal vulnerability across all patches.
@@ -441,6 +441,51 @@ We tested all combinations of the following eight processes (below) and ran `100
 7. Temporal correlation in recruitment deviates from low, medium, and high correlation (i.e., good year at time *t* begets good year at time *t+1*).
 
 8. Spatial correlation in recruitment deviates among patches from low, medium, to high correlation (i.e., neighboring patches go up or down together).
+
+```{r histogram of demographic variation, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Histogram showing variation among demographic rates after simulatng 100,000 local patches when using the truncated normal in Appendix S1: Section 1.3.1.a and truncated multinomial in Appendix S1: Section 1.3.2.a when modelling variation in local compensation ratio (grey) and carrying capacity (red).",fig.align="center"}
+library(mvtnorm)
+#library(marima)
+require(mvtnorm)
+source("Functions/Linear network.R")
+source("Functions/Dispersal function.R")
+source("Functions/patch_variance.R")
+Npatches=16
+networkType="linear"
+patchDistance=1
+Nburnin=50
+NyrsPost=50
+omega=0.01
+m=100
+alpha=2
+metaK=1600
+cv=1e-6
+DistScenario="uniform"
+magnitude_of_decline=0.9
+lagTime=1
+prodType="Beverton-Holt"
+rho.time=1e-5
+rho.dist=1e5
+compensationLag=25
+dataWeighting=0.1
+alphaVariable=TRUE
+kVariable=TRUE
+spatialPlots=TRUE
+patchID=NA
+k_p <- rep((metaK/Npatches),Npatches)
+
+patch_demo <- replicate(100000,patch_variance(model=prodType,alphaVariable,kVariable,Npatches=Npatches,alpha=alpha,alpha_p=alpha_p,metaK=metaK,k_p=k_p,magnitude_of_decline=magnitude_of_decline))
+
+mn_alpha <- mean(unlist(patch_demo[which(dimnames(patch_demo)[[1]]=="alpha_p"),]))
+sigma_alpha <- sd(unlist(patch_demo[which(dimnames(patch_demo)[[1]]=="alpha_p"),]))
+mn_beta <- mean(unlist(patch_demo[which(dimnames(patch_demo)[[1]]=="beta_p"),]))
+sigma_beta <- sd(unlist(patch_demo[which(dimnames(patch_demo)[[1]]=="beta_p"),]))
+#sigma_alpha/mn_alpha;sigma_beta/mn_beta
+x <- scale(unlist(patch_demo[which(dimnames(patch_demo)[[1]]=="alpha_p"),]))
+y <- scale(unlist(patch_demo[which(dimnames(patch_demo)[[1]]=="beta_p"),]))
+hist(x,xlim=c(-4,4),main="Scaled local patch demography (100,000 numerical simulations)",xlab="Scaled local demographic rate (mean centered)",col=adjustcolor("black",0.5), breaks = seq(min(x), max(x), length.out = 11),freq=FALSE,ylim=c(0,0.5),cex.main=0.75)
+hist(y,xlim=c(-4,4),title="",xlab="Variation in local carrying capacity (mean centered)",add=TRUE,col=adjustcolor("red",0.5), breaks = seq(min(y), max(y), length.out = 11),freq=FALSE,ylim=c(0,0.5))
+legend("topright",title="Demographic rate",c("Compensation ratio","Carrying capacity"),pch=22,pt.bg=c(adjustcolor("black",0.5),adjustcolor("red",0.5)),bty="n")
+```
 
 ### Example results
 

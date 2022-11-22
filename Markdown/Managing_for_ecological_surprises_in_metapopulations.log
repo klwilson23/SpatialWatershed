@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022) (preloaded format=xelatex 2022.11.19)  19 NOV 2022 13:16
+This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022) (preloaded format=xelatex 2022.11.19)  21 NOV 2022 18:26
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -943,24 +943,27 @@ File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/in
 [7]
 Missing character: There is no ≥ (U+2265) in font [lmroman10-regular]:mapping=tex-text;!
 [8]
+File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/histogram of demographic variation-1.pdf Graphic file (type pdf)
+<use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/histogram of demographic variation-1.pdf>
+[9]
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/example results1-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/example results1-1.pdf>
-[9] [10]
+[10] [11]
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/example results2-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/example results2-1.pdf>
-[11]
+[12]
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/example results3-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/example results3-1.pdf>
-[12]
+[13]
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/example results4-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/example results4-1.pdf>
-[13]
+[14]
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/bootstrap results-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/bootstrap results-1.pdf>
-[14]
+[15]
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/disturbance regime-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/disturbance regime-1.pdf>
-[15]
+[16]
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/violin plots of risk of non-recovery-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/violin plots of risk of non-recovery-1.pdf>
 Missing character: There is no ≤ (U+2264) in font [lmroman10-regular]:mapping=tex-text;!
@@ -969,88 +972,88 @@ File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/vi
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/violin plots of risk of patch occupancy-1.pdf>
 Missing character: There is no ≤ (U+2264) in font [lmroman10-regular]:mapping=tex-text;!
 Missing character: There is no ≤ (U+2264) in font [lmroman10-regular]:mapping=tex-text;!
-[16]
+[17]
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/violin plots of risk of relative production-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/violin plots of risk of relative production-1.pdf>
 Missing character: There is no ≤ (U+2264) in font [lmroman10-regular]:mapping=tex-text;!
 Missing character: There is no ≤ (U+2264) in font [lmroman10-regular]:mapping=tex-text;!
-[17]
+[18]
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/recovery with patch variation-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/recovery with patch variation-1.pdf>
-[18] [19]
+[19] [20]
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/clustering analysis-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/clustering analysis-1.pdf>
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/clustering plot-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/clustering plot-1.pdf>
-[20]
-Overfull \hbox (4.8618pt too wide) in paragraph at lines 912--912
+[21]
+Overfull \hbox (4.8618pt too wide) in paragraph at lines 931--931
  \TU/lmr/m/n/10 recovery| 
  []
 
 
-Overfull \hbox (8.22632pt too wide) in paragraph at lines 912--912
+Overfull \hbox (8.22632pt too wide) in paragraph at lines 931--931
  []|\TU/lmr/m/n/10 Occupancy| 
  []
 
 
-Overfull \hbox (1.17632pt too wide) in paragraph at lines 915--915
+Overfull \hbox (1.17632pt too wide) in paragraph at lines 934--934
 []|\TU/lmr/m/n/10 Dendritic|  
  []
 
 
-Overfull \hbox (1.17632pt too wide) in paragraph at lines 919--919
+Overfull \hbox (1.17632pt too wide) in paragraph at lines 938--938
 []|\TU/lmr/m/n/10 Dendritic|  
  []
 
 
-Overfull \hbox (1.17632pt too wide) in paragraph at lines 924--924
+Overfull \hbox (1.17632pt too wide) in paragraph at lines 943--943
 []|\TU/lmr/m/n/10 Dendritic|  
  []
 
 
-Overfull \hbox (1.17632pt too wide) in paragraph at lines 928--928
+Overfull \hbox (1.17632pt too wide) in paragraph at lines 947--947
 []|\TU/lmr/m/n/10 Dendritic|  
  []
 
 
-Overfull \hbox (1.17632pt too wide) in paragraph at lines 933--933
+Overfull \hbox (1.17632pt too wide) in paragraph at lines 952--952
 []|\TU/lmr/m/n/10 Dendritic|  
  []
 
 
-Overfull \hbox (1.17632pt too wide) in paragraph at lines 936--936
+Overfull \hbox (1.17632pt too wide) in paragraph at lines 955--955
 []|\TU/lmr/m/n/10 Dendritic|  
  []
 
 
-Overfull \hbox (1.17632pt too wide) in paragraph at lines 941--941
+Overfull \hbox (1.17632pt too wide) in paragraph at lines 960--960
 []|\TU/lmr/m/n/10 Dendritic|  
  []
 
 
-Overfull \hbox (1.17632pt too wide) in paragraph at lines 946--946
+Overfull \hbox (1.17632pt too wide) in paragraph at lines 965--965
 []|\TU/lmr/m/n/10 Dendritic|  
  []
 
 
-Overfull \hbox (23.21037pt too wide) in alignment at lines 909--950
+Overfull \hbox (23.21037pt too wide) in alignment at lines 928--969
  [] [] [] [] [] [] [] [] [] 
  []
 
-[21]
+[22]
 File: Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/cluster results-1.pdf Graphic file (type pdf)
 <use Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/cluster results-1.pdf>
-[22] [23] (./Managing_for_ecological_surprises_in_metapopulations.aux)
+[23] [24] (./Managing_for_ecological_surprises_in_metapopulations.aux)
 Package rerunfilecheck Info: File `Managing_for_ecological_surprises_in_metapopulations.out' has not changed.
 (rerunfilecheck)             Checksum: 4ABB85CEE47DC2052BEC16688F85F60D;3299.
  ) 
 Here is how much of TeX's memory you used:
- 19872 strings out of 477643
- 382608 string characters out of 5839156
- 994216 words of memory out of 5000000
- 40692 multiletter control sequences out of 15000+600000
+ 19883 strings out of 477643
+ 383751 string characters out of 5839156
+ 994542 words of memory out of 5000000
+ 40702 multiletter control sequences out of 15000+600000
  475832 words of font info for 84 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  86i,15n,121p,1201b,705s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on Managing_for_ecological_surprises_in_metapopulations.pdf (23 pages).
+Output written on Managing_for_ecological_surprises_in_metapopulations.pdf (24 pages).

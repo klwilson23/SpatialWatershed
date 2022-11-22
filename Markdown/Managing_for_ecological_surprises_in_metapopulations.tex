@@ -160,7 +160,7 @@ Smithers, BC\\
 \(^\textup{8}\)Wild Salmon Center, Portland, OR\\
 \(^\textup{9}\)Ecology and Evolutionary Biology, University of
 California Santa Cruz}
-\date{19 November 2022}
+\date{21 November 2022}
 
 \begin{document}
 \maketitle
@@ -533,7 +533,11 @@ mean outcome for each of the above recovery metrics:
     with a truncation applied such that \(5 \leq \alpha_i \geq 1\) to
     ensure that patches could, at minimum, could replace themselves but
     with an upper limit of a 5-fold improvement to per-capita
-    productivity.
+    productivity. By comparison, Myers et al. (1999) found that
+    compensation ratio (their \(\hat\alpha\)) ranged 1-7 for most fish
+    species. Since our focus was on at-risk species, we opted to
+    truncate this range towards the lower limit, with a mean of
+    \texttt{2.0}.
   \end{enumerate}
 \item
   Homogenous and spatially variable local carrying capacity across
@@ -548,9 +552,15 @@ mean outcome for each of the above recovery metrics:
     \(p_i=\cfrac{e^{\theta_i}}{ \sum{e^{\theta_i}}}\),
     \(\theta_i \sim uniform(0,1)\), and \(N=\bar{\beta}\) - with the
     added constraint that \(\beta_i<0.1\bar{\beta}\) to ensure that no
-    one patch exceed 10\% of total metapopulation abundance (needed
-    constraint for modelling \emph{local, even} and \emph{local, uneven}
-    disturbances below).
+    one patch exceed 10\% of total metapopulation abundance (a necessary
+    constraint when modelling \emph{local, even} and \emph{local,
+    uneven} disturbances below). \textbf{Note} that, when local
+    variation in demography rates occurred, the truncated normal in
+    \emph{Appendix S1: Section 1.3.1.a} and truncated multinomial in
+    \emph{Appendix S1: Section 1.3.2.a} above led compensation ratio and
+    carrying capacity, respectively, to vary by the same magnitude
+    \textasciitilde28\% coefficient of variation (Appendix S1: Figure
+    S6).
   \end{enumerate}
 \item
   Disturbances where a proportion of individuals removed from
@@ -631,6 +641,15 @@ mean outcome for each of the above recovery metrics:
   medium, to high correlation (i.e., neighboring patches go up or down
   together).
 \end{enumerate}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/histogram of demographic variation-1} 
+
+}
+
+\caption{Histogram showing variation among demographic rates after simulatng 100,000 local patches when using the truncated normal in Appendix S1: Section 1.3.1.a and truncated multinomial in Appendix S1: Section 1.3.2.a when modelling variation in local compensation ratio (grey) and carrying capacity (red).}\label{fig:histogram of demographic variation}
+\end{figure}
 
 \hypertarget{example-results}{%
 \subsubsection{Example results}\label{example-results}}
@@ -1026,6 +1045,12 @@ Murtagh, F. \& Legendre, P. (2014).
 \href{https://doi.org/10.1007/s00357-014-9161-z}{{Ward's hierarchical
 agglomerative clustering method: which algorithms implement Ward's
 criterion?}} \emph{Journal of Classification}, 31, 274--295.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Myers1999}{}}%
+Myers, R.A., Bowen, K.G. \& Barrowman, N.J. (1999).
+\href{https://doi.org/10.1139/f99-201}{{Maximum reproductive rate of
+fish at low population sizes}}. \emph{Canadian Journal of Fisheries and
+Aquatic Sciences}, 56, 2404--2419.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Okamoto2020}{}}%
 Okamoto, D.K., Hessing‐Lewis, M., Samhouri, J.F., Shelton, A.O., Stier,
