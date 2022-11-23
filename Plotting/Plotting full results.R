@@ -103,12 +103,12 @@ sub_res$variance_scen <- factor(sub_res$variance_scen,
                                          "Low spatial\nLow temporal\nHigh variance",
                                          "High spatial\nHigh temporal\nLow variance",
                                          "High spatial\nHigh temporal\nHigh variance"),
-                                labels=c("Low space-time \U03C1, Low variance",
-                                         "Low space-time \U03C1, High variance",
-                                         "High space-time \U03C1, Low variance",
-                                         "High space-time \U03C1, High variance"))
+                                labels=c("Low ST \U03C1, Low \U03C3",
+                                         "Low ST \U03C1, High \U03C3",
+                                         "High ST \U03C1, Low \U03C3",
+                                         "High ST \U03C1, High \U03C3"))
 sub_res$dispersal_range <- factor(sub_res$dispersal_range,levels=c("Low","High"))
-head(sub_res[sub_res$variance_scen=="High space-time \U03C1, High variance",],12)
+head(sub_res[sub_res$variance_scen=="High space-time \U03C1, High \U03C3",],12)
 p <- ggplot(data=sub_res, aes(x=dispersal_range, y=collapsed, fill=network_lab))+ 
   geom_violin(trim=TRUE,scale = "width")+
   geom_boxplot(width=0.3,colour="grey90",outlier.shape=NA,position=position_dodge(0.9))+
@@ -117,7 +117,7 @@ p <- ggplot(data=sub_res, aes(x=dispersal_range, y=collapsed, fill=network_lab))
   scale_fill_brewer(palette="BrBG") +
   labs(x="Dispersal rate",y="Rate of non-recovery (% of simulations)",fill="Habitat network") +
   theme_minimal() +
-  theme(legend.position="top",strip.text.y = element_text(size=10),strip.text.x = element_text(size=10,hjust=0),axis.text.x=element_text(size=10),axis.text.y=element_text(size=10),legend.text=element_text(size=10),legend.title=element_text(size=10),axis.title=element_text(size=10),legend.key.size = unit(0.9, "line"),panel.spacing.y = unit(0.75, "lines"))
+  theme(legend.position="top",strip.text.y = element_text(size=12),strip.text.x = element_text(size=12,hjust=0),axis.text.x=element_text(size=12),axis.text.y=element_text(size=12),legend.text=element_text(size=12),legend.title=element_text(size=12),axis.title=element_text(size=12),legend.key.size = unit(0.9, "line"),panel.spacing.y = unit(0.75, "lines"))
 p
 ggsave("Figures/risk of collapse along stochastic network and disturbance cline.tiff",plot=p,compression="lzw",units="in",height=6,width=8,dpi=800)
 
@@ -129,7 +129,7 @@ p <- ggplot(data=sub_res, aes(x=dispersal_range, y=RecoveryRate, fill=network_la
   scale_fill_brewer(palette="BrBG") +
   labs(x="Dispersal rate",y=expression('Recovery rate (yr'^-1*')'),fill="Habitat network") +
   theme_minimal() +
-  theme(legend.position="top",strip.text.y = element_text(size=10),strip.text.x = element_text(size=10,hjust=0),axis.text.x=element_text(size=10),axis.text.y=element_text(size=10),legend.text=element_text(size=10),legend.title=element_text(size=10),axis.title=element_text(size=10),legend.key.size = unit(0.9, "line"),panel.spacing.y = unit(0.75, "lines"))
+  theme(legend.position="top",strip.text.y = element_text(size=12),strip.text.x = element_text(size=12,hjust=0),axis.text.x=element_text(size=12),axis.text.y=element_text(size=12),legend.text=element_text(size=12),legend.title=element_text(size=12),axis.title=element_text(size=12),legend.key.size = unit(0.9, "line"),panel.spacing.y = unit(0.75, "lines"))
 p
 ggsave("Figures/recovery rates along stochastic network and disturbance cline.tiff",plot=p,compression="lzw",units="in",height=6,width=8,dpi=800)
 
