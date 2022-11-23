@@ -51,6 +51,7 @@ header-includes:
 - \renewcommand{\thefigure}{S\arabic{figure}}
 - \renewcommand{\thetable}{S\arabic{table}}
 - \renewcommand{\theequation}{S.\arabic{equation}}
+- \renewcommand{\thesection}{S\arabic{section}}
 - \usepackage{fancyhdr}
 - \setlength{\parskip}{\baselineskip}
 - \usepackage{tocloft}
