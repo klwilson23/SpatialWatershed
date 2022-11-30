@@ -35,7 +35,7 @@ prob::Prob(prob_res,event=cluster_surprises=="Resilient",given=dispersal_range==
 prob::Prob(prob_res,event=cluster_surprises=="Resilient",given=dispersal_range=="Low" & network_lab=="Grid")
 prob::Prob(prob_res,event=cluster_surprises=="Slow recovery",given=dispersal_range=="Low" & network_lab=="Linear")
 prob::Prob(prob_res,event=cluster_surprises=="Slow recovery",given=dispersal_range=="Low" & network_lab=="Grid")
-
+results$network_lab <- relevel(results$network_lab,"Grid")
 olr <- MASS::polr(cluster_surprises~network_lab+disturb_lab+dispersal_range+patchScen+stochastic_lab+space_var+temporal_var,data=results,Hess=TRUE)
 summary(olr)
 
