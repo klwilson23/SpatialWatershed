@@ -35,7 +35,32 @@ prob::Prob(prob_res,event=cluster_surprises=="Resilient",given=dispersal_range==
 prob::Prob(prob_res,event=cluster_surprises=="Resilient",given=dispersal_range=="Low" & network_lab=="Grid")
 prob::Prob(prob_res,event=cluster_surprises=="Slow recovery",given=dispersal_range=="Low" & network_lab=="Linear")
 prob::Prob(prob_res,event=cluster_surprises=="Slow recovery",given=dispersal_range=="Low" & network_lab=="Grid")
-results$network_lab <- relevel(results$network_lab,"Grid")
+#results$network_lab <- relevel(results$network_lab,"Grid")
+scenarios <- list(cluster_surprises=levels(results$cluster_surprises),network_lab=levels(results$network_lab),disturb_lab=levels(results$disturb_lab),dispersal_range=levels(results$dispersal_range),patchScen=levels(as.factor(results$patchScen)),stochastic_lab=levels(results$stochastic_lab),space_var=levels(results$space_var),temporal_var=levels(results$temporal_var))
+scenarios <- expand.grid(scenarios)
+cond_prob <- tidyr::pivot_longer(scenarios,cols=2:8,names_to='scenario',values_to="condition")
+cond_prob$prob <- NA
+cond_prob$inv_prob <- NA
+cond_prob <- cond_prob[!duplicated(cond_prob),]
+
+for(i in 1:nrow(cond_prob))
+{
+  cond <- as.character(cond_prob$condition[i])
+  label <- intersect(colnames(prob_res),cond_prob$scenario[i])
+  label_names <- c("probs","cluster_surprises",label)
+  sub_prob <- prob_res[,label_names]
+  colnames(sub_prob) <- c("probs","cluster_surprises","scenario")
+  cond_prob$prob[i] <-sum(sub_prob$probs[sub_prob$cluster_surprises==cond_prob$cluster_surprises[i] & sub_prob$scenario==cond])/(sum(sub_prob$scenario==cond)/nrow(sub_prob))
+  cond_prob$inv_prob[i] <-sum(sub_prob$probs[sub_prob$cluster_surprises!=cond_prob$cluster_surprises[i] & sub_prob$scenario==cond])/(sum(sub_prob$scenario==cond)/nrow(sub_prob))
+}
+#cond_prob$condition <- as.character(cond_prob$condition)
+ggplot(cond_prob,aes(x=condition,y=prob))+
+  geom_point(data=cond_prob,aes(x=condition,y=prob),pch=21,fill="purple",colour="black") +
+  geom_line(data=cond_prob,aes(x=condition,y=prob,group=interaction(cluster_surprises,scenario)),colour="purple") +
+  facet_grid(row=vars(cluster_surprises),cols=vars(scenario),scales="free") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 35,hjust = 1))
+
 olr <- MASS::polr(cluster_surprises~network_lab+disturb_lab+dispersal_range+patchScen+stochastic_lab+space_var+temporal_var,data=results,Hess=TRUE)
 summary(olr)
 
