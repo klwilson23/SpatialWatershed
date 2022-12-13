@@ -1,3 +1,4 @@
+library(ggplot2)
 results <- readRDS(file="Figures/clustering_outcomes.rds")
 results$total <- 1
 #as.numeric(table(paste(results$network_lab,results$disturb_lab,results$dispersal,results$patchScen,results$stochastic,results$spatial,results$temporal)))
