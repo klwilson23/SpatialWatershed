@@ -86,9 +86,42 @@ attr(gg_sub, "y.title") <- "Predicted probabilities"
 attr(gg_sub, "legend.title")= "Disturbance regime"
 plot(gg_sub,facet=TRUE,ci=FALSE,colors="system", connect.lines = TRUE)
 library(ggplot2)
-ggplot(gg_resp[gg_resp$response.level=="Resilient",],aes(x=x,y=predicted,colour=group))+
-  geom_point() +
-  geom_line() +
-  facet_grid(row=vars(panel),cols=vars(facet)) +
-  theme_minimal()+
-  scale_color_brewer()
+
+scenarios <- list(network_lab=levels(results$network_lab),disturb_lab=levels(results$disturb_lab),dispersal_range=levels(results$dispersal_range),patchScen=levels(as.factor(results$patchScen)),stochastic_lab=levels(results$stochastic_lab),space_var=levels(results$space_var),temporal_var=levels(results$temporal_var))
+scenarios <- expand.grid(scenarios)
+scenarios <- cbind(scenarios,predict(olr,newdata=scenarios,type="probs"))
+scenarios <- tidyr::pivot_longer(scenarios,cols=levels(results$cluster_surprises),names_to="cluster_surprises",values_to="probs")
+scenarios$variance <- paste(scenarios$stochastic_lab,scenarios$space_var,scenarios$temporal_var,sep=", ")
+sub_scen <- scenarios[scenarios$variance=="High variance, High spatial, High temporal" | 
+                        scenarios$variance=="Low variance, Low spatial, Low temporal",]
+resilient <- sub_scen[sub_scen$cluster_surprises=="Resilient",]
+
+
+make_plot <- function(data,xxx)
+{
+  plot_data <- data[sub_scen$cluster_surprises==xxx,]
+  if(xxx=="Resilient")
+  {
+    plot_label <- paste("Probability of",tolower(xxx),"metapopulation recoveries",sep=" ")
+  }else{
+    plot_label <- paste("Probability of",tolower(xxx),"in metapopulation recoveries",sep=" ")
+  }
+  ggplot(data=plot_data,aes(x=network_lab,y=probs,fill=disturb_lab,shape=variance))+
+    geom_line(data=plot_data,aes(x=network_lab,y=probs,group=interaction(variance,disturb_lab,patchScen,dispersal_range))) +
+    geom_point(data=plot_data,aes(x=network_lab,y=probs,fill=disturb_lab,shape=variance)) +
+    facet_grid(row=vars(patchScen),cols=vars(dispersal_range),scales="fixed") +
+    theme_minimal()+
+    #scale_color_brewer(name="Disturbance regime")+
+    scale_fill_brewer(name="Disturbance regime",type="qual",palette=2)+
+    scale_shape_manual(name="Variance scenario",values=c(21,22),labels=c("High","Low")) +
+    labs(title=plot_label)+
+    xlab("Habitat network")+ylab("Probability of outcome")+
+    theme(legend.position="top",panel.spacing = unit(2, "lines"))+
+    guides(fill = guide_legend(override.aes = list(shape = 21)))
+  ggsave(paste("Figures/",plot_label,".jpeg",sep=""),dpi=600,units='in',height=8,width=8)
+}
+make_plot(sub_scen,"Resilient")
+make_plot(sub_scen,"Slow recovery")
+make_plot(sub_scen,"Hidden collapses")
+make_plot(sub_scen,"Lost capacity")
+make_plot(sub_scen,"Critical risk")

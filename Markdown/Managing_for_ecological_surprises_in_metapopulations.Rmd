@@ -1,5 +1,5 @@
 ---
-title: "Supporting information for: Wilson *et al.* 2022. The role of spatial structure on metapopulation recoveries. In: *Ecological Applications*."
+title: "Supporting information for: Wilson *et al.* 2022. The role of spatial structure on at-risk metapopulation recoveries. In: *Ecological Applications*."
 subtitle: "**Appendix S1:** Overview of metapopulation model description & detailed results"
 author: |
   | Kyle L. Wilson$^\textup{1,2}$^[Corresponding author - email: klwilson.ccira@gmail.com], Alexandra C. Sawyer$^\textup{1}$, Anna Potapova$^\textup{1}$, Colin J. Bailey$^\textup{1}$,Daniella LoScerbo$^\textup{3,4}$,
@@ -124,7 +124,7 @@ source("Functions/finding MSY.R")
 
 \pagestyle{fancy}
 \fancyhead[LO,LE]{Wilson \textit{et al.}}
-\fancyhead[RO,RE]{\textbf{Appendix S1}: Emergent spatial recoveries}
+\fancyhead[RO,RE]{\textbf{Appendix S1}: Spatial recoveries in metapopulations}
 
 ## Metapopulation model
 ### Local & metapopulation dynamics

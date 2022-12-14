@@ -14,7 +14,7 @@ p1 <- ggplot(otters,aes(x=Year_Seq,y=Abundance,fill=Region,colour=Region)) +
   geom_curve(x= 5, y = 14500,xend = 10, yend = 3500, color = 'black',arrow = arrow(length=unit(0.075,'inches'),type='closed'),lwd=0.75)+
   scale_fill_brewer(type="qual",palette=2) +
   scale_colour_brewer(type="qual",palette=2) +
-  theme(legend.position="top",,text=element_text(),axis.text=element_text())+
+  theme(legend.position="top",text=element_text(),axis.text=element_text())+
   geom_rect(aes(xmin=36,xmax=73,ymin=0,ymax=4800),col='black',lwd=0.25,fill=NA)+
   annotate("text",label="(see inset in panel a)",x=48,y=5500,size=2.5)
 p1
