@@ -106,19 +106,29 @@ make_plot <- function(data,xxx)
   }else{
     plot_label <- paste("Probability of",tolower(xxx),"in metapopulation recoveries",sep=" ")
   }
-  ggplot(data=plot_data,aes(x=network_lab,y=probs,fill=disturb_lab,shape=variance))+
+  plot_data$dispersal_range <- factor(plot_data$dispersal_range,levels=c("High","Low"),labels=c("High dispersal","Low dispersal"))
+  labels <- expand.grid(dispersal_range=levels(plot_data$dispersal_range),
+                        patchScen=levels(plot_data$patchScen))
+  labels$label <- paste("(",letters[1:8],")",sep="")
+  p <- ggplot(data=plot_data,aes(x=network_lab,y=probs,fill=disturb_lab,shape=variance))+
     geom_line(data=plot_data,aes(x=network_lab,y=probs,group=interaction(variance,disturb_lab,patchScen,dispersal_range))) +
-    geom_point(data=plot_data,aes(x=network_lab,y=probs,fill=disturb_lab,shape=variance)) +
+    geom_point(data=plot_data,aes(x=network_lab,y=probs,fill=disturb_lab,shape=variance),size=2) +
     facet_grid(row=vars(patchScen),cols=vars(dispersal_range),scales="fixed") +
     theme_minimal()+
     #scale_color_brewer(name="Disturbance regime")+
-    scale_fill_brewer(name="Disturbance regime",type="qual",palette=2)+
-    scale_shape_manual(name="Variance scenario",values=c(21,22),labels=c("High","Low")) +
-    labs(title=plot_label)+
-    xlab("Habitat network")+ylab("Probability of outcome")+
-    theme(legend.position="top",panel.spacing = unit(2, "lines"))+
-    guides(fill = guide_legend(override.aes = list(shape = 21)))
-  ggsave(paste("Figures/",plot_label,".jpeg",sep=""),dpi=600,units='in',height=8,width=8)
+    scale_fill_brewer(name="Disturbance",type="qual",palette=2)+
+    scale_shape_manual(name="Variance",values=c(21,22),labels=c("High","Low")) +
+    #labs(title=plot_label)+
+    xlab("Habitat network")+ylab(plot_label)+
+    geom_text(data = labels, aes(label=label), 
+              x = -Inf, y = Inf,hjust = -0,vjust = 1,
+              inherit.aes = FALSE)+
+    theme(legend.position="top",panel.spacing = unit(1, "lines"),text=element_text(size=8),
+          legend.spacing.x = unit(0.1, 'lines'),strip.text = element_text())+
+    guides(fill = guide_legend(override.aes = list(shape = 21,size=2)),
+           shape = guide_legend(override.aes = list(size=2)))
+  saveRDS(p,file=paste("Figures/",plot_label,".rds",sep=""))
+  ggsave(paste("Figures/",plot_label,".jpeg",sep=""),plot=p,dpi=600,units='in',height=5,width=5)
 }
 make_plot(sub_scen,"Resilient")
 make_plot(sub_scen,"Slow recovery")
