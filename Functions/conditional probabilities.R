@@ -123,7 +123,7 @@ make_plot <- function(data,xxx)
     geom_text(data = labels, aes(label=label), 
               x = -Inf, y = Inf,hjust = -0,vjust = 1,
               inherit.aes = FALSE)+
-    theme(legend.position="top",panel.spacing = unit(1, "lines"),text=element_text(size=8),
+    theme(legend.position="top",panel.spacing = unit(0.9, "lines"),text=element_text(size=8),
           legend.spacing.x = unit(0.1, 'lines'),strip.text = element_text())+
     guides(fill = guide_legend(override.aes = list(shape = 21,size=2)),
            shape = guide_legend(override.aes = list(size=2)))
