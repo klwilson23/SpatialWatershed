@@ -462,26 +462,25 @@ temporal and spatial recovery regime of the metapopulation.
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
-  Recovery rate after disturbance: Recovery rate represents the
-  proportional post-disturbance recovery towards metapopulation carrying
-  capacity gained per year (1 year = 1 generation in our models).
-  Recovery rate was calculated as \(1-T_{recovery}/T_{sim}\) where the
-  recovery time, \(T_{recovery}\), was the number of years/generations
-  it took for the metapopulation to reach five consecutive years ≥
-  pre-disturbance abundance. Recovery rate captures how quickly the
-  aggregate metapopulation recovers from disturbance but doesn't take
-  into account whether any given local patches recover to their
-  pre-disturbance capacity nor did it allow for any uncertainty around
-  recovery criteria.
+  Recovery rate after disturbance: Recovery rate represents the inverse
+  proportion of the post-disturbance phase that the metapopulation took
+  to recover. Recovery rate was calculated as \(1-T_{recovery}/T_{sim}\)
+  where the recovery time, \(T_{recovery}\), was the number of
+  years/generations (1 year = 1 generation in our models) it took for
+  the metapopulation to reach five consecutive years ≥ pre-disturbance
+  abundance. Recovery rate captures how quickly the aggregate
+  metapopulation recovers from disturbance but doesn't take into account
+  whether any given local patches recover to their pre-disturbance
+  capacity nor did it allow for any uncertainty around recovery
+  criteria.
 \item
-  Patch occupancy: The mean number of patches with
-  \texttt{\textgreater{}0.1} local carrying capacity after disturbance
-  in the short-term (5 years), medium-term (10 years), and long-term (25
-  years). This value characterizes the expected risk of spatial
-  contractions or local patch collapses, and reflects how interactions
-  between spatial structure, disturbance, and dispersal shape
-  source-sink dynamics and the ability to provide (or not) rescue
-  effects and recover local patches.
+  Patch occupancy: The number of patches with \texttt{\textgreater{}0.1}
+  local carrying capacity after disturbance in the short-term (5 years),
+  medium-term (10 years), and long-term (25 years). This value
+  characterizes the expected risk of spatial contractions or local patch
+  collapses, and reflects how interactions between spatial structure,
+  disturbance, and dispersal shape source-sink dynamics and the ability
+  to provide (or not) rescue effects and recover local patches.
 \item
   Relative production: The ratio between the empirical metapopulation
   adult abundances to the expected adult recruitment if the
@@ -549,7 +548,7 @@ mean outcome for each of the above recovery metrics:
   \def\labelenumii{\alph{enumii}.}
   \tightlist
   \item
-    when \emph{variable}, \(\beta_i \sim multinomial(p_i,N)\) where
+    when variable, \(\beta_i \sim multinomial(p_i,N)\) where
     \(p_i=\cfrac{e^{\theta_i}}{ \sum{e^{\theta_i}}}\),
     \(\theta_i \sim uniform(0,1)\), and \(N=\bar{\beta}\) - with the
     added constraint that \(\beta_i<0.1\bar{\beta}\) to ensure that no
@@ -590,8 +589,8 @@ mean outcome for each of the above recovery metrics:
       \begin{itemize}
       \tightlist
       \item
-        total loss summed to a \textasciitilde90\% loss in abundance to
-        the whole metapopulation, and
+        a total loss that summed to a \textasciitilde90\% loss in
+        abundance to the whole metapopulation, and
       \item
         left at least one local patch \emph{undisturbed} to start
         metapopulation recoveries.
@@ -607,14 +606,14 @@ mean outcome for each of the above recovery metrics:
     \tightlist
     \item
       Specifically, a numerical algorithm was used to search and find a
-      set of local demographic conditions whereby extirpations to a
-      random subset of local patches that achieved both:
+      set of disturbance conditions whereby extirpations to a random
+      subset of local patches achieved both:
 
       \begin{itemize}
       \tightlist
       \item
-        total loss summed to a \textasciitilde90\% loss in abundance to
-        the whole metapopulation, and
+        a total loss that summed to a \textasciitilde90\% loss in
+        abundance to the whole metapopulation, and
       \item
         left at least one local patch \emph{undisturbed} to start
         metapopulation recoveries.
@@ -753,23 +752,24 @@ regime}\label{effects-of-disturbance-regime}}
 The strongest lever influencing recovery in our simulated
 metapopulations was, by far, the characteristics of the disturbance
 regime. Specifically, the degree to how locally concentrated the
-disturbance was on the set of patches was more influential than variable
-density dependence, dispersal rates, or network topology. Localized
-disturbances increased the risk of spatial contraction, reduced recovery
-rates and aggregate compensation, and increased the risk of
-non-recoveries. By altering aggregate compensation, localized
-disturbance reduced the relative production of the metapopulation. In
-other words, through changes in source-sink dynamics, metapopulations
-under localized disturbance acted less than the sum of their parts --
-the more localized the impacts, the worse these effects. Uniform
-disturbances generally left the metapopulation dynamics unaffected with
-few changes to recovery metrics outside of occasionally slower
-recoveries. These above spatial and temporal recovery processes also
-appeared tied to one another such that changes to any of them had
-feedbacks with other recovery metrics. Perhaps intuitively, for example,
-patch occupancy was highly correlated to the relative production of the
-metapopulation, such that the more patches occupied, the more that
-metapopulation dynamics resembled a contiguous population.
+disturbance was on the set of patches was more influential than
+variation in local demographic rates, dispersal rates, or network
+topology. Localized disturbances increased the risk of spatial
+contraction, reduced recovery rates and aggregate compensation, and
+increased the risk of non-recoveries. By altering aggregate
+compensation, localized disturbance reduced the relative production of
+the metapopulation. In other words, through changes in source-sink
+dynamics, metapopulations under localized disturbance acted less than
+the sum of their parts -- the more localized the impacts, the worse
+these effects. Uniform disturbances generally left the metapopulation
+dynamics unaffected with few changes to recovery metrics outside of
+occasionally slower recoveries. These above spatial and temporal
+recovery processes also appeared tied to one another such that changes
+to any of them had feedbacks with other recovery metrics. Perhaps
+intuitively, for example, patch occupancy was highly correlated to the
+relative production of the metapopulation, such that the more patches
+occupied, the more that metapopulation dynamics resembled a contiguous
+population.
 
 \begin{figure}[H]
 
