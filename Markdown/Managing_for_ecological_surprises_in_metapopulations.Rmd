@@ -137,7 +137,7 @@ N_{i,t}= (1-d_{i,t})(R_{i,t}+{\sum\limits_{\substack{j=1 \\ j\neq i}}^{P} \omega
 
 where $N_{i,t}$ was the number of adults in patch *i* at time *t*, $R_{i,t}$ was the number of recruits at time *t*, ${\sum\limits_{\substack{j=1 \\ j\neq i}}^{P} \omega p_{i,j}R_{j,t}}$ was the number of recruits immigrating into patch *i* from any other patch, $\omega$ was the proportion of local recruits to disperse, $p_{i,j}$ was a distance-dependent dispersal function, and $d_{i,t}$ was the proportion of post-dispersal recruits lost from the disturbance regime.
 
-Figure S1 shows how local patch recruitment at time *t* depended on adult densities at *t-1* and followed a reparameterized Beverton-Holt function based on compensation ratio [Box 3.1 in @Walters2004] and ignoring age-structure to model adult-to-adult dynamics, i.e., setting $\phi_{E_{0}}=1$, $\phi_{B_{0}}=1$ and $R_0=N_0$ in Table 3 in @Forrest2010:
+Figure S1 shows how local patch recruitment at time *t* depended on adult densities at *t-1* and followed a reparameterized Beverton-Holt function based on compensation ratio [see Box 3.1 in @Walters2004] and ignoring age-structure to model adult-to-adult dynamics, i.e., setting $\phi_{E_{0}}=1$, $\phi_{B_{0}}=1$ and $R_0=N_0$ [see Table 3 in @Forrest2010]:
 
 \begin{align}
 R_{i,t}=\cfrac{\alpha_iN_{i,t-1}}{1+\cfrac{\alpha_i-1}{\beta_i}N_{i,t-1}}\epsilon_{i,t}
@@ -938,7 +938,7 @@ cluster::clusplot(results_clust[,-ncol(results_clust)],color=FALSE, clus = resul
 ```
 
 ### Emergent recovery outcomes
-Overall, we used hierarchical clustering analyses to describe five common metapopulation recovery outcomes. These outcomes were: (1) resilient recovery – metapopulations recovered to pre-disturbance abundances quickly with all patches occupied, (2) slow recovery – metapopulation recovery was slow but there were no other changes in metrics, (3) hidden collapses – metapopulations tended to recover and aggregate abundances were high, but many local patches remained unoccupied and recovery was slowed, (4) lost capacity – recovery rates were very slow, the risk of non-recovery was high, long-term production was low, and many local patches remained unoccupied and (5) critical risk – where metapopulations failed to recover, abundances remained low, and the risk of non-recovery was high.
+Overall, we used hierarchical clustering analyses to describe five common metapopulation recovery outcomes. These outcomes were: (1) resilient recovery – metapopulations recovered to pre-disturbance abundances quickly with all patches occupied, (2) slow recovery – were either slowed (compared to resilient recoveries), had reduced patch occupancy, or reduced relative production, (3) hidden collapses – metapopulations tended to recover and aggregate abundances were high, but many local patches remained unoccupied and recovery was slowed, (4) lost capacity – recovery rates were very slow, the risk of non-recovery was high, long-term production was low, and many local patches remained unoccupied and (5) critical risk – where metapopulations failed to recover, abundances remained low, and the risk of non-recovery was high.
 ```{r clustering table, echo=FALSE,warning = FALSE, message = FALSE,results='asis'}
 results <- readRDS("Figures/clustering_outcomes.rds")
 layout(matrix(1,nrow=1,ncol=1))
