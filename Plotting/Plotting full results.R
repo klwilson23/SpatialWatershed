@@ -89,7 +89,7 @@ p <- ggplot(data=results, aes(x=patchScen, y=RecoveryRate, fill=stochasticity))+
   facet_wrap(~stochasticity)+
   geom_boxplot(width=0.1,colour="grey90",outlier.shape=NA,fill="grey50")+
   scale_fill_brewer(palette="Dark2") +
-  labs(x="Patch variation",y=expression('Recovery rate (yr'^-1*')'),fill="Stochasticity") +
+  labs(x="Patch variation",y=expression('Recovery rate'),fill="Stochasticity") +
   theme_minimal() +
   theme(legend.position="top",strip.text.x = element_blank())
 p
@@ -127,7 +127,7 @@ p <- ggplot(data=sub_res, aes(x=dispersal_range, y=RecoveryRate, fill=network_la
   #geom_jitter(pch=21,width=0.1)+
   facet_grid(rows=vars(disturb_lab),cols=vars(variance_scen),labeller=label_wrap_gen(width=45,multi_line = TRUE)) +
   scale_fill_brewer(palette="BrBG") +
-  labs(x="Dispersal rate",y=expression('Recovery rate (yr'^-1*')'),fill="Habitat network") +
+  labs(x="Dispersal rate",y=expression('Recovery rate'),fill="Habitat network") +
   theme_minimal() +
   theme(legend.position="top",strip.text.y = element_text(size=12),strip.text.x = element_text(size=12,hjust=0),axis.text.x=element_text(size=12),axis.text.y=element_text(size=12),legend.text=element_text(size=12),legend.title=element_text(size=12),axis.title=element_text(size=12),legend.key.size = unit(0.9, "line"),panel.spacing.y = unit(0.75, "lines"))
 p
@@ -251,17 +251,17 @@ plotColours <- ifelse(results$dispersal==-1,
 tiff("Figures/Disturbance impacts on recovery regime polygon.tiff",compression="lzw",units="in",height=8,width=8,res=800)
 layout(matrix(1:4,nrow=2,ncol=2,byrow=TRUE))
 par(mar=c(4,4,0.5,0.5))
-plot(results$RecoveryRate,results$longOcc,pch=21,bg=plotColours,xlab=expression('Recovery rate (yr'^-1*')'),ylab="Patch occupancy (25 years)")
+plot(results$RecoveryRate,results$longOcc,pch=21,bg=plotColours,xlab=expression('Recovery rate'),ylab="Patch occupancy (25 years)")
 
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="longOcc"),col=adjustcolor(dist_colours[z],transparency))}))
 points(mean_res$RecoveryRate,mean_res$longOcc,pch=22,cex=2,bg=dist_colours)
 
 
-plot(results$RecoveryRate,results$long_surp,pch=21,bg=plotColours,xlab=expression('Recovery rate (yr'^-1*')'),ylab="Relative production (25 years)")
+plot(results$RecoveryRate,results$long_surp,pch=21,bg=plotColours,xlab=expression('Recovery rate'),ylab="Relative production (25 years)")
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="long_surp"),col=adjustcolor(dist_colours[z],transparency))}))
 points(mean_res$RecoveryRate,mean_res$long_surp,pch=22,cex=2,bg=dist_colours)
 
-plot(results$RecoveryRate,results$collapsed,pch=21,bg=plotColours,xlab=expression('Recovery rate (yr'^-1*')'),ylab="Rate of non-recovery (% of simulations)")
+plot(results$RecoveryRate,results$collapsed,pch=21,bg=plotColours,xlab=expression('Recovery rate'),ylab="Rate of non-recovery (% of simulations)")
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="collapsed"),col=adjustcolor(dist_colours[z],transparency))}))
 points(mean_res$RecoveryRate,mean_res$collapsed,pch=22,cex=2,bg=dist_colours)
 
@@ -275,18 +275,18 @@ dev.off()
 tiff("Figures/Disturbance impacts on recovery regime smoothed polygon.tiff",compression="lzw",units="in",height=8,width=8,res=800)
 layout(matrix(1:4,nrow=2,ncol=2,byrow=TRUE))
 par(mar=c(4,4,0.5,0.5))
-plot(results$RecoveryRate,results$longOcc,pch=21,bg=plotColours,xlab=expression('Recovery rate (yr'^-1*')'),ylab="Patch occupancy (25 years)")
+plot(results$RecoveryRate,results$longOcc,pch=21,bg=plotColours,xlab=expression('Recovery rate'),ylab="Patch occupancy (25 years)")
 
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="longOcc"),col=adjustcolor(dist_colours[z],transparency))}))
 Corner_text("(a)", "topleft")
 points(mean_res$RecoveryRate,mean_res$longOcc,pch=22,cex=2,bg=dist_colours)
 
-plot(results$RecoveryRate,results$long_surp,pch=21,bg=plotColours,xlab=expression('Recovery rate (yr'^-1*')'),ylab="Relative production (25 years)")
+plot(results$RecoveryRate,results$long_surp,pch=21,bg=plotColours,xlab=expression('Recovery rate'),ylab="Relative production (25 years)")
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="long_surp"),col=adjustcolor(dist_colours[z],transparency))}))
 Corner_text("(b)", "topleft")
 points(mean_res$RecoveryRate,mean_res$long_surp,pch=22,cex=2,bg=dist_colours)
 
-plot(results$RecoveryRate,results$collapsed,pch=21,bg=plotColours,xlab=expression('Recovery rate (yr'^-1*')'),ylab="Rate of non-recovery (% of simulations)")
+plot(results$RecoveryRate,results$collapsed,pch=21,bg=plotColours,xlab=expression('Recovery rate'),ylab="Rate of non-recovery (% of simulations)")
 invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){
   if(z<3){polygon(findHull(df=results[results$disturbance==scenarios$disturbance[z],],x="RecoveryRate",y="collapsed"),col=adjustcolor(dist_colours[z],transparency))}else{xMat <- unique(cbind(results[results$disturbance==scenarios$disturbance[z],"RecoveryRate"],results[results$disturbance==scenarios$disturbance[z],"collapsed"]))
   xSeq <- seq(min(xMat[,1]),max(xMat[,1]),by=0.1)
@@ -304,7 +304,7 @@ legend("bottomright",c("Uniform","Local, even","Local, uneven"),pch=22,pt.bg=dis
 dev.off()
 
 layout(1)
-boxplot(RecoveryRate~stochastic+disturbance,data=results[results$spatial==scenarios$spatial[1] & results$temporal==scenarios$temporal[1],],col=dist_colours[results$disturbance],xlab="Stochasticity",ylab=expression('Recovery rate (yr'^-1*')'))
+boxplot(RecoveryRate~stochastic+disturbance,data=results[results$spatial==scenarios$spatial[1] & results$temporal==scenarios$temporal[1],],col=dist_colours[results$disturbance],xlab="Stochasticity",ylab=expression('Recovery rate'))
 boxplot(longCV~stochastic+disturbance,data=results[results$spatial==scenarios$spatial[1] & results$temporal==scenarios$temporal[1],],col=dist_colours[results$disturbance],xlab="Stochasticity",ylab="Coefficient of variation")
 tiff("Figures/Recovery along dispersal network and disturbance clines.tiff",compression="lzw",units="in",height=5.25,width=6,res=800)
 
@@ -324,13 +324,13 @@ for(i in 1:length(scenarios$network))
 {
   subResults <- results[results$network==scenarios$network[i],]
   if(i==1){
-    plot(subResults$dispersal,subResults$RecoveryRate,col=0,lty=0,type="b",lwd=0,pch=0,ylab=expression('Recovery rate (yr'^-1*')'),xlab="",ylim=1.05*range(c(0,results$RecoveryRate)),cex.lab=1.2)
+    plot(subResults$dispersal,subResults$RecoveryRate,col=0,lty=0,type="b",lwd=0,pch=0,ylab=expression('Recovery rate'),xlab="",ylim=1.05*range(c(0,results$RecoveryRate)),cex.lab=1.2)
   }
   if(i==2){
     plot(subResults$dispersal,subResults$RecoveryRate,col=0,lty=0,type="b",lwd=0,pch=0,ylab="",xlab="",ylim=1.05*range(c(0,results$RecoveryRate)),cex.lab=1.2)
   }
   if(i==3){
-    plot(subResults$dispersal,subResults$RecoveryRate,col=0,lty=0,type="b",lwd=0,pch=0,ylab=expression('Recovery rate (yr'^-1*')'),xlab="Dispersal rate",ylim=1.05*range(c(0,results$RecoveryRate)),cex.lab=1.2)
+    plot(subResults$dispersal,subResults$RecoveryRate,col=0,lty=0,type="b",lwd=0,pch=0,ylab=expression('Recovery rate'),xlab="Dispersal rate",ylim=1.05*range(c(0,results$RecoveryRate)),cex.lab=1.2)
   }
   if(i==4){
     plot(subResults$dispersal,subResults$RecoveryRate,col=0,lty=0,type="b",lwd=0,pch=0,ylab="",xlab="Dispersal rate",ylim=1.05*range(c(0,results$RecoveryRate)),cex.lab=1.2)

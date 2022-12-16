@@ -62,6 +62,59 @@ ggplot(cond_prob,aes(x=condition,y=prob))+
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 35,hjust = 1))
 
+## conditional probabilities among all scenarios
+
+prob_res$scenario <- paste("network_lab",
+                           "disturb_lab",
+                           "dispersal_range",
+                           "patchScen",
+                           "stochastic_lab",
+                           "space_var",
+                           "temporal_var",sep="")
+prob_res$condition <- paste(prob_res$network_lab,
+                            prob_res$disturb_lab,
+                            prob_res$dispersal_range,
+                            prob_res$patchScen,
+                            prob_res$stochastic_lab,
+                            prob_res$space_var,
+                            prob_res$temporal_var,sep="")
+
+scenarios <- list(cluster_surprises=levels(prob_res$cluster_surprises),
+                  network_lab=levels(prob_res$network_lab),
+                  disturb_lab=levels(prob_res$disturb_lab),
+                  dispersal_range=levels(prob_res$dispersal_range),
+                  patchScen=levels(as.factor(prob_res$patchScen)),
+                  stochastic_lab=levels(prob_res$stochastic_lab),
+                  space_var=levels(prob_res$space_var),
+                  temporal_var=levels(prob_res$temporal_var))
+scenarios <- expand.grid(scenarios)
+scenarios$scenario <- paste(colnames(scenarios)[2:8],collapse="")
+scenarios$condition <- paste(scenarios$network_lab,
+                             scenarios$disturb_lab,
+                             scenarios$dispersal_range,
+                             scenarios$patchScen,
+                             scenarios$stochastic_lab,
+                             scenarios$space_var,
+                             scenarios$temporal_var,sep="")
+cond_prob <- scenarios
+cond_prob$probs <- NA
+cond_prob$inv_probs <- NA
+cond_prob$variance <- paste(cond_prob$stochastic_lab,cond_prob$space_var,cond_prob$temporal_var,sep=", ")
+cond_prob <- cond_prob[!duplicated(cond_prob),]
+
+for(i in 1:nrow(cond_prob))
+{
+  cond <- as.character(cond_prob$condition[i])
+  label <- intersect(prob_res$scenario,cond_prob$scenario[i])
+  label_names <- c("probs","cluster_surprises","scenario","condition")
+  sub_prob <- prob_res[,label_names]
+  colnames(sub_prob) <- c("probs","cluster_surprises","scenario","condition")
+  cond_prob$probs[i] <-sum(sub_prob$probs[sub_prob$cluster_surprises==cond_prob$cluster_surprises[i] & sub_prob$condition==cond])/(sum(sub_prob$condition==cond)/nrow(sub_prob))
+  cond_prob$inv_probs[i] <-sum(sub_prob$probs[sub_prob$cluster_surprises!=cond_prob$cluster_surprises[i] & sub_prob$condition==cond])/(sum(sub_prob$condition==cond)/nrow(sub_prob))
+}
+sub_cond <- cond_prob[cond_prob$variance=="High variance, High spatial, High temporal" | 
+                        cond_prob$variance=="Low variance, Low spatial, Low temporal",]
+head(results,2)
 olr <- MASS::polr(cluster_surprises~network_lab+disturb_lab+dispersal_range+patchScen+stochastic_lab+space_var+temporal_var,data=results,Hess=TRUE)
 summary(olr)
 
@@ -135,3 +188,43 @@ make_plot(sub_scen,"Slow recovery")
 make_plot(sub_scen,"Hidden collapses")
 make_plot(sub_scen,"Lost capacity")
 make_plot(sub_scen,"Critical risk")
+
+make_plot2 <- function(data,xxx)
+{
+  plot_data <- data[sub_scen$cluster_surprises==xxx,]
+  if(xxx=="Resilient")
+  {
+    plot_label <- paste("Conditional probability of",tolower(xxx),"metapopulation recoveries",sep=" ")
+  }else{
+    plot_label <- paste("Conditional probability of",tolower(xxx),"in metapopulation recoveries",sep=" ")
+  }
+  plot_data$dispersal_range <- factor(plot_data$dispersal_range,levels=c("High","Low"),labels=c("High dispersal","Low dispersal"))
+  labels <- expand.grid(dispersal_range=levels(plot_data$dispersal_range),
+                        patchScen=levels(plot_data$patchScen))
+  labels$label <- paste("(",letters[1:8],")",sep="")
+  p <- ggplot(data=plot_data,aes(x=network_lab,y=probs,fill=disturb_lab,shape=variance))+
+    geom_line(data=plot_data,aes(x=network_lab,y=probs,group=interaction(variance,disturb_lab,patchScen,dispersal_range))) +
+    geom_point(data=plot_data,aes(x=network_lab,y=probs,fill=disturb_lab,shape=variance),size=2) +
+    facet_grid(row=vars(patchScen),cols=vars(dispersal_range),scales="fixed") +
+    theme_minimal()+
+    #scale_color_brewer(name="Disturbance regime")+
+    scale_fill_brewer(name="Disturbance",type="qual",palette=2)+
+    scale_shape_manual(name="Variance",values=c(21,22),labels=c("High","Low")) +
+    #labs(title=plot_label)+
+    xlab("Habitat network")+ylab(plot_label)+
+    geom_text(data = labels, aes(label=label), 
+              x = -Inf, y = Inf,hjust = -0,vjust = 1,
+              inherit.aes = FALSE)+
+    theme(legend.position="top",panel.spacing = unit(0.9, "lines"),text=element_text(size=8),
+          legend.spacing.x = unit(0.1, 'lines'),strip.text = element_text())+
+    guides(fill = guide_legend(override.aes = list(shape = 21,size=2)),
+           shape = guide_legend(override.aes = list(size=2)))
+  saveRDS(p,file=paste("Figures/",plot_label,".rds",sep=""))
+  ggsave(paste("Figures/",plot_label,".jpeg",sep=""),plot=p,dpi=600,units='in',height=5,width=5)
+}
+
+make_plot2(sub_cond,"Resilient")
+make_plot2(sub_cond,"Slow recovery")
+make_plot2(sub_cond,"Hidden collapses")
+make_plot2(sub_cond,"Lost capacity")
+make_plot2(sub_cond,"Critical risk")

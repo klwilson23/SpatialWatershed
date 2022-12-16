@@ -161,7 +161,7 @@ Smithers, BC\\
 \(^\textup{8}\)Wild Salmon Center, Portland, OR\\
 \(^\textup{9}\)Ecology and Evolutionary Biology, University of
 California Santa Cruz}
-\date{15 December 2022}
+\date{16 December 2022}
 
 \begin{document}
 \maketitle
@@ -528,16 +528,16 @@ mean outcome for each of the above recovery metrics:
   \def\labelenumii{\alph{enumii}.}
   \tightlist
   \item
-    when \emph{variable},
+    when \textbf{variable},
     \(\alpha_i \sim TN(\mu=\bar{\alpha}, \sigma_{\alpha}=0.3\bar{\alpha})\)
     with a truncation applied such that \(5 \leq \alpha_i \geq 1\) to
     ensure that patches could, at minimum, could replace themselves but
     with an upper limit of a 5-fold improvement to per-capita
     productivity. By comparison, Myers et al. (1999) found that
-    compensation ratio (their \(\hat\alpha\)) ranged 1-7 for most fish
-    species. Since our focus was on at-risk species, we opted to
-    truncate this range towards the lower limit, with a mean of
-    \texttt{2.0}.
+    compensation ratio (their \(\hat\alpha\)) ranged 1-7 for most
+    species evaluated Since our focus was on at-risk species, we opted
+    to truncate \(\alpha_i\) towards the lower end of this range, with a
+    mean of \texttt{2.0}.
   \end{enumerate}
 \item
   Homogenous and spatially variable local carrying capacity across
@@ -548,9 +548,9 @@ mean outcome for each of the above recovery metrics:
   \def\labelenumii{\alph{enumii}.}
   \tightlist
   \item
-    when variable, \(\beta_i \sim multinomial(p_i,N)\) where
+    when \textbf{variable}, \(\beta_i \sim multinomial(p_i,N)\) where
     \(p_i=\cfrac{e^{\theta_i}}{ \sum{e^{\theta_i}}}\),
-    \(\theta_i \sim uniform(0,1)\), and \(N=\bar{\beta}\) - with the
+    \(\theta_i \sim uniform(0,1)\), and \(N=\bar{\beta}\), with the
     added constraint that \(\beta_i<0.1\bar{\beta}\) to ensure that no
     one patch exceed 10\% of total metapopulation abundance (a necessary
     constraint when modelling \emph{local, even} and \emph{local,
@@ -563,19 +563,20 @@ mean outcome for each of the above recovery metrics:
     S6).
   \end{enumerate}
 \item
-  Disturbances where a proportion of individuals removed from
-  metapopulation (e.g., \texttt{0.90}) occurs.
+  Variation in the spatial distribution of disturbances where a
+  proportion of individuals were removed from the metapopulation (e.g.,
+  \texttt{0.90}) occurs.
 
   \begin{enumerate}
   \def\labelenumii{\alph{enumii}.}
   \tightlist
   \item
-    \emph{uniform} - random individuals removed at equal vulnerability
-    across all patches.
+    \emph{uniform} - individuals randomly removed across all patches,
+    with all individuals having equal vulnerability to being removed.
   \item
-    \emph{local, even} - random individuals removed from randomly
-    selected subset of patches (as long as the target individuals lost
-    in the metapopulation can be achieved in that subset of patches)
+    \emph{local, even} - randomly chosen individuals removed from random
+    subset of patches (as long as the target individuals lost in the
+    metapopulation can be achieved in that subset of patches)
 
     \begin{enumerate}
     \def\labelenumiii{\roman{enumiii}.}
@@ -651,8 +652,9 @@ mean outcome for each of the above recovery metrics:
 \caption{Histogram showing variation among demographic rates after simulatng 100,000 local patches when using the truncated normal in Appendix S1: Section 1.3.1.a and truncated multinomial in Appendix S1: Section 1.3.2.a when modelling variation in local compensation ratio (grey) and carrying capacity (red).}\label{fig:histogram of demographic variation}
 \end{figure}
 
-\hypertarget{example-results}{%
-\subsubsection{Example results}\label{example-results}}
+\hypertarget{walkthrough-of-example-results}{%
+\subsubsection{Walkthrough of example
+results}\label{walkthrough-of-example-results}}
 
 We demonstrate our metapopulation model with an example outcome for a
 linear network composed of \texttt{16} patches, a dispersal rate of
@@ -699,9 +701,8 @@ affects the recovery regime.
 \newpage
 
 Next, we can contrast with a disturbance regime where the disturbance is
-concentrated on local patches that can be completely extirpated (rather
-than the disturbance being applied proportionally across all patches
-e.g., a mixed-stock fishery).
+locally even among a subset of local patches (rather than uniform across
+all patches or local extirpations).
 
 \begin{figure}[H]
 
@@ -710,6 +711,22 @@ e.g., a mixed-stock fishery).
 }
 
 \caption{Example iteration of spatial recovery regime of stochastic metapopulation.}\label{fig:example results4}
+\end{figure}
+
+\newpage
+
+Next, we can contrast with a disturbance regime where the disturbance is
+concentrated on local patches that can be completely extirpated (rather
+than the disturbance being applied proportionally across all patches
+e.g., a mixed-stock fishery).
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/example results5-1} 
+
+}
+
+\caption{Example iteration of spatial recovery regime of stochastic metapopulation.}\label{fig:example results5}
 \end{figure}
 \newpage
 
@@ -797,11 +814,20 @@ production} (Figure S16).
 
 \begin{figure}[H]
 
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/violin plots of risk of recovery rates based on variable patch demographic rates-1} 
+
+}
+
+\caption{Violin plots showing marginal response of metapopulation recovery rates along gradients of network configuration, dispersal categories (low≤0.001; high>0.001), heterogeneity in local demographic rates ($\alpha$ was local patch productivity and $\beta$ was local patch carrying capacity in the Beverton-Holt model), and spatial distribution of disturbance.}\label{fig:violin plots of risk of recovery rates based on variable patch demographic rates}
+\end{figure}
+
+\begin{figure}[H]
+
 {\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/violin plots of risk of recovery rates-1} 
 
 }
 
-\caption{Violin plots showing marginal response of metapopulation recovery rates along gradients of network configuration, dispersal categories (low≤0.001; high>0.001), spatial-temporal (ST) correlations (low $\rho$≈0; high $\rho$=0.6), scale of lognormal variance in recruitment (low $\sigma$= 0.001; high $\sigma$=0.1), and spatial distribution of disturbance.}\label{fig:violin plots of risk of recovery rates}
+\caption{Violin plots showing marginal response of metapopulation recovery rates along gradients of network configuration, dispersal categories (low≤0.001; high>0.001), spatial-temporal (ST) correlations (low $\rho$≈0; high $\rho$=0.6), scale of lognormal variance in recruitment (low $\sigma$= 0.001; high $\sigma$=0.1), and spatial distribution of disturbance .}\label{fig:violin plots of risk of recovery rates}
 \end{figure}
 
 Next, we show violin plots demonstrating some of the modulating factors
