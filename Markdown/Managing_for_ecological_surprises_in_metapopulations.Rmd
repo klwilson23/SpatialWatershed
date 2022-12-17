@@ -421,7 +421,7 @@ We tested all combinations of the following eight processes (below) and ran `100
     a. when **variable**, $\alpha_i \sim TN(\mu=\bar{\alpha}, \sigma_{\alpha}=0.3\bar{\alpha})$ with a truncation applied such that $5 \leq \alpha_i \geq 1$ to ensure that patches could, at minimum, could replace themselves but with an upper limit of a 5-fold improvement to per-capita productivity. By comparison, @Myers1999 found that compensation ratio (their $\hat\alpha$) ranged 1-7 for most species evaluated Since our focus was on at-risk species, we opted to truncate $\alpha_i$ towards the lower end of this range, with a mean of `2.0`.
 
 2. Homogenous and spatially variable local carrying capacity across patches, i.e. asymptote of expected recruits at high adult densities ($\beta_i$)
-    a. when **variable**, $\beta_i \sim multinomial(p_i,N)$ where $p_i=\cfrac{e^{\theta_i}}{ \sum{e^{\theta_i}}}$, $\theta_i \sim uniform(0,1)$, and $N=\bar{\beta}$, with the added constraint that $\beta_i<0.1\bar{\beta}$ to ensure that no one patch exceed 10% of total metapopulation abundance (a necessary constraint when modelling *local, even* and *local, uneven* disturbances below). **Note** that, when local variation in demography rates occurred, the truncated normal in *Appendix S1: Section 1.3.1.a* and truncated multinomial in *Appendix S1: Section 1.3.2.a* above led compensation ratio and carrying capacity, respectively, to vary by the same magnitude ~28% coefficient of variation (Appendix S1: Figure S6).
+    a. when **variable**, $\beta_i \sim multinomial(p_i,N)$ where $p_i=\cfrac{e^{\theta_i}}{ \sum{e^{\theta_i}}}$, $\theta_i \sim uniform(0,1)$, and $N=\bar{\beta}$, with the added constraint that $\beta_i<0.1\bar{\beta}$ to ensure that no one patch exceed 10% of total metapopulation abundance (a necessary constraint when modelling *local, even* and *local, uneven* disturbances below). **Note** that, when local variation in demography rates occurred, the truncated normal in *Appendix S1: Section S1.3.1.a* and truncated multinomial in *Appendix S1: Section S1.3.2.a* above led compensation ratio and carrying capacity, respectively, to vary by the same magnitude ~28% coefficient of variation (Appendix S1: Figure S6).
 
 3. Variation in the spatial distribution of disturbances where a proportion of individuals were removed from the metapopulation (e.g., `0.90`) occurs.
     a. *uniform* - individuals randomly removed across all patches, with all individuals having equal vulnerability to being removed.
@@ -444,7 +444,7 @@ We tested all combinations of the following eight processes (below) and ran `100
 
 8. Spatial correlation in recruitment deviates among patches from low, medium, to high correlation (i.e., neighboring patches go up or down together).
 
-```{r histogram of demographic variation, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Histogram showing variation among demographic rates after simulatng 100,000 local patches when using the truncated normal in Appendix S1: Section 1.3.1.a and truncated multinomial in Appendix S1: Section 1.3.2.a when modelling variation in local compensation ratio (grey) and carrying capacity (red).",fig.align="center"}
+```{r histogram of demographic variation, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Histogram showing variation among demographic rates after simulatng 100,000 local patches when using the truncated normal in Appendix S1: Section 1.3(1.a) and truncated multinomial in Appendix S1: Section 1.3(2.a) when modelling variation in local compensation ratio (grey) and carrying capacity (red).",fig.align="center"}
 library(mvtnorm)
 #library(marima)
 require(mvtnorm)
@@ -646,9 +646,9 @@ points(mean_res$long_surp,mean_res$longOcc,pch=22,cex=2,bg=dist_colours)
 legend("bottomright",c("Uniform","Local, even","Local, uneven"),pch=22,pt.bg=dist_colours,bty="n",title="Disturbance regime",cex=0.8)
 ```
 \newpage
-### Role of network structure & dispersal
+### Role of interplay in ecological and disturbance conditions on recovery patterns
 
-We now show some general patterns in how variable patch demographic rates, network structure, dispersal, disturbance, recruitment stochasticity, and spatio-temporal correlations variation affects metapopulation *recovery rates* (shown in Figure 4 of the main text and Figure S13), *non-recovery rate* (i.e, the number of simulations where the metapopulation fails to recover; Figure S14), *patch occupancy* (i.e., number of patches with local abundance <10% of pre-disturbance; Figure S15), and *relative production* (Figure S16).
+We now show some general patterns in how variable patch demographic rates, network structure, dispersal, disturbance, recruitment stochasticity, and spatio-temporal correlations variation affects metapopulation *recovery rates* (shown in Figure 4 of the main text and Figure S13 & S15), *non-recovery rate* (i.e, the number of simulations where the metapopulation fails to recover; Figure S16), *patch occupancy* (i.e., number of patches with local abundance <10% of pre-disturbance; Figure S17), and *relative production* (Figure S18).
 
 ```{r violin plots of risk of recovery rates based on variable patch demographic rates, echo=FALSE,warning = FALSE, message = FALSE,fig.height=5.5,fig.width=6.5,fig.cap="Violin plots showing marginal response of metapopulation recovery rates along gradients of network configuration, dispersal categories (low≤0.001; high>0.001), heterogeneity in local demographic rates ($\\alpha$ was local patch productivity and $\\beta$ was local patch carrying capacity in the Beverton-Holt model), and spatial distribution of disturbance.",fig.align="center"}
 results <- readRDS("Simulations/results2022-05-11.rds")
@@ -709,7 +709,7 @@ p <- ggplot(data=sub_res, aes(x=dispersal_range, y=RecoveryRate, fill=network_la
 p
 ```
 
-```{r violin plots of risk of recovery rates, echo=FALSE,warning = FALSE, message = FALSE,fig.height=5.5,fig.width=6.5,fig.cap="Violin plots showing marginal response of metapopulation recovery rates along gradients of network configuration, dispersal categories (low≤0.001; high>0.001), spatial-temporal (ST) correlations (low $\\rho$≈0; high $\\rho$=0.6), scale of lognormal variance in recruitment (low $\\sigma$= 0.001; high $\\sigma$=0.1), and spatial distribution of disturbance .",fig.align="center"}
+```{r violin plots of risk of recovery rates, echo=FALSE,warning = FALSE, message = FALSE,fig.height=5.5,fig.width=6.5,fig.cap="Violin plots showing marginal response of metapopulation recovery rates along gradients of network configuration, dispersal categories (low≤0.001; high>0.001), spatial-temporal (ST) correlations (low $\\rho$≈0; high $\\rho$=0.6), scale of lognormal variance in recruitment (low $\\sigma$= 0.001; high $\\sigma$=0.1), and spatial distribution of disturbance.",fig.align="center"}
 results <- readRDS("Simulations/results2022-05-11.rds")
 scenarios <- readRDS("Simulations/scenarios2022-05-11.rds")
 results$network <- factor(results$network,levels=unique(results$network),labels=c("linear","dendritic","star","grid"))
@@ -887,7 +887,7 @@ p <- ggplot(data=sub_res, aes(x=dispersal_range, y=longOcc, fill=network_lab))+
 p
 ```
 
-Next, we show variation in relative production metrics. Figure S12 shows the tight correlation between patch occupancy and relative production. Hence, Figure S15 and S16 look quite similar.
+Next, we show variation in relative production metrics. Figure S13 shows the tight correlation between patch occupancy and relative production. Hence, Figure S17 and S18 look quite similar.
 ```{r violin plots of risk of relative production, echo=FALSE,warning = FALSE, message = FALSE,fig.height=5.5,fig.width=6.5,fig.cap="Violin plots showing marginal response of relative production for metapopulations along gradients of network configuration, dispersal categories (low≤0.001; high>0.001), spatial-temporal (ST) correlations (low $\\rho$≈0; high $\\rho$=0.6), scale of lognormal variance in recruitment (low $\\sigma$= 0.001; high $\\sigma$=0.1), and spatial distribution of disturbance.",fig.align="center"}
 results <- readRDS("Simulations/results2022-05-11.rds")
 scenarios <- readRDS("Simulations/scenarios2022-05-11.rds")
@@ -947,10 +947,10 @@ p <- ggplot(data=sub_res, aes(x=dispersal_range, y=long_surp, fill=network_lab))
 p
 ```
 
-Dispersal, landscape structure, and local density-dependence also affected metapopulation recovery patterns in three key ways, though to a lesser extent. First, recovery rates increased with increased dispersal. However, this effect was nonlinear with diminishing benefits of dispersal occurring at ~1-3%, depending on spatial structure and disturbance. Second, more linearized networks had slower recovery times than more connected networks suggesting that rescue effects take some time to cascade through the entire network of patches; but this interacted with the disturbance regime as only local, extirpation exhibited this change in any substantial manner. Last, diversity in local patch compensation and carrying capacities tended to slow metapopulation recoveries - this effect interacted with other factors like stochasticity.
+Dispersal, network topology, variable local demography, spatial-temporal correlations, and recruitment stochasticity also affected metapopulation recovery patterns in three key ways, though to a lesser extent. First, recovery rates increased with increased dispersal. However, this effect was nonlinear with diminishing benefits of dispersal occurring at ~1-3%, depending on spatial structure and disturbance. Second, more linearized networks had slower recovery times than more connected networks suggesting that rescue effects take some time to cascade through the entire network of patches; but this interacted with the disturbance regime as only local, extirpation exhibited this change in any substantial manner. Last, diversity in local patch compensation and carrying capacities tended to slow metapopulation recoveries - this effect interacted with other factors like stochasticity.
 
 \newpage
-### Clustering analyses
+## Clustering analyses
 
 We used hierarchical clustering analyses (implementing Ward's criterion) of a dissimilarity matrix from our four recovery metrics to evaluate whether there was evidence for common recovery regimes among our simulation results across all ecological and disturbance scenarios  [@Murtagh2014]. Based on advice laid out in @Hennig2014, we determined that the best number of unique clusters in metapopulation recoveries should satisfy the following statistical criteria:
 
@@ -960,7 +960,7 @@ We used hierarchical clustering analyses (implementing Ward's criterion) of a di
 4. clusters are relatively unique and there is good separation between the clusters (i.e., the separation index is still high, while considering that low numbers of clusters should always have the highest separation)
 
 
-```{r clustering analysis, echo=FALSE,warning = FALSE, message = FALSE,fig.height=4.5,fig.width=7,fig.cap="The relationships between number of potential clusters and multiple statistical criteria used to test support for the best number of clusters within the simulated recovery outcomes",fig.align="center"}
+```{r clustering analysis, echo=FALSE,warning = FALSE, message = FALSE,fig.height=4.5,fig.width=7,fig.cap="The relationships between number of potential clusters and multiple statistical criteria used to test support for the best number of clusters within the simulated recovery outcomes.",fig.align="center"}
 cluster_res <- readRDS("Simulations/cluster_test.rds")
 layout(matrix(c(1:6),nrow=2,ncol=3,byrow=TRUE))
 par(mar=c(5,4,0.25,0.25))
@@ -1036,7 +1036,7 @@ knitr::kable(df,caption = 'The mean recovery metrics, total sample size per regi
 
 ```
 
-In general, the five recovery regimes spanned a continuum of better (e.g., resilient) to worse recoveries (e.g., long-term critical risks). Overall, the interplay between ecological and disturbance conditions appeared to structure the specific pathway for metapopulation recoveries (Figure S19; Table S2). For example, uniform disturbances always led to resilient recoveries. However, local, even disturbance regimes tended to lead to, at-best, a resilient recovery or, at worst, hidden collapses with the probability modulated by other ecological factors. Local, uneven disturbance regimes led to, at best, a slow recovery or, at worst, a long-term critical risk and non-recovery. The main text Figure 5 and 6 demonstrates the conditions that led to resilient recoveries compared to critical risks, while more intermediate outcomes, like slow recovery, hidden collapses, or lost capacity are shown here in Figures S20-S22.
+In general, the five recovery regimes spanned a continuum of better (e.g., resilient) to worse recoveries (e.g., long-term critical risks). Overall, the interplay between ecological and disturbance conditions appeared to structure the specific pathway for metapopulation recoveries (Figure S21; Table S2). For example, uniform disturbances always led to resilient recoveries. However, local, even disturbance regimes tended to lead to, at-best, a resilient recovery or, at worst, hidden collapses with the probability modulated by other ecological factors. Local, uneven disturbance regimes led to, at best, a slow recovery or, at worst, a long-term critical risk and non-recovery. The main text Figure 5 and 6 demonstrates the conditions that led to resilient recoveries compared to critical risks, while more intermediate outcomes, like slow recovery, hidden collapses, or lost capacity are shown here in Figures S22-S24.
 
 ```{r cluster results, echo=FALSE,warning = FALSE, message = FALSE,fig.height=5,fig.width=8,fig.cap="Frequency of emergent metapopulation recovery regimes can depend on a complex interplay between network structure, dispersal, and spatial disturbances. Ribbon colors denote a group of simulations that led to one of five common recovery outcomes. Frequency of regimes denoted by width of ribbons",fig.align="center"}
 library(ggalluvial)
@@ -1066,20 +1066,21 @@ p1 <- ggplot(surprises,aes(y = surprise_logic,axis1 = network_lab, axis2 = dispe
 p1
 
 ```
-Local patch demography, habitat network structure, dispersal, spatially and temporally correlated recruitment variation, and spatial disturbance regimes each had modulating effects on the probability for any particular recovery regime (Figures 5 & 6 in the main text; and Figures S20-S22 here). There was a clear signal from any localized disturbances, which increased the probability for non-resilient recovery regimes. For habitat networks, metapopulations with linear networks tended to have increased probability for worse recoveries compared to gridded networks. For dispersal rates, metapopulations with low dispersal had increased probability for poor recoveries compared to high dispersal. For local demography, metapopulations with variable local patch demographic rates tended to increased probability for poor recoveries compared to metapopulations composed of homogeneous local patches. For recruitment stochasticity, metapopulations with both high recruitment variation and high spatial-temporal correlations led to increased probability for poor recoveries compared to low variation and low correlations.
+### Role of ecological and disturbance conditions on recovery outcomes
+Local patch demography, habitat network structure, dispersal, spatially and temporally correlated recruitment variation, and spatial disturbance regimes each had modulating effects on the probability for any particular recovery regime (Figures 5 & 6 in the main text; and Figures S22-S24 here). There was a clear signal from any localized disturbances, which increased the probability for non-resilient recovery regimes. For habitat networks, metapopulations with linear networks tended to have increased probability for worse recoveries compared to gridded networks. For dispersal rates, metapopulations with low dispersal had increased probability for poor recoveries compared to high dispersal. For local demography, metapopulations with variable local patch demographic rates tended to increased probability for poor recoveries compared to metapopulations composed of homogeneous local patches. For recruitment stochasticity, metapopulations with both high recruitment variation and high spatial-temporal correlations led to increased probability for poor recoveries compared to low variation and low correlations.
 
-```{r conditional probability for slow recovery, echo=FALSE,warning = FALSE, message = FALSE,fig.height=5,fig.width=5,fig.cap="The probability of a slow recovery in metapopulation recoveries depended on the interplay between network structure, dispersal (low≤0.001; high>0.001), spatial disturbances, heterogeneity in local demographic rates ($\\alpha$ is local patch productivity and $\\beta$ is local patch carrying capacity), and spatial-temporal recruitment variation (high=$\\rho$=0.6 and $\\sigma$=0.1; low=$\\rho$≈0 and $\\sigma$= 0.001).",fig.align="center"}
+```{r conditional probability for slow recovery, echo=FALSE,warning = FALSE, message = FALSE,fig.height=5,fig.width=5,fig.cap="The probability of a slow recovery in metapopulation recoveries depended on the interplay between network structure, dispersal (low≤0.001; high>0.001), spatial disturbances, heterogeneity in local demographic rates ($\\alpha$ is local patch productivity and $\\beta$ is local patch carrying capacity), and spatial-temporal recruitment variation (high=$\\rho$=0.6 and $\\sigma$=0.1; low=$\\rho$≈0 and $\\sigma$= 0.001) based on ordered logistic regression.",fig.align="center"}
 p <- readRDS(file="Figures/Probability of slow recovery in metapopulation recoveries.rds")
 p
 ```
 
-```{r conditional probability for hidden collapses, echo=FALSE,warning = FALSE, message = FALSE,fig.height=5,fig.width=5,fig.cap="The probability of hidden local collapses in metapopulation recoveries depended on the interplay between network structure, dispersal (low≤0.001; high>0.001), spatial disturbances, heterogeneity in local demographic rates ($\\alpha$ is local patch productivity and $\\beta$ is local patch carrying capacity), and spatial-temporal recruitment variation (high=$\\rho$=0.6 and $\\sigma$=0.1; low=$\\rho$≈0 and $\\sigma$= 0.001).",fig.align="center"}
+```{r conditional probability for hidden collapses, echo=FALSE,warning = FALSE, message = FALSE,fig.height=5,fig.width=5,fig.cap="The probability of hidden local collapses in metapopulation recoveries depended on the interplay between network structure, dispersal (low≤0.001; high>0.001), spatial disturbances, heterogeneity in local demographic rates ($\\alpha$ is local patch productivity and $\\beta$ is local patch carrying capacity), and spatial-temporal recruitment variation (high=$\\rho$=0.6 and $\\sigma$=0.1; low=$\\rho$≈0 and $\\sigma$= 0.001) based on ordered logistic regression.",fig.align="center"}
 p<-readRDS(file="Figures/Probability of hidden collapses in metapopulation recoveries.rds")
 p
 
 ```
 
-```{r conditional probability for lost capacity, echo=FALSE,warning = FALSE, message = FALSE,fig.height=5,fig.width=5,fig.cap="The probability of lost productive capacity in metapopulation recoveries depended on the interplay between network structure, dispersal (low≤0.001; high>0.001), spatial disturbances, heterogeneity in local demographic rates ($\\alpha$ is local patch productivity and $\\beta$ is local patch carrying capacity), and spatial-temporal recruitment variation (high=$\\rho$=0.6 and $\\sigma$=0.1; low=$\\rho$≈0 and $\\sigma$= 0.001).",fig.align="center"}
+```{r conditional probability for lost capacity, echo=FALSE,warning = FALSE, message = FALSE,fig.height=5,fig.width=5,fig.cap="The probability of lost productive capacity in metapopulation recoveries depended on the interplay between network structure, dispersal (low≤0.001; high>0.001), spatial disturbances, heterogeneity in local demographic rates ($\\alpha$ is local patch productivity and $\\beta$ is local patch carrying capacity), and spatial-temporal recruitment variation (high=$\\rho$=0.6 and $\\sigma$=0.1; low=$\\rho$≈0 and $\\sigma$= 0.001) based on ordered logistic regression.",fig.align="center"}
 p<-readRDS(file="Figures/Probability of lost capacity in metapopulation recoveries.rds")
 p
 

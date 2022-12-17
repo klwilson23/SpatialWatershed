@@ -323,26 +323,34 @@ par(mar=c(4,4.45,0.5,0.5))
 for(i in 1:length(scenarios$network))
 {
   subResults <- results[results$network==scenarios$network[i],]
+  subResults <- subResults[subResults$dispersal>0,]
+  subResults$dispersal <- (subResults$dispersal)
   if(i==1){
-    plot(subResults$dispersal,subResults$RecoveryRate,col=0,lty=0,type="b",lwd=0,pch=0,ylab=expression('Recovery rate'),xlab="",ylim=1.05*range(c(0,results$RecoveryRate)),cex.lab=1.2)
+    plot(subResults$dispersal,subResults$RecoveryRate,col=0,lty=0,type="b",lwd=0,pch=0,ylab=expression('Recovery rate'),xlab="",ylim=1.05*range(c(0,results$RecoveryRate)),cex.lab=1.2,log='x')
   }
   if(i==2){
-    plot(subResults$dispersal,subResults$RecoveryRate,col=0,lty=0,type="b",lwd=0,pch=0,ylab="",xlab="",ylim=1.05*range(c(0,results$RecoveryRate)),cex.lab=1.2)
+    plot(subResults$dispersal,subResults$RecoveryRate,col=0,lty=0,type="b",lwd=0,pch=0,ylab="",xlab="",ylim=1.05*range(c(0,results$RecoveryRate)),cex.lab=1.2,log='x')
   }
   if(i==3){
-    plot(subResults$dispersal,subResults$RecoveryRate,col=0,lty=0,type="b",lwd=0,pch=0,ylab=expression('Recovery rate'),xlab="Dispersal rate",ylim=1.05*range(c(0,results$RecoveryRate)),cex.lab=1.2)
+    plot(subResults$dispersal,subResults$RecoveryRate,col=0,lty=0,type="b",lwd=0,pch=0,ylab=expression('Recovery rate'),xlab="Dispersal rate",ylim=1.05*range(c(0,results$RecoveryRate)),cex.lab=1.2,log='x')
   }
   if(i==4){
-    plot(subResults$dispersal,subResults$RecoveryRate,col=0,lty=0,type="b",lwd=0,pch=0,ylab="",xlab="Dispersal rate",ylim=1.05*range(c(0,results$RecoveryRate)),cex.lab=1.2)
+    plot(subResults$dispersal,subResults$RecoveryRate,col=0,lty=0,type="b",lwd=0,pch=0,ylab="",xlab="Dispersal rate",ylim=1.05*range(c(0,results$RecoveryRate)),cex.lab=1.2,log='x')
   }
   for(j in 1:length(scenarios$disturbance)){
     distResults <- subResults[subResults$disturbance==scenarios$disturbance[j],]
     #points(distResults$dispersal,distResults$recovery,bg=dist_colours[j],pch=21)
   }
-  
+  #foom <- function(x) {
+  #  -round(log10(abs(x/10)),0)
+  #}
+  #round by foom and print as charecter
+  #disp_lab <-   sapply(round(scenarios$dispersal[-1],foom(scenarios$dispersal[-1])), function(x) as.character(x))
+  #axis(1,at=log10(scenarios$dispersal[-1]),disp_lab,xpd=TRUE,cex=1.2)
   invisible(lapply(1:length(scenarios$disturbance),FUN=function(z){
-    y_rng <- sapply(1:length(scenarios$dispersal),function(x){quantile(subResults$RecoveryRate[v_all.equal(subResults$dispersal,scenarios$dispersal[x]) & subResults$disturbance==scenarios$disturbance[z]],probs=c(0.25,0.75))});
-    polygon(x=c(scenarios$dispersal,rev(scenarios$dispersal)),y=c(y_rng[1,],rev(y_rng[2,])),col=adjustcolor(dist_colours[z],transparency))}))
+    y_rng <- sapply(1:length(scenarios$dispersal),function(x){quantile(subResults$RecoveryRate[v_all.equal(log10(subResults$dispersal),log10(scenarios$dispersal[x])) & subResults$disturbance==scenarios$disturbance[z]],probs=c(0.5))});
+    #polygon(x=c(scenarios$dispersal,rev(scenarios$dispersal)),y=c(y_rng[1,],rev(y_rng[2,])),col=adjustcolor(dist_colours[z],transparency))}))
+    lines(scenarios$dispersal,y_rng,col=adjustcolor(dist_colours[z],1),lwd=2)}))
   if(i==1){
     Corner_text("(a)","topleft")
   }
