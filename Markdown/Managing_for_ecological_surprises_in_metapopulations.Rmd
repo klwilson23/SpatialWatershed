@@ -51,11 +51,20 @@ header-includes:
 - \renewcommand{\thefigure}{S\arabic{figure}}
 - \renewcommand{\thetable}{S\arabic{table}}
 - \renewcommand{\theequation}{S.\arabic{equation}}
-- \renewcommand{\thesection}{S\arabic{section}}
+#- \renewcommand{\thesection}{\textbf{\textbf{Section S\arabic{section}}:}}
+
+- \renewcommand{\thesection}{Section S\arabic{section}:}
+- \renewcommand{\thesubsection}{Section S\arabic{section}.\arabic{subsection}:}
+- \renewcommand{\thesubsubsection}{Section S\arabic{section}.\arabic{subsection}.\arabic{subsubsection}:}
 - \usepackage{fancyhdr}
 - \setlength{\parskip}{\baselineskip}
 - \usepackage{tocloft}
-- \setlength{\cftbeforesecskip}{6pt}
+- \setlength{\cftbeforesecskip}{12pt}
+#- \setlength{\cftsecnumwidth}{10pt}
+#- \setlength{\cftchapnumwidth}{2em}
+#- \setlength{\cftsecnumwidth}{3em}
+#- \renewcommand*\cftchapnumwidth{5em}
+- \renewcommand*\cftsecnumwidth{12pt}
 - \usepackage{booktabs}
 - \usepackage{makecell}
 - \DeclareMathOperator{\EX}{\mathbb{E}}% expected value
@@ -1071,7 +1080,7 @@ Local patch demography, habitat network structure, dispersal, spatially and temp
 
 ```{r conditional probability for slow recovery, echo=FALSE,warning = FALSE, message = FALSE,fig.height=5,fig.width=5,fig.cap="The probability of a slow recovery in metapopulation recoveries depended on the interplay between network structure, dispersal (low≤0.001; high>0.001), spatial disturbances, heterogeneity in local demographic rates ($\\alpha$ is local patch productivity and $\\beta$ is local patch carrying capacity), and spatial-temporal recruitment variation (high=$\\rho$=0.6 and $\\sigma$=0.1; low=$\\rho$≈0 and $\\sigma$= 0.001) based on ordered logistic regression.",fig.align="center"}
 p <- readRDS(file="Figures/Probability of slow recovery in metapopulation recoveries.rds")
-p
+print(p)
 ```
 
 ```{r conditional probability for hidden collapses, echo=FALSE,warning = FALSE, message = FALSE,fig.height=5,fig.width=5,fig.cap="The probability of hidden local collapses in metapopulation recoveries depended on the interplay between network structure, dispersal (low≤0.001; high>0.001), spatial disturbances, heterogeneity in local demographic rates ($\\alpha$ is local patch productivity and $\\beta$ is local patch carrying capacity), and spatial-temporal recruitment variation (high=$\\rho$=0.6 and $\\sigma$=0.1; low=$\\rho$≈0 and $\\sigma$= 0.001) based on ordered logistic regression.",fig.align="center"}

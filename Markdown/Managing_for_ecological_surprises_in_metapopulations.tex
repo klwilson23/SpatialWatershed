@@ -86,11 +86,14 @@
 \renewcommand{\thefigure}{S\arabic{figure}}
 \renewcommand{\thetable}{S\arabic{table}}
 \renewcommand{\theequation}{S.\arabic{equation}}
-\renewcommand{\thesection}{S\arabic{section}}
+\renewcommand{\thesection}{Section S\arabic{section}:}
+\renewcommand{\thesubsection}{Section S\arabic{section}.\arabic{subsection}:}
+\renewcommand{\thesubsubsection}{Section S\arabic{section}.\arabic{subsection}.\arabic{subsubsection}:}
 \usepackage{fancyhdr}
 \setlength{\parskip}{\baselineskip}
 \usepackage{tocloft}
-\setlength{\cftbeforesecskip}{6pt}
+\setlength{\cftbeforesecskip}{12pt}
+\renewcommand*\cftsecnumwidth{12pt}
 \usepackage{booktabs}
 \usepackage{makecell}
 \DeclareMathOperator{\EX}{\mathbb{E}}% expected value
@@ -161,7 +164,7 @@ Smithers, BC\\
 \(^\textup{8}\)Wild Salmon Center, Portland, OR\\
 \(^\textup{9}\)Ecology and Evolutionary Biology, University of
 California Santa Cruz}
-\date{16 December 2022}
+\date{23 April 2023}
 
 \begin{document}
 \maketitle
