@@ -1,6 +1,9 @@
 ---
-title: "Supporting information for: Wilson *et al.* 2022. The role of spatial structure in at-risk metapopulation recoveries. In: *Ecological Applications*."
-subtitle: "**Appendix S1:** Overview of metapopulation model description & detailed results"
+title: | 
+  | Supporting information for: Wilson *et al.* 2022. The role of spatial structure in at-risk metapopulation recoveries.
+subtitle: |
+  | In: *Ecological Applications*
+  | **Appendix S1:** Overview of metapopulation model description & detailed results
 author: |
   | Kyle L. Wilson$^\textup{1,2}$^[Corresponding author - email: klwilson.ccira@gmail.com], Alexandra C. Sawyer$^\textup{1}$, Anna Potapova$^\textup{1}$, Colin J. Bailey$^\textup{1}$,Daniella LoScerbo$^\textup{3,4}$,
   | Elissa K. Sweeney-Bergen$^\textup{1,5}$, Emma E. Hodgson$^\textup{1,4}$, Kara J. Pitman$^\textup{1}$, Karl M. Seitz$^\textup{1}$,
@@ -8,15 +11,15 @@ author: |
   | Douglas C. Braun$^\textup{3,5}$, Matthew R. Sloat$^\textup{8}$, M. Tim Tinker$^\textup{9}$, 
   | and Jonathan W. Moore$^\textup{1,3}$
   |
-  | $^\textup{1}$Earth to Ocean Research Group, Simon Fraser University
-  | $^\textup{2}$Central Coast Indigenous Resource Alliance, Campbell River, BC
-  | $^\textup{3}$Resource and Environmental Management, Simon Fraser University
-  | $^\textup{4}$Fisheries & Oceans Canada, Cultus Lake Laboratory, Cultus Lake, BC
-  | $^\textup{5}$Ministry of Forests, Lands, Natural Resource Operations, and Rural Development, Smithers, BC
-  | $^\textup{6}$Fisheries & Oceans Canada, Salmonid Enhancement Program, Nanaimo, BC
-  | $^\textup{7}$Fisheries & Oceans Canada, North Coast Stock Assessment, Smithers, BC
-  | $^\textup{8}$Wild Salmon Center, Portland, OR
-  | $^\textup{9}$Ecology and Evolutionary Biology, University of California Santa Cruz
+  | \small$^\textup{1}$Earth to Ocean Research Group, Simon Fraser University
+  | \small$^\textup{2}$Central Coast Indigenous Resource Alliance, Campbell River, BC
+  | \small$^\textup{3}$Resource and Environmental Management, Simon Fraser University
+  | \small$^\textup{4}$Fisheries & Oceans Canada, Cultus Lake Laboratory, Cultus Lake, BC
+  | \small$^\textup{5}$Ministry of Forests, Lands, Natural Resource Operations, and Rural Development, Smithers, BC
+  | \small$^\textup{6}$Fisheries & Oceans Canada, Salmonid Enhancement Program, Nanaimo, BC
+  | \small$^\textup{7}$Fisheries & Oceans Canada, North Coast Stock Assessment, Smithers, BC
+  | \small$^\textup{8}$Wild Salmon Center, Portland, OR
+  | \small$^\textup{9}$Ecology and Evolutionary Biology, University of California Santa Cruz
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
   pdf_document:
@@ -78,9 +81,9 @@ header-includes:
 - \DeclareMathOperator{\EX}{\mathbb{E}}% expected value
 - \usepackage{dcolumn}
 - \usepackage{titlesec}
-- \titlespacing{\section}{0pt}{0pt plus 1pt minus 1pt}{-6pt plus 1pt minus 1pt}
-- \titlespacing{\subsection}{0pt}{0pt plus 1pt minus 1pt}{-6pt plus 1pt minus 1pt}
-- \titlespacing{\subsubsection}{0pt}{0pt plus 1pt minus 1pt}{-6pt plus 1pt minus 1pt}
+- \titlespacing{\section}{0pt}{0pt plus 1pt minus 1pt}{3pt plus 1pt minus 1pt}
+- \titlespacing{\subsection}{0pt}{0pt plus 1pt minus 1pt}{3pt plus 1pt minus 1pt}
+- \titlespacing{\subsubsection}{0pt}{0pt plus 1pt minus 1pt}{3pt plus 1pt minus 1pt}
 - \titleformat{\section}{\normalfont\Large\bfseries\raggedright}{\thesection}{0em}{}[{\titlerule[1pt]}]
 ---
 
