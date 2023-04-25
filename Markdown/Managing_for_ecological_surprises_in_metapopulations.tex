@@ -86,18 +86,26 @@
 \renewcommand{\thefigure}{S\arabic{figure}}
 \renewcommand{\thetable}{S\arabic{table}}
 \renewcommand{\theequation}{S.\arabic{equation}}
-\renewcommand{\thesection}{Section S\arabic{section}:}
-\renewcommand{\thesubsection}{Section S\arabic{section}.\arabic{subsection}:}
-\renewcommand{\thesubsubsection}{Section S\arabic{section}.\arabic{subsection}.\arabic{subsubsection}:}
+\renewcommand{\thesection}{Section S\arabic{section}{:~}}
+\renewcommand{\thesubsection}{Section S\arabic{section}.\arabic{subsection}{:~}}
+\renewcommand{\thesubsubsection}{Section S\arabic{section}.\arabic{subsection}.\arabic{subsubsection}{:~}}
 \usepackage{fancyhdr}
 \setlength{\parskip}{\baselineskip}
 \usepackage{tocloft}
-\setlength{\cftbeforesecskip}{12pt}
-\renewcommand*\cftsecnumwidth{12pt}
+\renewcommand{\cftdotsep}{2.10}
+\setlength{\cftsecnumwidth}{0em}
+\setlength{\cftsubsecnumwidth}{6em}
+\setlength{\cftsubsubsecnumwidth}{7em}
+\setlength{\cftbeforetoctitleskip}{-2em}
 \usepackage{booktabs}
 \usepackage{makecell}
 \DeclareMathOperator{\EX}{\mathbb{E}}% expected value
 \usepackage{dcolumn}
+\usepackage{titlesec}
+\titlespacing{\section}{0pt}{0pt plus 1pt minus 1pt}{-6pt plus 1pt minus 1pt}
+\titlespacing{\subsection}{0pt}{0pt plus 1pt minus 1pt}{-6pt plus 1pt minus 1pt}
+\titlespacing{\subsubsection}{0pt}{0pt plus 1pt minus 1pt}{-6pt plus 1pt minus 1pt}
+\titleformat{\section}{\normalfont\Large\bfseries\raggedright}{\thesection}{0em}{}[{\titlerule[1pt]}]
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{array}
@@ -164,12 +172,11 @@ Smithers, BC\\
 \(^\textup{8}\)Wild Salmon Center, Portland, OR\\
 \(^\textup{9}\)Ecology and Evolutionary Biology, University of
 California Santa Cruz}
-\date{23 April 2023}
+\date{24 April 2023}
 
 \begin{document}
 \maketitle
 
-\centering
 \raggedright
 \renewcommand{\baselinestretch}{1}\normalsize
 \tableofcontents
