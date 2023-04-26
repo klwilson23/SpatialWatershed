@@ -102,9 +102,9 @@
 \DeclareMathOperator{\EX}{\mathbb{E}}% expected value
 \usepackage{dcolumn}
 \usepackage{titlesec}
-\titlespacing{\section}{0pt}{0pt plus 1pt minus 1pt}{3pt plus 1pt minus 1pt}
-\titlespacing{\subsection}{0pt}{0pt plus 1pt minus 1pt}{3pt plus 1pt minus 1pt}
-\titlespacing{\subsubsection}{0pt}{0pt plus 1pt minus 1pt}{3pt plus 1pt minus 1pt}
+\titlespacing{\section}{0pt}{0pt plus 1pt minus 1pt}{-5pt plus 1pt minus 1pt}
+\titlespacing{\subsection}{0pt}{0pt plus 1pt minus 1pt}{-5pt plus 1pt minus 1pt}
+\titlespacing{\subsubsection}{0pt}{0pt plus 1pt minus 1pt}{-5pt plus 1pt minus 1pt}
 \titleformat{\section}{\normalfont\Large\bfseries\raggedright}{\thesection}{0em}{}[{\titlerule[1pt]}]
 \usepackage{booktabs}
 \usepackage{longtable}
@@ -144,35 +144,39 @@ detailed results}
 \author{Kyle L. Wilson\(^\textup{1,2}\)\footnote{Corresponding author -
   email:
   \href{mailto:klwilson.ccira@gmail.com}{\nolinkurl{klwilson.ccira@gmail.com}}},
-Alexandra C. Sawyer\(^\textup{1}\), Anna Potapova\(^\textup{1}\), Colin
-J. Bailey\(^\textup{1}\),Daniella LoScerbo\(^\textup{3,4}\),\\
-Elissa K. Sweeney-Bergen\(^\textup{1,5}\), Emma E.
+Alexandra C. Sawyer\(^\textup{1,3}\), Anna Potapova\(^\textup{1,4}\),
+Colin J. Bailey\(^\textup{1,5}\),Daniella LoScerbo\(^\textup{4,6}\),\\
+Elissa K. Sweeney-Bergen\(^\textup{1,7}\), Emma E.
 Hodgson\(^\textup{1,4}\), Kara J. Pitman\(^\textup{1}\), Karl M.
 Seitz\(^\textup{1}\),\\
-Lauren Law\(^\textup{1,6}\), Luke Warkentin\(^\textup{1,7}\), Samantha
-M. Wilson\(^\textup{1}\), William I. Atlas\(^\textup{1,8}\),\\
-Douglas C. Braun\(^\textup{3,5}\), Matthew R. Sloat\(^\textup{8}\), M.
-Tim Tinker\(^\textup{9}\),\\
-and Jonathan W. Moore\(^\textup{1,3}\)\\
+Lauren Law\(^\textup{1,8}\), Luke Warkentin\(^\textup{1,9}\), Samantha
+M. Wilson\(^\textup{1}\), William I. Atlas\(^\textup{1,10}\),\\
+Douglas C. Braun\(^\textup{4,6}\), Matthew R. Sloat\(^\textup{10}\), M.
+Tim Tinker\(^\textup{11}\),\\
+and Jonathan W. Moore\(^\textup{1,6}\)\\
 \strut \\
 \small\(^\textup{1}\)Earth to Ocean Research Group, Simon Fraser
 University\\
 \small\(^\textup{2}\)Central Coast Indigenous Resource Alliance,
 Campbell River, BC\\
-\small\(^\textup{3}\)Resource and Environmental Management, Simon Fraser
-University\\
+\small\(^\textup{3}\)Four Peaks Environmental Science \& Data Solutions,
+Seattle, WA\\
 \small\(^\textup{4}\)Fisheries \& Oceans Canada, Cultus Lake Laboratory,
 Cultus Lake, BC\\
-\small\(^\textup{5}\)Ministry of Forests, Lands, Natural Resource
+\small\(^\textup{5}\)Fisheries \& Oceans Canada, Pacific Biological
+Station, Nanaimo, BC\\
+\small\(^\textup{6}\)Resource and Environmental Management, Simon Fraser
+University\\
+\small\(^\textup{7}\)Ministry of Forests, Lands, Natural Resource
 Operations, and Rural Development, Smithers, BC\\
-\small\(^\textup{6}\)Fisheries \& Oceans Canada, Salmonid Enhancement
+\small\(^\textup{8}\)Fisheries \& Oceans Canada, Salmonid Enhancement
 Program, Nanaimo, BC\\
-\small\(^\textup{7}\)Fisheries \& Oceans Canada, North Coast Stock
+\small\(^\textup{9}\)Fisheries \& Oceans Canada, North Coast Stock
 Assessment, Smithers, BC\\
-\small\(^\textup{8}\)Wild Salmon Center, Portland, OR\\
-\small\(^\textup{9}\)Ecology and Evolutionary Biology, University of
+\small\(^\textup{10}\)Wild Salmon Center, Portland, OR\\
+\small\(^\textup{11}\)Ecology and Evolutionary Biology, University of
 California Santa Cruz}
-\date{25 April 2023}
+\date{26 April 2023}
 
 \begin{document}
 \maketitle
@@ -584,9 +588,9 @@ mean outcome for each of the above recovery metrics:
     \emph{uniform} - individuals randomly removed across all patches,
     with all individuals having equal vulnerability to being removed.
   \item
-    \emph{local, even} - randomly chosen individuals removed from random
-    subset of patches (as long as the target individuals lost in the
-    metapopulation can be achieved in that subset of patches)
+    \emph{local, even} - randomly chosen individuals were removed from a
+    random subset of patches (as long as 90\% of total metapopulation
+    individuals can be removed from that subset)
 
     \begin{enumerate}
     \def\labelenumiii{\roman{enumiii}.}
@@ -594,8 +598,8 @@ mean outcome for each of the above recovery metrics:
     \item
       Specifically, a numerical algorithm was used to search and find a
       set of disturbance conditions whereby removing a random proportion
-      of individuals from a random subset of local patches achieved
-      both:
+      of individuals from a random chosen portion of local patches
+      achieved both:
 
       \begin{itemize}
       \tightlist
@@ -609,8 +613,8 @@ mean outcome for each of the above recovery metrics:
     \end{enumerate}
   \item
     \emph{local, uneven} - total extirpation of randomly selected subset
-    of patches (as long as the target individuals lost in the
-    metapopulation can be achieved in that subset of patches).
+    of patches (as long as 90\% of total metapopulation individuals can
+    be removed from that subset).
 
     \begin{enumerate}
     \def\labelenumiii{\roman{enumiii}.}
@@ -618,7 +622,7 @@ mean outcome for each of the above recovery metrics:
     \item
       Specifically, a numerical algorithm was used to search and find a
       set of disturbance conditions whereby extirpations to a random
-      subset of local patches achieved both:
+      chosen portion of local patches achieved both:
 
       \begin{itemize}
       \tightlist
