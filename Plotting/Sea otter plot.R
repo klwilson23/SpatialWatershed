@@ -6,7 +6,7 @@ head(otters,2)
 p1 <- ggplot(otters,aes(x=Year_Seq,y=Abundance,fill=Region,colour=Region)) +
   geom_ribbon(data=otters[otters$Method=='Estimated',],aes(x=Year_Seq,ymin=LCI,ymax=UCI,group=Region),colour=NA,fill='grey80',alpha=1) +
   geom_line(data=otters[otters$Method=='Estimated',],lwd=0.75) + 
-  geom_hline(yintercept=3190,lty=2,lwd=0.75,col='black')+
+  geom_hline(yintercept=3090,lty=2,lwd=0.75,col='black')+
   geom_point(data=otters[otters$Method=='Observed',],pch=21,col="black") +
   xlab("Years since initation of recovery") + ylab("Sea otter abundances") +
   theme_minimal() +
@@ -22,7 +22,7 @@ sub_ott <- otters[otters$Region=='California' & otters$Year>=1983,]
 ca <- ggplot(sub_ott,aes(x=Year_Seq,y=Abundance,fill=Region,colour=Region)) +
   geom_ribbon(data=sub_ott[sub_ott$Method=='Estimated',],aes(x=Year_Seq,ymin=LCI,ymax=UCI,group=Region),colour=NA,fill='grey80') +
   geom_line(data=sub_ott[sub_ott$Method=='Estimated',],lwd=0.2) + 
-  geom_hline(yintercept=3190,lty=2,lwd=0.2,col='black')+
+  geom_hline(yintercept=3090,lty=2,lwd=0.2,col='black')+
   geom_point(data=sub_ott[sub_ott$Method=='Observed',],pch=21,col="black") +
   theme_minimal() +
   xlab("") + ylab("") +
