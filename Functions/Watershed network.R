@@ -10,7 +10,7 @@ library(boot)
 library(timeSeries)
 library(shape)
 
-source("Figures/some functions.R")
+source("Functions/some functions.R")
 
 NmetaPatch <- 1 # how many metapopulation patches?
 NlocalPops <- 4 # how many populations in metapopulation?

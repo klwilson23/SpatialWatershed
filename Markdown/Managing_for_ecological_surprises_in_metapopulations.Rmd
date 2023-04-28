@@ -1,6 +1,6 @@
 ---
 title: | 
-  | Supporting information for: Wilson *et al.* 2022. The role of spatial structure in at-risk metapopulation recoveries.
+  | \vspace{-1.25cm}Supporting information for: Wilson *et al.* 2022. The role of spatial structure in at-risk metapopulation recoveries.
 subtitle: |
   | In: *Ecological Applications*
   | **Appendix S1:** Overview of metapopulation model description & detailed results
@@ -45,6 +45,8 @@ filters:
     path: "Markdown/Metapop_references.bib"
   - type: pandoc-citeproc
 header-includes:
+# - \usepackage{titling}
+# - \setlength{\droptitle}{-2em}
 - \usepackage{setspace}
 - \setcounter{section}{1}
 - \singlespacing
@@ -70,7 +72,7 @@ header-includes:
 - \setlength{\cftsecnumwidth}{0em}
 - \setlength{\cftsubsecnumwidth}{6em}
 - \setlength{\cftsubsubsecnumwidth}{7em}
-- \setlength{\cftbeforetoctitleskip}{-2em}
+- \setlength{\cftbeforetoctitleskip}{-1.5em}
 #- \renewcommand{\tocloftpagestyle}{fancy}
 #- \renewcommand{\cftbeforesecskip}{12pt}
 #- \setlength{\cftsecnumwidth}{10pt}
@@ -144,6 +146,7 @@ source("Functions/finding MSY.R")
 ```
 
 <!-- \centering -->
+<!-- \title{\vspace{-3.0cm}} -->
 \raggedright
 \renewcommand{\baselinestretch}{1}\normalsize
 \tableofcontents
@@ -448,7 +451,7 @@ We tested all combinations of the following eight processes (below) and ran `100
     a. when **variable**, $\alpha_i \sim TN(\mu=\bar{\alpha}, \sigma_{\alpha}=0.3\bar{\alpha})$ with a truncation applied such that $5 \leq \alpha_i \geq 1$ to ensure that patches could, at minimum, could replace themselves but with an upper limit of a 5-fold improvement to per-capita productivity. By comparison, @Myers1999 found that compensation ratio (their $\hat\alpha$) ranged 1-7 for most species evaluated Since our focus was on at-risk species, we opted to truncate $\alpha_i$ towards the lower end of this range, with a mean of `2.0`.
 
 2. Homogenous and spatially variable local carrying capacity across patches, i.e. asymptote of expected recruits at high adult densities ($\beta_i$)
-    a. when **variable**, $\beta_i \sim multinomial(p_i,N)$ where $p_i=\cfrac{e^{\theta_i}}{ \sum{e^{\theta_i}}}$, $\theta_i \sim uniform(0,1)$, and $N=\bar{\beta}$, with the added constraint that $\beta_i<0.1\bar{\beta}$ to ensure that no one patch exceed 10% of total metapopulation abundance (a necessary constraint when modelling *local, even* and *local, uneven* disturbances below). **Note** that, when local variation in demography rates occurred, the truncated normal in *Appendix S1: Section S1.3.1.a* and truncated multinomial in *Appendix S1: Section S1.3.2.a* above led compensation ratio and carrying capacity, respectively, to vary by the same magnitude ~28% coefficient of variation (Appendix S1: Figure S6).
+    a. when **variable**, $\beta_i \sim multinomial(p_i,N)$ where $p_i=\cfrac{e^{\theta_i}}{ \sum{e^{\theta_i}}}$, $\theta_i \sim uniform(0,1)$, and $N=\bar{\beta}$, with the added constraint that $\beta_i<0.1\bar{\beta}$ to ensure that no one patch exceed 10% of total metapopulation abundance (a necessary constraint when modelling *local, even* and *local, uneven* disturbances below). **Note** that, when local variation in demography rates occurred, the truncated normal in *Appendix S1: Section S1.3(1.a)* and truncated multinomial in *Appendix S1: Section S1.3(2.a)* above led compensation ratio and carrying capacity, respectively, to vary by the same magnitude ~28% coefficient of variation (Appendix S1: Figure S6).
 
 3. Variation in the spatial distribution of disturbances where a proportion of individuals were removed from the metapopulation (e.g., `0.90`) occurs.
     a. *uniform* - individuals randomly removed across all patches, with all individuals having equal vulnerability to being removed.
@@ -515,7 +518,208 @@ hist(x,xlim=c(-4,4),main="Scaled local patch demography (100,000 numerical simul
 hist(y,xlim=c(-4,4),title="",xlab="Variation in local carrying capacity (mean centered)",add=TRUE,col=adjustcolor("red",0.5), breaks = seq(min(y), max(y), length.out = 11),freq=FALSE,ylim=c(0,0.5))
 legend("topright",title="Demographic rate",c("Compensation ratio","Carrying capacity"),pch=22,pt.bg=c(adjustcolor("black",0.5),adjustcolor("red",0.5)),bty="n")
 ```
+\newpage
+### Example disturbance regimes
+Below, we demonstrate how each of the above disturbance scenarios in *Section S1.3(3.a-c)* manifest as spatially distributed impacts to local patches among the metapopulation. Each figure below shows nine random iterations of a metapopulation with a set of `16` patches structured in a dendritic network at the time of a 90% loss in aggregate abundance, and how that aggregate loss is realized as impacts to local patches. Each patch is shown as a circle or node, and its abundance relative to its local carrying capacity is indicated in two ways: (1) with the numbers within the circle and (2) the colour of the circle itself (with the colour scale gradient indicated to the right). We begin with the *uniform* disturbance scenario.
+```{r example uniform spatial disturbance, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Nine example disturbance scenarios for uniform disturbance in a dendritic network. The relative population status at the time of disturbance (abundance relative to local carrying capacity) indicated by text labels and color gradient.",fig.align="center"}
+library(mvtnorm)
+#library(marima)
+require(mvtnorm)
+source("Functions/Linear network.R")
+source("Functions/Dispersal function.R")
+source("Functions/patch_variance.R")
+Npatches=16
+networkType="dendritic"
+patchDistance=1
+Nburnin=50
+NyrsPost=50
+omega=0.01
+m=100
+alpha=2
+metaK=1600
+cv=1e-6
+DistScenario="uniform"
+magnitude_of_decline=0.9
+lagTime=1
+prodType="Beverton-Holt"
+rho.time=1e-5
+rho.dist=1e5
+compensationLag=25
+dataWeighting=0.1
+alphaVariable=TRUE
+kVariable=TRUE
+spatialPlots=TRUE
+network <- makeNetworks(networkType,Npatches,patchDistance,colors=c("royalblue4","dodgerblue","lightblue","darkorange1","firebrick"))
+nodeScalar <- 35
+k_p <- rep((metaK/Npatches),Npatches)
+matLayout <- matrix(0,ncol=34,nrow=21,byrow=T)
+matLayout[1:7,1:10] <- 1
+matLayout[1:7,11:20] <- 2
+matLayout[1:7,21:30] <- 3
 
+matLayout[8:14,1:10] <- 4
+matLayout[8:14,11:20] <- 5
+matLayout[8:14,21:30] <- 6
+
+matLayout[15:21,1:10] <- 7
+matLayout[15:21,11:20] <- 8
+matLayout[15:21,21:30] <- 9
+
+matLayout[2:21,31:34] <- 10
+layout(matLayout)
+par(mar=c(5,5,1,1))
+seed <- 2477
+set.seed(seed)
+for(i in 1:9)
+{
+  patch_demo <- patch_variance(model=prodType,alphaVariable,kVariable,Npatches=Npatches,alpha=alpha,alpha_p=alpha_p,metaK=metaK,k_p=k_p,magnitude_of_decline=magnitude_of_decline)
+  deaths_p <- Disturbance(metaPop=ceiling(sum(patch_demo$k_p)),magnitude=magnitude_of_decline,DisType=DistScenario, N_p=ceiling(patch_demo$k_p),prod=k_p,Npatches=Npatches)$deaths_p
+  disturb_demo <- patch_demo$k_p - deaths_p
+  patchID=pmax(0.0,pmin(1.0,round(disturb_demo/patch_demo$k_p,2)))
+  levelFactors <- factor(pmax(0.0,pmin(1.0,round(disturb_demo/patch_demo$k_p*Nlevels)/Nlevels)),levels=((0:10)/Nlevels))
+  V(network$landscape)$color <- rev(colfunc(Nlevels+1))[levelFactors]
+  V(network$landscape)$label.cex <- 0.75
+  plottingFunc(network,"dendritic",nodeScalar,Npatches,plotID=patchID)
+}
+par(mar=c(1,1,1,1))
+plot(NA,xlim=c(-1,1),ylim=c(-1,1),xaxt="n",yaxt="n",xlab="",ylab="",frame.plot=FALSE,xpd=NA)
+colorlegend(rev(colfunc(Nlevels)),zlevels=Nlevels,zlim=c(0,1),dz=0.1,posx=c(0.35,0.5),posy=c(0.1,0.95),digit=2)
+title(main="Relative status",line=0.75,font.main=1,cex.main=textSize,xpd=NA)
+```
+\newpage
+Next, we show how the 90% loss is applied to the dendritic network under the *local, even* disturbance scenario. 
+```{r example local even spatial disturbance, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Nine example disturbance scenarios for local, even disturbance in a dendritic network. The relative population status at the time of disturbance (abundance relative to local carrying capacity) indicated by text labels and color gradient.",fig.align="center"}
+library(mvtnorm)
+#library(marima)
+require(mvtnorm)
+source("Functions/Linear network.R")
+source("Functions/Dispersal function.R")
+source("Functions/patch_variance.R")
+Npatches=16
+networkType="dendritic"
+patchDistance=1
+Nburnin=50
+NyrsPost=50
+omega=0.01
+m=100
+alpha=2
+metaK=1600
+cv=1e-6
+DistScenario="random"
+magnitude_of_decline=0.9
+lagTime=1
+prodType="Beverton-Holt"
+rho.time=1e-5
+rho.dist=1e5
+compensationLag=25
+dataWeighting=0.1
+alphaVariable=TRUE
+kVariable=TRUE
+spatialPlots=TRUE
+network <- makeNetworks(networkType,Npatches,patchDistance,colors=c("royalblue4","dodgerblue","lightblue","darkorange1","firebrick"))
+nodeScalar <- 35
+k_p <- rep((metaK/Npatches),Npatches)
+matLayout <- matrix(0,ncol=34,nrow=21,byrow=T)
+matLayout[1:7,1:10] <- 1
+matLayout[1:7,11:20] <- 2
+matLayout[1:7,21:30] <- 3
+
+matLayout[8:14,1:10] <- 4
+matLayout[8:14,11:20] <- 5
+matLayout[8:14,21:30] <- 6
+
+matLayout[15:21,1:10] <- 7
+matLayout[15:21,11:20] <- 8
+matLayout[15:21,21:30] <- 9
+
+matLayout[2:21,31:34] <- 10
+layout(matLayout)
+par(mar=c(5,5,1,1))
+seed <- 2477
+set.seed(seed)
+for(i in 1:9)
+{
+  patch_demo <- patch_variance(model=prodType,alphaVariable,kVariable,Npatches=Npatches,alpha=alpha,alpha_p=alpha_p,metaK=metaK,k_p=k_p,magnitude_of_decline=magnitude_of_decline)
+  deaths_p <- Disturbance(metaPop=ceiling(sum(patch_demo$k_p)),magnitude=magnitude_of_decline,DisType=DistScenario, N_p=ceiling(patch_demo$k_p),prod=k_p,Npatches=Npatches)$deaths_p
+  disturb_demo <- patch_demo$k_p - deaths_p
+  patchID=pmax(0.0,pmin(1.0,round(disturb_demo/patch_demo$k_p,2)))
+  levelFactors <- factor(pmax(0.0,pmin(1.0,round(disturb_demo/patch_demo$k_p*Nlevels)/Nlevels)),levels=((0:10)/Nlevels))
+  V(network$landscape)$color <- rev(colfunc(Nlevels+1))[levelFactors]
+  V(network$landscape)$label.cex <- 0.75
+  plottingFunc(network,networkType,nodeScalar,Npatches,plotID=patchID)
+}
+par(mar=c(1,1,1,1))
+plot(NA,xlim=c(-1,1),ylim=c(-1,1),xaxt="n",yaxt="n",xlab="",ylab="",frame.plot=FALSE,xpd=NA)
+colorlegend(rev(colfunc(Nlevels)),zlevels=Nlevels,zlim=c(0,1),dz=0.1,posx=c(0.35,0.5),posy=c(0.1,0.95),digit=2)
+title(main="Relative status",line=0.75,font.main=1,cex.main=textSize,xpd=NA)
+```
+\newpage
+Last, we show how the 90% loss is applied to the dendritic network under the *local, uneven* disturbance scenario. 
+```{r example uneven spatial disturbance, echo=FALSE,fig.height=5.5,fig.width=6,fig.cap="Nine example disturbance scenarios for local, uneven disturbances in a dendritic network. The relative population status at the time of disturbance (abundance relative to local carrying capacity) indicated by text labels and color gradient.",fig.align="center"}
+library(mvtnorm)
+#library(marima)
+require(mvtnorm)
+source("Functions/Linear network.R")
+source("Functions/Dispersal function.R")
+source("Functions/patch_variance.R")
+Npatches=16
+networkType="dendritic"
+patchDistance=1
+Nburnin=50
+NyrsPost=50
+omega=0.01
+m=100
+alpha=2
+metaK=1600
+cv=1e-6
+DistScenario="random_patch"
+magnitude_of_decline=0.9
+lagTime=1
+prodType="Beverton-Holt"
+rho.time=1e-5
+rho.dist=1e5
+compensationLag=25
+dataWeighting=0.1
+alphaVariable=TRUE
+kVariable=TRUE
+spatialPlots=TRUE
+network <- makeNetworks(networkType,Npatches,patchDistance,colors=c("royalblue4","dodgerblue","lightblue","darkorange1","firebrick"))
+nodeScalar <- 35
+k_p <- rep((metaK/Npatches),Npatches)
+matLayout <- matrix(0,ncol=34,nrow=21,byrow=T)
+matLayout[1:7,1:10] <- 1
+matLayout[1:7,11:20] <- 2
+matLayout[1:7,21:30] <- 3
+
+matLayout[8:14,1:10] <- 4
+matLayout[8:14,11:20] <- 5
+matLayout[8:14,21:30] <- 6
+
+matLayout[15:21,1:10] <- 7
+matLayout[15:21,11:20] <- 8
+matLayout[15:21,21:30] <- 9
+
+matLayout[2:21,31:34] <- 10
+layout(matLayout)
+par(mar=c(5,5,1,1))
+seed <- 2477
+set.seed(seed)
+for(i in 1:9)
+{
+  patch_demo <- patch_variance(model=prodType,alphaVariable,kVariable,Npatches=Npatches,alpha=alpha,alpha_p=alpha_p,metaK=metaK,k_p=k_p,magnitude_of_decline=magnitude_of_decline)
+  deaths_p <- Disturbance(metaPop=ceiling(sum(patch_demo$k_p)),magnitude=magnitude_of_decline,DisType=DistScenario, N_p=ceiling(patch_demo$k_p),prod=k_p,Npatches=Npatches)$deaths_p
+  disturb_demo <- patch_demo$k_p - deaths_p
+  patchID=pmax(0.0,pmin(1.0,round(disturb_demo/patch_demo$k_p,2)))
+  levelFactors <- factor(pmax(0.0,pmin(1.0,round(disturb_demo/patch_demo$k_p*Nlevels)/Nlevels)),levels=((0:10)/Nlevels))
+  V(network$landscape)$color <- rev(colfunc(Nlevels+1))[levelFactors]
+  V(network$landscape)$label.cex <- 0.75
+  plottingFunc(network,networkType,nodeScalar,Npatches,plotID=patchID)
+}
+par(mar=c(1,1,1,1))
+plot(NA,xlim=c(-1,1),ylim=c(-1,1),xaxt="n",yaxt="n",xlab="",ylab="",frame.plot=FALSE,xpd=NA)
+colorlegend(rev(colfunc(Nlevels)),zlevels=Nlevels,zlim=c(0,1),dz=0.1,posx=c(0.35,0.5),posy=c(0.1,0.95),digit=2)
+title(main="Relative status",line=0.75,font.main=1,cex.main=textSize,xpd=NA)
+```
 ### Walkthrough of example results
 
 We demonstrate our metapopulation model with an example outcome for a linear network composed of `16` patches, a dispersal rate of `0.01` and a high enough dispersal cost such that individuals are only willing to move to their closest neighboring patches. This limits the strength of potential rescue effects. For this example, patches varied in their productivity and carrying capacity but will have deterministic population dynamics.
@@ -675,7 +879,7 @@ legend("bottomright",c("Uniform","Local, even","Local, uneven"),pch=22,pt.bg=dis
 \newpage
 ### Role of interplay in ecological and disturbance conditions on recovery patterns
 
-We now show some general patterns in how variable patch demographic rates, network structure, dispersal, disturbance, recruitment stochasticity, and spatio-temporal correlations variation affects metapopulation *recovery rates* (shown in Figure 4 of the main text and Figure S13 & S15), *non-recovery rate* (i.e, the number of simulations where the metapopulation fails to recover; Figure S16), *patch occupancy* (i.e., number of patches with local abundance <10% of pre-disturbance; Figure S17), and *relative production* (Figure S18).
+We now show some general patterns in how variable patch demographic rates, network structure, dispersal, disturbance, recruitment stochasticity, and spatio-temporal correlations variation affects metapopulation *recovery rates* (shown in Figure 4 of the main text and Figure S16 & S18), *non-recovery rate* (i.e, the number of simulations where the metapopulation fails to recover; Figure S19), *patch occupancy* (i.e., number of patches with local abundance <10% of pre-disturbance; Figure S20), and *relative production* (Figure S21).
 
 ```{r violin plots of risk of recovery rates based on variable patch demographic rates, echo=FALSE,warning = FALSE, message = FALSE,fig.height=5.5,fig.width=6.5,fig.cap="Violin plots showing marginal response of metapopulation recovery rates along gradients of network configuration, dispersal categories (low≤0.001; high>0.001), heterogeneity in local demographic rates ($\\alpha$ was local patch productivity and $\\beta$ was local patch carrying capacity in the Beverton-Holt model), and spatial distribution of disturbance.",fig.align="center"}
 results <- readRDS("Simulations/results2022-05-11.rds")
@@ -914,7 +1118,7 @@ p <- ggplot(data=sub_res, aes(x=dispersal_range, y=longOcc, fill=network_lab))+
 p
 ```
 
-Next, we show variation in relative production metrics. Figure S13 shows the tight correlation between patch occupancy and relative production. Hence, Figure S17 and S18 look quite similar.
+Next, we show variation in relative production metrics. Figure S16 shows the tight correlation between patch occupancy and relative production. Hence, Figure S20 and S21 look quite similar.
 ```{r violin plots of risk of relative production, echo=FALSE,warning = FALSE, message = FALSE,fig.height=5.5,fig.width=6.5,fig.cap="Violin plots showing marginal response of relative production for metapopulations along gradients of network configuration, dispersal categories (low≤0.001; high>0.001), spatial-temporal (ST) correlations (low $\\rho$≈0; high $\\rho$=0.6), scale of lognormal variance in recruitment (low $\\sigma$= 0.001; high $\\sigma$=0.1), and spatial distribution of disturbance.",fig.align="center"}
 results <- readRDS("Simulations/results2022-05-11.rds")
 scenarios <- readRDS("Simulations/scenarios2022-05-11.rds")
@@ -1063,7 +1267,7 @@ knitr::kable(df,caption = 'The mean recovery metrics, total sample size per regi
 
 ```
 
-In general, the five recovery regimes spanned a continuum of better (e.g., resilient) to worse recoveries (e.g., long-term critical risks). Overall, the interplay between ecological and disturbance conditions appeared to structure the specific pathway for metapopulation recoveries (Figure S21; Table S2). For example, uniform disturbances always led to resilient recoveries. However, local, even disturbance regimes tended to lead to, at-best, a resilient recovery or, at worst, hidden collapses with the probability modulated by other ecological factors. Local, uneven disturbance regimes led to, at best, a slow recovery or, at worst, a long-term critical risk and non-recovery. The main text Figure 5 and 6 demonstrates the conditions that led to resilient recoveries compared to critical risks, while more intermediate outcomes, like slow recovery, hidden collapses, or lost capacity are shown here in Figures S22-S24.
+In general, the five recovery regimes spanned a continuum of better (e.g., resilient) to worse recoveries (e.g., long-term critical risks). Overall, the interplay between ecological and disturbance conditions appeared to structure the specific pathway for metapopulation recoveries (Figure S24; Table S2). For example, uniform disturbances always led to resilient recoveries. However, local, even disturbance regimes tended to lead to, at-best, a resilient recovery or, at worst, hidden collapses with the probability modulated by other ecological factors. Local, uneven disturbance regimes led to, at best, a slow recovery or, at worst, a long-term critical risk and non-recovery. The main text Figure 5 and 6 demonstrates the conditions that led to resilient recoveries compared to critical risks, while more intermediate outcomes, like slow recovery, hidden collapses, or lost capacity are shown here in Figures S25-S27.
 
 ```{r cluster results, echo=FALSE,warning = FALSE, message = FALSE,fig.height=5,fig.width=8,fig.cap="Frequency of emergent metapopulation recovery regimes can depend on a complex interplay between network structure, dispersal, and spatial disturbances. Ribbon colors denote a group of simulations that led to one of five common recovery outcomes. Frequency of regimes denoted by width of ribbons",fig.align="center"}
 library(ggalluvial)
@@ -1094,7 +1298,7 @@ p1
 
 ```
 ### Role of ecological and disturbance conditions on recovery outcomes
-Local patch demography, habitat network structure, dispersal, spatially and temporally correlated recruitment variation, and spatial disturbance regimes each had modulating effects on the probability for any particular recovery regime (Figures 5 & 6 in the main text; and Figures S22-S24 here). There was a clear signal from any localized disturbances, which increased the probability for non-resilient recovery regimes. For habitat networks, metapopulations with linear networks tended to have increased probability for worse recoveries compared to gridded networks. For dispersal rates, metapopulations with low dispersal had increased probability for poor recoveries compared to high dispersal. For local demography, metapopulations with variable local patch demographic rates tended to increased probability for poor recoveries compared to metapopulations composed of homogeneous local patches. For recruitment stochasticity, metapopulations with both high recruitment variation and high spatial-temporal correlations led to increased probability for poor recoveries compared to low variation and low correlations.
+Local patch demography, habitat network structure, dispersal, spatially and temporally correlated recruitment variation, and spatial disturbance regimes each had modulating effects on the probability for any particular recovery regime (Figures 5 & 6 in the main text; and Figures S25-S27 here). There was a clear signal from any localized disturbances, which increased the probability for non-resilient recovery regimes. For habitat networks, metapopulations with linear networks tended to have increased probability for worse recoveries compared to gridded networks. For dispersal rates, metapopulations with low dispersal had increased probability for poor recoveries compared to high dispersal. For local demography, metapopulations with variable local patch demographic rates tended to increased probability for poor recoveries compared to metapopulations composed of homogeneous local patches. For recruitment stochasticity, metapopulations with both high recruitment variation and high spatial-temporal correlations led to increased probability for poor recoveries compared to low variation and low correlations.
 
 ```{r conditional probability for slow recovery, echo=FALSE,warning = FALSE, message = FALSE,fig.height=5,fig.width=5,fig.cap="The probability of a slow recovery in metapopulation recoveries depended on the interplay between network structure, dispersal (low≤0.001; high>0.001), spatial disturbances, heterogeneity in local demographic rates ($\\alpha$ is local patch productivity and $\\beta$ is local patch carrying capacity), and spatial-temporal recruitment variation (high=$\\rho$=0.6 and $\\sigma$=0.1; low=$\\rho$≈0 and $\\sigma$= 0.001) based on ordered logistic regression.",fig.align="center"}
 p <- readRDS(file="Figures/Probability of slow recovery in metapopulation recoveries.rds")

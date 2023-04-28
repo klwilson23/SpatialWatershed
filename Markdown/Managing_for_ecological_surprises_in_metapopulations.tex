@@ -96,7 +96,7 @@
 \setlength{\cftsecnumwidth}{0em}
 \setlength{\cftsubsecnumwidth}{6em}
 \setlength{\cftsubsubsecnumwidth}{7em}
-\setlength{\cftbeforetoctitleskip}{-2em}
+\setlength{\cftbeforetoctitleskip}{-1.5em}
 \usepackage{booktabs}
 \usepackage{makecell}
 \DeclareMathOperator{\EX}{\mathbb{E}}% expected value
@@ -130,8 +130,9 @@
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 
-\title{Supporting information for: Wilson \emph{et al.} 2022. The role
-of spatial structure in at-risk metapopulation recoveries.}
+\title{\vspace{-1.25cm}Supporting information for: Wilson \emph{et al.}
+2022. The role of spatial structure in at-risk metapopulation
+recoveries.}
 \usepackage{etoolbox}
 \makeatletter
 \providecommand{\subtitle}[1]{% add subtitle to \maketitle
@@ -176,7 +177,7 @@ Assessment, Smithers, BC\\
 \small\(^\textup{10}\)Wild Salmon Center, Portland, OR\\
 \small\(^\textup{11}\)Ecology and Evolutionary Biology, University of
 California Santa Cruz}
-\date{26 April 2023}
+\date{27 April 2023}
 
 \begin{document}
 \maketitle
@@ -570,8 +571,8 @@ mean outcome for each of the above recovery metrics:
     constraint when modelling \emph{local, even} and \emph{local,
     uneven} disturbances below). \textbf{Note} that, when local
     variation in demography rates occurred, the truncated normal in
-    \emph{Appendix S1: Section S1.3.1.a} and truncated multinomial in
-    \emph{Appendix S1: Section S1.3.2.a} above led compensation ratio
+    \emph{Appendix S1: Section S1.3(1.a)} and truncated multinomial in
+    \emph{Appendix S1: Section S1.3(2.a)} above led compensation ratio
     and carrying capacity, respectively, to vary by the same magnitude
     \textasciitilde28\% coefficient of variation (Appendix S1: Figure
     S6).
@@ -664,6 +665,58 @@ mean outcome for each of the above recovery metrics:
 }
 
 \caption{Histogram showing variation among demographic rates after simulatng 100,000 local patches when using the truncated normal in Appendix S1: Section 1.3(1.a) and truncated multinomial in Appendix S1: Section 1.3(2.a) when modelling variation in local compensation ratio (grey) and carrying capacity (red).}\label{fig:histogram of demographic variation}
+\end{figure}
+\newpage
+
+\hypertarget{example-disturbance-regimes}{%
+\subsubsection{Example disturbance
+regimes}\label{example-disturbance-regimes}}
+
+Below, we demonstrate how each of the above disturbance scenarios in
+\emph{Section S1.3(3.a-c)} manifest as spatially distributed impacts to
+local patches among the metapopulation. Each figure below shows nine
+random iterations of a metapopulation with a set of \texttt{16} patches
+structured in a dendritic network at the time of a 90\% loss in
+aggregate abundance, and how that aggregate loss is realized as impacts
+to local patches. Each patch is shown as a circle or node, and its
+abundance relative to its local carrying capacity is indicated in two
+ways: (1) with the numbers within the circle and (2) the colour of the
+circle itself (with the colour scale gradient indicated to the right).
+We begin with the \emph{uniform} disturbance scenario.
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/example uniform spatial disturbance-1} 
+
+}
+
+\caption{Nine example disturbance scenarios for uniform disturbance in a dendritic network. The relative population status at the time of disturbance (abundance relative to local carrying capacity) indicated by text labels and color gradient.}\label{fig:example uniform spatial disturbance}
+\end{figure}
+\newpage
+
+Next, we show how the 90\% loss is applied to the dendritic network
+under the \emph{local, even} disturbance scenario.
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/example local even spatial disturbance-1} 
+
+}
+
+\caption{Nine example disturbance scenarios for local, even disturbance in a dendritic network. The relative population status at the time of disturbance (abundance relative to local carrying capacity) indicated by text labels and color gradient.}\label{fig:example local even spatial disturbance}
+\end{figure}
+\newpage
+
+Last, we show how the 90\% loss is applied to the dendritic network
+under the \emph{local, uneven} disturbance scenario.
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Managing_for_ecological_surprises_in_metapopulations_files/figure-latex/example uneven spatial disturbance-1} 
+
+}
+
+\caption{Nine example disturbance scenarios for local, uneven disturbances in a dendritic network. The relative population status at the time of disturbance (abundance relative to local carrying capacity) indicated by text labels and color gradient.}\label{fig:example uneven spatial disturbance}
 \end{figure}
 
 \hypertarget{walkthrough-of-example-results}{%
@@ -821,11 +874,11 @@ We now show some general patterns in how variable patch demographic
 rates, network structure, dispersal, disturbance, recruitment
 stochasticity, and spatio-temporal correlations variation affects
 metapopulation \emph{recovery rates} (shown in Figure 4 of the main text
-and Figure S13 \& S15), \emph{non-recovery rate} (i.e, the number of
-simulations where the metapopulation fails to recover; Figure S16),
+and Figure S16 \& S18), \emph{non-recovery rate} (i.e, the number of
+simulations where the metapopulation fails to recover; Figure S19),
 \emph{patch occupancy} (i.e., number of patches with local abundance
-\textless10\% of pre-disturbance; Figure S17), and \emph{relative
-production} (Figure S18).
+\textless10\% of pre-disturbance; Figure S20), and \emph{relative
+production} (Figure S21).
 
 \begin{figure}[H]
 
@@ -870,9 +923,9 @@ leading to variation in long-term impacts to patch occupancy.
 \caption{Violin plots showing marginal response of long-term patch occupancy in metapopulations along gradients of network configuration, dispersal categories (low≤0.001; high>0.001), spatial-temporal (ST) correlations (low $\rho$≈0; high $\rho$=0.6), scale of lognormal variance in recruitment (low $\sigma$= 0.001; high $\sigma$=0.1), and spatial distribution of disturbance.}\label{fig:violin plots of risk of patch occupancy}
 \end{figure}
 
-Next, we show variation in relative production metrics. Figure S13 shows
+Next, we show variation in relative production metrics. Figure S16 shows
 the tight correlation between patch occupancy and relative production.
-Hence, Figure S17 and S18 look quite similar.
+Hence, Figure S20 and S21 look quite similar.
 
 \begin{figure}[H]
 
@@ -1020,7 +1073,7 @@ In general, the five recovery regimes spanned a continuum of better
 (e.g., resilient) to worse recoveries (e.g., long-term critical risks).
 Overall, the interplay between ecological and disturbance conditions
 appeared to structure the specific pathway for metapopulation recoveries
-(Figure S21; Table S2). For example, uniform disturbances always led to
+(Figure S24; Table S2). For example, uniform disturbances always led to
 resilient recoveries. However, local, even disturbance regimes tended to
 lead to, at-best, a resilient recovery or, at worst, hidden collapses
 with the probability modulated by other ecological factors. Local,
@@ -1029,7 +1082,7 @@ worst, a long-term critical risk and non-recovery. The main text Figure
 5 and 6 demonstrates the conditions that led to resilient recoveries
 compared to critical risks, while more intermediate outcomes, like slow
 recovery, hidden collapses, or lost capacity are shown here in Figures
-S22-S24.
+S25-S27.
 
 \begin{figure}[H]
 
@@ -1048,7 +1101,7 @@ Local patch demography, habitat network structure, dispersal, spatially
 and temporally correlated recruitment variation, and spatial disturbance
 regimes each had modulating effects on the probability for any
 particular recovery regime (Figures 5 \& 6 in the main text; and Figures
-S22-S24 here). There was a clear signal from any localized disturbances,
+S25-S27 here). There was a clear signal from any localized disturbances,
 which increased the probability for non-resilient recovery regimes. For
 habitat networks, metapopulations with linear networks tended to have
 increased probability for worse recoveries compared to gridded networks.
