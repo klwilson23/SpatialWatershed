@@ -1,14 +1,14 @@
 ---
 title: | 
-  | \vspace{-1.25cm}Supporting information for: Wilson *et al.* 2022. The role of spatial structure in at-risk metapopulation recoveries.
+  | \vspace{-1.25cm}Supporting information for: Wilson *et al.* 2023. The role of spatial structure in at-risk metapopulation recoveries.
 subtitle: |
   | In: *Ecological Applications*
   | **Appendix S1:** Overview of metapopulation model description & detailed results
 author: |
-  | Kyle L. Wilson$^\textup{1,2}$^[Corresponding author - email: klwilson.ccira@gmail.com], Alexandra C. Sawyer$^\textup{1,3}$, Anna Potapova$^\textup{1,4}$, Colin J. Bailey$^\textup{1,5}$,Daniella LoScerbo$^\textup{4,6}$,
-  | Elissa K. Sweeney-Bergen$^\textup{1,7}$, Emma E. Hodgson$^\textup{1,4}$, Kara J. Pitman$^\textup{1}$, Karl M. Seitz$^\textup{1}$,
-  | Lauren Law$^\textup{1,8}$, Luke Warkentin$^\textup{1,9}$, Samantha M. Wilson$^\textup{1}$, William I. Atlas$^\textup{1,10}$, 
-  | Douglas C. Braun$^\textup{4,6}$, Matthew R. Sloat$^\textup{10}$, M. Tim Tinker$^\textup{11}$, 
+  | Kyle L. Wilson$^\textup{1,2}$^[Corresponding author - email: klwilson.ccira@gmail.com], Alexandra C. Sawyer$^\textup{1,3}$, Anna Potapova$^\textup{1,4}$, Colin J. Bailey$^\textup{1,5}$,Daniella LoScerbo$^\textup{6}$,
+  | Elissa K. Sweeney-Bergen$^\textup{1,7}$, Emma E. Hodgson$^\textup{1,4}$, Kara J. Pitman$^\textup{1}$, Karl M. Seitz$^\textup{1,8}$,
+  | Lauren K. Law$^\textup{1,9}$, Luke Warkentin$^\textup{1,10}$, Samantha M. Wilson$^\textup{1}$, William I. Atlas$^\textup{1,11}$, 
+  | Douglas C. Braun$^\textup{4,6}$, Matthew R. Sloat$^\textup{11}$, M. Tim Tinker$^\textup{12}$, 
   | and Jonathan W. Moore$^\textup{1,6}$
   |
   | \small$^\textup{1}$Earth to Ocean Research Group, Simon Fraser University
@@ -18,10 +18,11 @@ author: |
   | \small$^\textup{5}$Fisheries & Oceans Canada, Pacific Biological Station, Nanaimo, BC
   | \small$^\textup{6}$Resource and Environmental Management, Simon Fraser University
   | \small$^\textup{7}$Ministry of Forests, Lands, Natural Resource Operations, and Rural Development, Smithers, BC
-  | \small$^\textup{8}$Fisheries & Oceans Canada, Salmonid Enhancement Program, Nanaimo, BC
-  | \small$^\textup{9}$Fisheries & Oceans Canada, North Coast Stock Assessment, Smithers, BC
-  | \small$^\textup{10}$Wild Salmon Center, Portland, OR
-  | \small$^\textup{11}$Ecology and Evolutionary Biology, University of California Santa Cruz
+  | \small$^\textup{8}$Hoopa Valley Tribal Fisheries Department, Hoopa, CA
+  | \small$^\textup{9}$Faculty of Medicine, Memorial University of Newfoundland, St. John's, NL
+  | \small$^\textup{10}$Fisheries & Oceans Canada, North Coast Stock Assessment, Smithers, BC
+  | \small$^\textup{11}$Wild Salmon Center, Portland, OR
+  | \small$^\textup{12}$Ecology and Evolutionary Biology, University of California Santa Cruz
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
   pdf_document:
@@ -295,7 +296,7 @@ plot(network$landscape,col="dodgerblue",layout=cbind(1,seq(1,-1,length.out = gor
 
 ### Disturbance regimes
 
-In all scenarios, disturbance was applied after `50` years of equilibrating the metapopulation at pristine conditions. We then applied a pulsed disturbance regime at year `50` (the regime varied from *uniform*, *localized, even*, and *localized, uneven* - see *Scenarios* below). Disturbance immediately removed a fixed proportion of the metapopulation adults at that time (i.e., `0.9` of $A_{t=50}$). Once applied, the metapopulation was no longer disturbed and spatio-temporal recovery dynamics emerged from these conditions given the ecological scenarios of network complexity, dispersal rate, spatio-temporal correlations, local patch demographies, and magnitude of stochastic variance.
+In all scenarios, disturbance was applied after `50` years of equilibrating the metapopulation at pristine conditions. Initial conditions were defined as: at $t=1$, each patch *p* had initial population abundance set to their local carrying capacity such that $N_1=\beta_i$ before stochastic recruitment dynamics and dispersal could occur. To make each scenarios comparable, we set some constraints on the average recruitment productivity such that $\bar{\alpha}=2$ and metapopulation carrying capacity $\sum\beta_i=1600$ were always the same in each scenario. We then applied a pulsed disturbance regime at year `50` (the regime varied from *uniform*, *localized, even*, and *localized, uneven* - see *Scenarios* below). Disturbance immediately removed a fixed proportion of the metapopulation adults at that time (i.e., `0.9` of $A_{t=50}$). Once applied, the metapopulation was no longer disturbed and spatio-temporal recovery dynamics emerged from these conditions given the ecological scenarios of network complexity, dispersal rate, spatio-temporal correlations, local patch demographies, and magnitude of stochastic variance.
 
 ```{r example disturbance regime, echo=FALSE,warning=FALSE,message=FALSE,fig.height=4,fig.width=8,fig.cap="Recovery regime of metapopulation with linear topology through time (a) and space (b).",fig.align="center"}
 seed <- 2477
@@ -421,7 +422,7 @@ While true metapopulation dynamics emerge from local patch dynamics and dispersa
 {\EX(N_t)}=\cfrac{\bar{\alpha}{A}_{t-1}}{1+\cfrac{\bar{\alpha}-1}{\bar{\beta}}{A}_{t-1}}
 \end{align}
 
-where $\bar{\alpha}$ was the compensation ratio averaged across the metapopulation and $\bar{\beta}$ was the  carrying capacity summed across the entire metapopulation.
+where $\bar{\alpha}$ was the compensation ratio averaged across the metapopulation and $\bar{\beta}$ was the carrying capacity summed across the entire metapopulation.
 
 ### Recovery metrics
 
